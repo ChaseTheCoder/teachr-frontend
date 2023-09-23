@@ -14,15 +14,15 @@ export default function Plans() {
       });
   }, []);
 
-  useEffect(() => {
-      fetch('http://127.0.0.1:8000/api/unitplan/')
-      .then((res) => res.json())
-      .then((data) => setUnits(data))
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-      })
-  }, []);
-  console.log(units);
+  // useEffect(() => {
+  //     fetch('http://127.0.0.1:8000/api/unitplan/')
+  //     .then((res) => res.json())
+  //     .then((data) => setUnits(data))
+  //     .catch((error) => {
+  //       console.error("Error fetching data:", error);
+  //     })
+  // }, []);
+  // console.log(units);
 
   return (
     <div className={styles.container}>
@@ -34,18 +34,10 @@ export default function Plans() {
         { data.length > 0 ?
           data.map((data, index) => (
             <div key={index}>
-              <p>{data.grade}, {data.subject}</p>
-            </div>
-          )) :
-          <p>Loading ....</p>
-        }
-        <h2 className={styles.title}>
-          Units
-        </h2>
-        { units.length > 0 ?
-          units.map((unit, index) => (
-            <div key={index}>
-              <p>{unit.title}</p>
+              <h2>{data.grade}, {data.subject}</h2>
+              { data.units.map((unit, index) => (
+                <p key={index}>{unit.title}</p>
+              ))}
             </div>
           )) :
           <p>Loading ....</p>
