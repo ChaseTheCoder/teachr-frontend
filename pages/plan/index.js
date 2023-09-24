@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 
 export default function Plans() {
   const [data, setData] = useState([]);
-  const [units, setUnits] = useState({});
 
   useEffect(() => {
       fetch('http://127.0.0.1:8000/api/plan/')
@@ -13,16 +12,6 @@ export default function Plans() {
         console.error("Error fetching data:", error);
       });
   }, []);
-
-  // useEffect(() => {
-  //     fetch('http://127.0.0.1:8000/api/unitplan/')
-  //     .then((res) => res.json())
-  //     .then((data) => setUnits(data))
-  //     .catch((error) => {
-  //       console.error("Error fetching data:", error);
-  //     })
-  // }, []);
-  // console.log(units);
 
   return (
     <div className={styles.container}>
