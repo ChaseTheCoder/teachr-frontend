@@ -1,8 +1,11 @@
-import styles from '../../../styles/Home.module.css';
+'use client'
+
+import React from 'react';
+import styles from '../../page.module.css';
 import { useEffect, useState } from "react";
 
 export default function Plans() {
-  const [unit, setUnit] = useState();
+  const [unit, setUnit] = useState<any>();
 
   useEffect(() => {
 

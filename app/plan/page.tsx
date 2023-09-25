@@ -1,8 +1,11 @@
-import styles from '../../styles/Home.module.css';
+'use client'
+
+import React from 'react';
+import styles from '../page.module.css';
 import { useEffect, useState } from "react";
 
 export default function Plans() {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<any[]>([]);
 
   useEffect(() => {
       fetch('http://127.0.0.1:8000/api/plan/')
@@ -12,6 +15,7 @@ export default function Plans() {
         console.error("Error fetching data:", error);
       });
   }, []);
+  console.log(data)
 
   return (
     <div className={styles.container}>
