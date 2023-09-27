@@ -3,6 +3,7 @@
 import React from 'react';
 import styles from '../page.module.css';
 import { useEffect, useState } from "react";
+import Link from 'next/link';
 
 export default function Plans() {
   const [data, setData] = useState<any[]>([]);
@@ -29,7 +30,9 @@ export default function Plans() {
             <div key={index}>
               <h2>{data.grade}, {data.subject}</h2>
               { data.units.map((unit, index) => (
-                <p key={index}>{unit.title}</p>
+                <Link key={index} href={`/plan/${unit.id}`}>
+                  <p>{unit.title}</p>
+                </Link>
               ))}
             </div>
           )) :
