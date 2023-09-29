@@ -1,9 +1,14 @@
 import './globals.css'
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import { Montserrat } from 'next/font/google'
 import React from 'react'
+import Nav from '../components/Nav'
 
-const inter = Inter({ subsets: ['latin'] })
+const metrophobic = Montserrat({
+  subsets: ['latin'],
+  display: 'swap',
+  weight: '400'
+})
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -17,7 +22,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={metrophobic.className}>
+        <Nav/>
+        {children}
+      </body>
     </html>
   )
 }
