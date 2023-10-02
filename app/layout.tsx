@@ -3,11 +3,19 @@ import type { Metadata } from 'next'
 import { Montserrat } from 'next/font/google'
 import React from 'react'
 import Nav from '../components/Nav'
+import SideNav from '../components/sideNav/SideNav'
+import Script from 'next/script'
+import "@fortawesome/fontawesome-svg-core/styles.css";
+import { config } from "@fortawesome/fontawesome-svg-core";
+import Reminders from '../components/Reminders'
+config.autoAddCss = false;
+
 
 const metrophobic = Montserrat({
   subsets: ['latin'],
+  style: ['normal', 'italic'],
   display: 'swap',
-  weight: '400'
+  weight: ['400', '500', '600', '700']
 })
 
 export const metadata: Metadata = {
@@ -21,10 +29,21 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <body className={metrophobic.className}>
+    <html lang='en'>
+      <Script src="https://kit.fontawesome.com/ba9dfab5fa.js" crossOrigin="anonymous"/>
+      <body className={`${metrophobic.className} bg-background`}>
         <Nav/>
-        {children}
+        <div className='flex gap-8'>
+          <div className='w-1/5'>
+            <SideNav/>
+          </div>
+          <div className='w-3/5'>
+            {children}
+          </div>
+          <div className='w-1/5'>
+            <Reminders/>
+          </div>
+        </div>
       </body>
     </html>
   )

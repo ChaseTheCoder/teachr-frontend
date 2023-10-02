@@ -1,8 +1,8 @@
 'use client'
 
 import React from 'react';
-import styles from '../../page.module.css';
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
+import Surface from '../../../components/surface/Surface';
 
 export default function Unit({
   params,
@@ -21,28 +21,24 @@ export default function Unit({
       setLessons(data.lessons)
     })
     .catch((error) => {
-      console.error("Error fetching data:", error);
+      console.error('Error fetching data:', error);
     })
   }, [url]);
   // console.log(unit);
   console.log(lessons);
 
   return (
-    <div className={styles.container}>
-
-        <h1 className={styles.title}>
-          Unit Plans
-        </h1>
-
+    <div className='pt-16'>
+      <Surface>
         { unit ?
           (
             <div>
-              <h2>{unit.title}</h2>
-              <h3>Overview</h3>
+              <h2  className='text-lg font-semibold'>{unit.title}</h2>
+              <h3 className='font-semibold'>Overview</h3>
               <p>{unit.overview}</p>
-              <h3>Standards</h3>
+              <h3 className='font-semibold'>Standards</h3>
               <p>{unit.standard}</p>
-              <h3>Resources</h3>
+              <h3 className='font-semibold'>Resources</h3>
               { unit.resources.length > 0 ? (
                   <ul>
                     { unit.resources.map((resource) => (
@@ -59,7 +55,7 @@ export default function Unit({
               }
               
 
-              <h3>Lessons</h3>
+              <h3 className='font-semibold'>Lessons</h3>
               { unit.lessons.length > 0 ? (
                   <ul>
                     { unit.lessons.map((lesson) => (
@@ -76,6 +72,7 @@ export default function Unit({
           ) :
           <p>Loading ....</p>
         }
+      </Surface>
     </div>
   )
 }
