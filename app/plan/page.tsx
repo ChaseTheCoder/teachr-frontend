@@ -4,6 +4,8 @@ import React from 'react';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Surface from '../../components/surface/Surface';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
 
 export default function Plans() {
   const [data, setData] = useState<any[]>([]);
@@ -23,11 +25,14 @@ export default function Plans() {
         { data.length > 0 ?
           data.map((data, index) => (
             <Surface key={index}>
-              <h2  className='text-lg font-semibold'>{data.grade}, {data.subject}</h2>
+              <h2  className='text-lg font-semibold pb-2'>{data.grade}, {data.subject}</h2>
               { data.units.map((unit, index) => (
-                <Link key={index} href={`/plan/${unit.id}`}>
-                  <p>{unit.title}</p>
-                </Link>
+                <div key={index} className='border-t-2 border-border py-2'>
+                  <Link href={`/plan/${unit.id}`} className='flex justify-between px-3'>
+                    <p>{unit.title}</p>
+                    <FontAwesomeIcon icon={faChevronRight} />
+                  </Link>
+                </div>
               ))}
             </Surface>
           )) :

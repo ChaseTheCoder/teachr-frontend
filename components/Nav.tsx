@@ -1,13 +1,21 @@
 import React from 'react';
+import Image from 'next/image';
+import TeachrLogo from '../public/TeachrLogo.svg';
+import Link from 'next/link';
 
 export default function Nav() {
 
   return (
   <nav className='bg-surface drop-shadow-md'>
-    <div className='max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4'>
-      <a href='#' className='flex items-center'>
-          <p>Teacher Lounge</p>
-      </a>
+    <div className='flex flex-wrap items-center justify-between mx-auto py-2 px-6'>
+      <Link href='/' className='flex items-center'>
+          <Image
+            priority
+            src={TeachrLogo}
+            alt='Teachr Lounge logo'
+            height={38}
+          />
+      </Link>
       <div className='hidden w-full md:block md:w-auto' id='navbar-dropdown'>
         <ul className='flex flex-col font-medium p-4 md:p-0 mt-4 md:flex-row md:space-x-8 md:mt-0 md:border-0'>
           <li>
