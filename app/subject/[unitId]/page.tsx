@@ -74,7 +74,7 @@ export default function Unit({
                     <ul>
                       { unit.lessons.map((lesson) => (
                         <li key={lesson.id} className='border-t-2 border-border py-2 px-3'>
-                          <Link href={`/plan/${params.unitId}/${lesson.id}`} className='flex justify-between px-3'>
+                          <Link href={`/subject/${params.unitId}/${lesson.id}`} className='flex justify-between px-3'>
                             <p>{lesson.title}</p>
                             <FontAwesomeIcon icon={faChevronRight} />
                           </Link>

@@ -17,9 +17,9 @@ export default function SideNav() {
           </Link>
         </li>
         <li className='bg-surface drop-shadow-md rounded-r-2xl hover:drop-shadow-xl p-4'>
-          <Link href='/plan' className='ml-5'>
+          <Link href='/subject' className='ml-5'>
             <FontAwesomeIcon icon={faNoteSticky} className='pr-3'/>
-            Plans
+            Subjects
           </Link>
         </li>
         <li className='bg-surface drop-shadow-md rounded-r-2xl hover:drop-shadow-xl p-4'>
