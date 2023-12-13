@@ -49,14 +49,14 @@ export default function Subject() {
 
   async function deleteSubject(id: number) {
     try {
-      const res = await fetch(`http://localhost:8000/subject/${id}`, {
+      fetch(`http://localhost:8000/subject/${id}`, {
         method: 'DELETE',
         headers: {
           'Access-Control-Allow-Origin': '*',
           'Content-Type': 'application/json',
         }
       })
-      .then(async response => {
+      .then(async (response) => {
         const subject = await response.json();
         if (!response.ok) {
           const error = (subject && subject.message) || response.status;
@@ -69,8 +69,8 @@ export default function Subject() {
     }
   }
 
-  function showDropdownOptions() {
-    document.getElementById("options").classList.toggle("hidden");
+  function showDropdownOptions(id: string) {
+    document.getElementById(id).classList.toggle("hidden");
   }
 
   if (isLoading) return <p>Loading...</p>
@@ -91,18 +91,18 @@ export default function Subject() {
       { subject.length > 0 ?
         subject.map((subject, index) => (
           <Surface key={index}>
-            <div className='flex justify-between items-center pb-2'>
+            <div className='flex justify-between items-center pb-2 z-0'>
               <h2  className='text-lg font-semibold'>{subject.grade}, {subject.subject}</h2>
               <div className="relative inline-block text-left">
                 <div>
-                  <button onClick={showDropdownOptions} type="button" className="inline-flex flex items-center w-full justify-center hover:bg-background" id="menu-button" aria-expanded="true" aria-haspopup="true">
+                  <button onClick={() => showDropdownOptions(`options-${index}`)} type="button" className="inline-flex flex items-center w-full justify-center hover:bg-background" id="menu-button" aria-expanded="true" aria-haspopup="true">
                     Edit <FontAwesomeIcon icon={faEllipsisVertical} className='pl-2'/>
                   </button>
                 </div>
-                <div className="hidden absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-surface shadow-lg border border-primary focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" id="options">
+                <div className="hidden absolute right-0 mt-2 w-56 origin-top-right rounded-md bg-surface shadow-lg border border-primary focus:outline-none z-50" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" id={`options-${index}`}>
                   <div className="py-1" role="none">
                     <button onClick={() => deleteSubject(subject.id)} className="text-gray-700 block px-4 py-2 text-sm hover:bg-background" role="menuitem" id="menu-item-0">Edit</button>
-                    <a href="#" className="text-gray-700 block px-4 py-2 text-sm hover:bg-background" role="menuitem" id="menu-item-1">Delete</a>
+                    <button onClick={() => deleteSubject(subject.id)} className="text-gray-700 block px-4 py-2 text-sm hover:bg-background" role="menuitem" id="menu-item-1">Delete</button>
                   </div>
                 </div>
               </div>
