@@ -10,18 +10,26 @@ import { NextResponse } from 'next/server';
 
 export default function Subject() {
   const [subject, setSubject] = useState<any[]>([]);
-  const [isLoading, setLoading] = useState(true)
+  const [isLoading, setLoading] = useState(true);
+  const [isError, setError] = useState(false);
 
-  useEffect(() => {
+  async function getSubjects() {
+    setLoading(true)
+    try {
       fetch('http://localhost:8000/subject/')
       .then((res) => res.json())
       .then((subject) => {
-          setSubject(subject)
-          setLoading(false)
+        setSubject(subject)
+        setLoading(false)
       })
-      .catch((error) => {
-        console.error('Error fetching subject:', error);
-      });
+    } catch (err) {
+      setLoading(false)
+      setError(true)
+    }
+  }
+
+  useEffect(() => {
+    getSubjects() 
   }, []);
 
   async function postSubject() {
@@ -29,7 +37,6 @@ export default function Subject() {
       const res = await fetch('http://localhost:8000/subject/', {
         method: 'POST',
         headers: {
-          'Access-Control-Allow-Origin': '*',
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
@@ -44,21 +51,24 @@ export default function Subject() {
     } catch (err) {
       console.log('ERROR: SUBJECT NOT POSTED')
       console.log(err)
+    } finally {
+      getSubjects()
     }
   }
-
+  
   async function deleteSubject(id: number) {
     try {
       fetch(`http://localhost:8000/subject/${id}`, {
         method: 'DELETE',
         headers: {
-          'Access-Control-Allow-Origin': '*',
           'Content-Type': 'application/json',
         }
       })
       .then(async (response) => {
         const subject = await response.json();
-        if (!response.ok) {
+        if (response.ok) {
+          getSubjects()
+        } else {
           const error = (subject && subject.message) || response.status;
           return Promise.reject(error);
         }
@@ -73,7 +83,21 @@ export default function Subject() {
     document.getElementById(id).classList.toggle("hidden");
   }
 
-  if (isLoading) return <p>Loading...</p>
+  if (isLoading) {
+    return (
+      <div className='space-y-3'>
+        <p>Loading...</p>
+      </div>
+    )
+  }
+
+  if (isError) {
+    return (
+      <div className='space-y-3'>
+        <p>Error. Try again...</p>
+      </div>
+    )
+  }
 
   return (
     <div className='space-y-3'>
