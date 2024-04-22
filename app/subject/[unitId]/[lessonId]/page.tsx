@@ -30,8 +30,14 @@ export default function Unit({
           (
             <>
               <Surface>
-                <div className='space-y-2'>
-                  <h2  className='text-2xl font-bold'>{lesson.title}</h2>
+                <div className='space-y-4'>
+                  <div className='flex justify-between'>
+                    <h2 className='text-2xl font-bold'>{lesson.title}</h2>
+                    <div className='flex flex-row gap-6'>
+                      <a className='text-delete-light hover:text-delete'><p>Delete</p></a>
+                      <p className='text-update'>Update</p>
+                    </div>
+                  </div>
                   <div>
                     <h3 className='font-semibold'>Objective</h3>
                     <TextField>{lesson.objective}</TextField>

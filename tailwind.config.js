@@ -11,7 +11,10 @@ module.exports = {
       'primaryhover': '#808080',
       'background': '#f8fafc',
       'surface': '#ffffff',
-      'border': '#EDEDED'
+      'border': '#EDEDED',
+      'delete': '#ad0000',
+      'delete-light': '#b91c1c',
+      'update': '#008f0a'
     },
     extend: {},
   },
