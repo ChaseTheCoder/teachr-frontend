@@ -11,7 +11,8 @@ export default function Unit({
   params: { lessonId: string, unitId: string };
 }) {
   const [lesson, setLesson] = useState<any>();
-  const url = 'http://localhost:8000/api/lessonplan/' + params.lessonId; 
+  const url = 'http://localhost:8000/api/lessonplan/' + params.lessonId;
+  
 
   useEffect(() => {
     fetch(url)
@@ -24,6 +25,13 @@ export default function Unit({
     })
   }, [url]);
 
+  async function deleteLesson(id: string) {
+    window.alert('deleted');
+  }
+  async function updateLesson(id: string) {
+    window.alert('updated');
+  }
+
   return (
     <div className='pt-16 space-y-3'>
         { lesson ?
@@ -34,8 +42,8 @@ export default function Unit({
                   <div className='flex justify-between'>
                     <h2 className='text-2xl font-bold'>{lesson.title}</h2>
                     <div className='flex flex-row gap-6'>
-                      <a className='text-delete-light hover:text-delete'><p>Delete</p></a>
-                      <p className='text-update'>Update</p>
+                      <button className='text-delete-light hover:text-delete' onClick={() => deleteLesson(params.lessonId)}>Delete</button>
+                      <button className='text-green-600 hover:text-update' onClick={() => updateLesson(params.lessonId)}>Update</button>
                     </div>
                   </div>
                   <div>
