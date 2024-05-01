@@ -28,8 +28,6 @@ export default function Unit({
       console.error('Error fetching data:', error);
     })
   }, [url]);
-  // console.log(unit);
-  console.log(lessons);
 
   return (
     <div className='pt-16 space-y-3'>
@@ -69,6 +67,7 @@ export default function Unit({
                 </Surface>
                   
                 <Surface>
+                  <button>add lesson</button>
                   <h3 className='text-lg font-semibold pb-2'>Lessons</h3>
                   { unit.lessons.length > 0 ? (
                     <ul>
