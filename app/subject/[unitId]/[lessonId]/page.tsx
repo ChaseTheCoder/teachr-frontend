@@ -4,15 +4,19 @@ import React from 'react';
 import { useEffect, useState } from 'react';
 import Surface from '../../../../components/surface/Surface';
 import TextField from '../../../../components/TextField';
+import Textarea from '../../../../components/Textarea';
 
 export default function Unit({
   params,
 }: {
   params: { lessonId: string, unitId: string };
 }) {
-  const [lesson, setLesson] = useState<any>();
-  const [title, setTitle] = useState<string>();
+  const [lesson, setLesson] = useState<any>(null);
+  const [title, setTitle] = useState<string | null>(null);
+  const [objective, setObjective] = useState<string | null>(null);
+  const [standard, setStandard] = useState<string | null>(null);
   const url = `http://localhost:8000/lessonplan/${params.lessonId}/`;
+  let update = {}
 
   useEffect(() => {
     fetch(url)
@@ -25,6 +29,12 @@ export default function Unit({
     })
   }, [url]);
 
+  useEffect(() => {
+    if(title !== null) update['title'] = title;
+    if(objective !== null) update['objective'] = objective;
+    if(standard !== null) update['standard'] = standard;
+  }, [title, objective, standard]);
+
   const updateButton = () => {
     fetch(url, {      
       method: 'PATCH',
@@ -32,9 +42,7 @@ export default function Unit({
         'Content-Type': 'application/json'
       },
       body: 
-        JSON.stringify({
-          title: title,
-        }),
+        JSON.stringify(update),
     })
     .then((response) => response.json())
     .catch(error => console.log(error))
@@ -53,14 +61,11 @@ export default function Unit({
                 <div className='space-y-4'>
                   <form>
                     <div className='flex justify-between'>
-                      <textarea 
-                        className='text-2xl font-bold px-1 border-bottom-2 border-border rounded-none'
-                        name='title'
-                        rows={1}
-                        defaultValue={lesson.title}
+                      <Textarea
+                        value={lesson.title}
                         onChange={e => setTitle(e.target.value)}
+                        header
                       />
-                      {/* <h2 className='text-2xl font-bold'>{lesson.title}</h2> */}
                       <div className='flex flex-row gap-6'>
                         <button className='text-delete-light hover:text-delete' onClick={() => deleteLesson(params.lessonId)}>Delete</button>
                         <button className='text-update-light hover:text-update' onClick={updateButton}>Update</button>
@@ -68,11 +73,17 @@ export default function Unit({
                     </div>
                     <div>
                       <h3 className='font-semibold'>Objective</h3>
-                      <TextField>{lesson.objective}</TextField>
+                      <Textarea
+                        value={lesson.objective}
+                        onChange={e => setObjective(e.target.value)}
+                      />
                     </div>
                     <div>
                       <h3 className='font-semibold'>Standards</h3>
-                      <TextField>{lesson.standard}</TextField>
+                      <Textarea
+                        value={lesson.standard}
+                        onChange={e => setStandard(e.target.value)}
+                      />
                     </div>
                     <div className='space-y-1'>
                       <h3 className='font-semibold'>Lesson Outline</h3>
