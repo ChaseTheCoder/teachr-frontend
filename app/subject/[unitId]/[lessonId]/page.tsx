@@ -2,10 +2,13 @@
 
 import React from 'react';
 import { useEffect, useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPenToSquare, faTrash } from '@fortawesome/free-solid-svg-icons';
 import Surface from '../../../../components/surface/Surface';
 import TextField from '../../../../components/TextField';
 import Textarea from '../../../../components/Textarea';
 import CKeditor from '../../../../components/CKeditor';
+import { lessonAi } from './lessonAi';
 
 export default function Unit({
   params,
@@ -15,6 +18,7 @@ export default function Unit({
   const [lesson, setLesson] = useState<any>(null);
   const [title, setTitle] = useState<string | null>(null);
   const [objective, setObjective] = useState<string | null>(null);
+  const [objectiveAi, setObjectiveAi] = useState<string | null>(null);
   const [standard, setStandard] = useState<string | null>(null);
   const [body, setBody] = useState<string | null>(null);
   const [lessonOutline, setLessonOutline] = useState(null);
@@ -44,8 +48,6 @@ export default function Unit({
     if(body !== null) update['body'] = body;
   }, [title, objective, standard, body]);
 
-  console.log(body)
-
   const updateLessonButton = () => {
     fetch(url, {      
       method: 'PATCH',
@@ -57,6 +59,12 @@ export default function Unit({
     })
     .then((response) => response.json())
     .catch(error => console.log(error))
+  }
+
+  async function updateObjectiveAi(prompt: string) {
+    const promptResponse = await lessonAi(prompt);
+    window.alert(promptResponse.choices[0].message.content);
+    console.log(promptResponse.choices[0].message.content)
   }
 
   const updateLessonOutlineButton = () => {
@@ -97,6 +105,17 @@ export default function Unit({
                     </div>
                     <div>
                       <h3 className='font-semibold'>Objective</h3>
+                      <div>
+                        <button
+                          onClick={() => updateObjectiveAi(objectiveAi)}
+                        >
+                          AI
+                        </button>
+                        <Textarea
+                          value={objectiveAi ? objectiveAi : 'write a lesson objective for 2nd grade'}
+                          onChange={e => updateObjectiveAi(e.target.value)}
+                        />
+                      </div>
                       <Textarea
                         value={lesson.objective}
                         onChange={e => setObjective(e.target.value)}
@@ -109,22 +128,6 @@ export default function Unit({
                         onChange={e => setStandard(e.target.value)}
                       />
                     </div>
-                    {/* <div className='space-y-1'>
-                      <h3 className='font-semibold'>Lesson Outline</h3>
-                      { lesson.lesson_outline.length > 0 ? (
-                        lesson.lesson_outline.map((outline) => (
-                          <div key={outline.id}>
-                              <TextField>
-                                <h4 className='font-semibold'>{outline.title}</h4>
-                                <p>{outline.description}</p>
-                              </TextField>
-                            </div>
-                          ))
-                          ) : (
-                            <p>Add outline</p>
-                          )
-                        }
-                    </div> */}
                     <div>
                       <h3 className='font-semibold'>Lesson Outline</h3>
                       <CKeditor
@@ -138,15 +141,26 @@ export default function Unit({
                     <div>
                       <h3 className='font-semibold'>Materials</h3>
                       {lesson.materials &&
-                        lesson.materials.map(material => (
-                          <p key={material.id}>
-                            <a
-                              href={material.link}
-                              target='blank'
-                            >
-                              {material.title}
-                            </a>
-                          </p>
+                        lesson.materials.map((material, index) => (
+                          <div className='flex justify-between' key={index}>
+                            <p key={material.id} className='hover:underline'>
+                              <a
+                                href={material.link}
+                                target='blank'
+                              >
+                                {material.title}
+                              </a>
+                            </p>
+                            <div className='flex gap-2'>
+                              <FontAwesomeIcon
+                                icon={faPenToSquare}
+                                className='hover:text-gray'
+                              />
+                              <FontAwesomeIcon
+                                icon={faTrash}
+                              />
+                            </div>
+                          </div>
                         ))
                       }
                     </div>
