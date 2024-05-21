@@ -5,7 +5,6 @@ export async function lessonAi(prompt: string) {
     messages: [{ role: 'user', content: prompt }],
     model: 'gpt-3.5-turbo-0125',
   });
-  console.log(promptResponse);
   return promptResponse;
 }
 

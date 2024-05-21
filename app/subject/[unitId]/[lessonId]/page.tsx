@@ -63,21 +63,7 @@ export default function Unit({
 
   async function updateObjectiveAi(prompt: string) {
     const promptResponse = await lessonAi(prompt);
-    window.alert(promptResponse.choices[0].message.content);
-    console.log(promptResponse.choices[0].message.content)
-  }
-
-  const updateLessonOutlineButton = () => {
-    fetch(url, {      
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: 
-        JSON.stringify(update),
-    })
-    .then((response) => response.json())
-    .catch(error => console.log(error))
+    setObjective(promptResponse.choices[0].message.content);
   }
 
   async function deleteLesson(id: string) {
@@ -112,8 +98,8 @@ export default function Unit({
                           AI
                         </button>
                         <Textarea
-                          value={objectiveAi ? objectiveAi : 'write a lesson objective for 2nd grade'}
-                          onChange={e => updateObjectiveAi(e.target.value)}
+                          value={'write a lesson objective for 2nd grade'}
+                          onChange={e => setObjectiveAi(e.target.value)}
                         />
                       </div>
                       <Textarea
