@@ -23,8 +23,8 @@ export default function Textarea(
       className={`${headerText} px-1 border-bottom-2 border-border rounded-none w-full ${semiboldText}`}
       name='title'
       rows={1}
-      defaultValue={value}
       onChange={onChange}
+      value={value}
     />
   )
 }

@@ -15,7 +15,8 @@ module.exports = {
       'delete': '#ad0000',
       'delete-light': '#b91c1c',
       'update-light': '#008f0a',
-      'update': '#008f0a'
+      'update': '#008f0a',
+      'ai': '#7e22ce'
     },
     extend: {},
   },
