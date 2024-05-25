@@ -1,12 +1,14 @@
+import { Paper } from '@mui/material';
 import React from 'react';
 
 export default function Surface({children}) {
 
   return (
-    <div className='bg-surface drop-shadow-xl rounded-2xl'>
-      <div className='p-5'>
-        {children}
-      </div>
-    </div>
+    <Paper
+      elevation={2}
+      sx={{ padding: 3 }}
+    >
+      {children}
+    </Paper>
   )
 }

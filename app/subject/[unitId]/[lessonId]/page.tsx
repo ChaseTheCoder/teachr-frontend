@@ -5,11 +5,10 @@ import { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPenToSquare, faTrash } from '@fortawesome/free-solid-svg-icons';
 import Surface from '../../../../components/surface/Surface';
-import TextField from '../../../../components/TextField';
 import Textarea from '../../../../components/Textarea';
 import CKeditor from '../../../../components/CKeditor';
 import { lessonAi } from './lessonAi';
-import Paper from '@mui/material/Paper';
+import { CircularProgress, List, ListItem, ListItemButton, ListItemText, TextField, Typography } from '@mui/material';
 
 export default function Unit({
   params,
@@ -18,11 +17,11 @@ export default function Unit({
 }) {
   const url = `http://localhost:8000/lessonplan/${params.lessonId}/`;
   let update = {}
-  const [lesson, setLesson] = useState<any>(null);
-  const [title, setTitle] = useState<string | null>(null);
-  const [objective, setObjective] = useState<string | null>(null);
-  const [standard, setStandard] = useState<string | null>(null);
-  const [body, setBody] = useState<string | null>(null);
+  const [lesson, setLesson] = useState<any>('');
+  const [title, setTitle] = useState<string>('');
+  const [objective, setObjective] = useState<string>('');
+  const [standard, setStandard] = useState<string>('');
+  const [body, setBody] = useState<string>('');
   const [editorLoaded, setEditorLoaded] = useState(false);
 
   useEffect(() => {
@@ -45,10 +44,10 @@ export default function Unit({
   }, [url]);
 
   useEffect(() => {
-    if(title !== null) update['title'] = title;
-    if(objective !== null) update['objective'] = objective;
-    if(standard !== null) update['standard'] = standard;
-    if(body !== null) update['body'] = body;
+    if(title !== '') update['title'] = title;
+    if(objective !== '') update['objective'] = objective;
+    if(standard !== '') update['standard'] = standard;
+    if(body !== '') update['body'] = body;
   }, [title, objective, standard, body]);
 
   const updateLessonButton = () => {
@@ -73,96 +72,79 @@ export default function Unit({
   async function deleteLesson(id: string) {
     window.alert('deleted');
   }
-
+  console.log(lesson.materials)
   return (
-    <>
     <div className='pt-16 space-y-3'>
-        { lesson ?
-          (
-            <>
-              <Surface>
-                <div className='space-y-4'>
-                  <form className='space-y-3'>
-                    <div className='flex justify-between'>
-                      <Textarea
-                        value={title}
-                        onChange={e => setTitle(e.target.value)}
-                        header
-                      />
-                      <div className='flex flex-row gap-6'>
-                        <button type="button" className='text-delete-light hover:text-delete' onClick={() => deleteLesson(params.lessonId)}>Delete</button>
-                        <button type="button" className='text-update-light hover:text-update' onClick={updateLessonButton}>Update</button>
-                      </div>
-                    </div>
-                    <div>
-                      <div className='flex flex-row gap-4'>
-                        <h3 className='font-semibold'>Objective</h3>
-                        <button
-                          type="button"
-                          className='font-semibold text-ai underline decoration-ai'
-                          onClick={() => updateObjectiveAi(objective)}
-                        >
-                          AI Rewrite
-                        </button>
-                      </div>
-                      <Textarea
-                        value={objective}
-                        // onChange={setObjective }
-                        onChange={e => setObjective(e.target.value)}
-                      />
-                    </div>
-                    <div>
-                      <h3 className='font-semibold'>Standards</h3>
-                      <Textarea
-                        value={standard}
-                        onChange={e => setStandard(e.target.value)}
-                      />
-                    </div>
-                    <div>
-                      <h3 className='font-semibold'>Lesson Outline</h3>
-                      <CKeditor
-                        name="description"
-                        onChange={(data) => {
-                          setBody(data);
-                        } }
-                        editorLoaded={editorLoaded} value={body}
-                      />
-                    </div>
-                    <div>
-                      <h3 className='font-semibold'>Materials</h3>
-                      {lesson.materials &&
-                        lesson.materials.map((material, index) => (
-                          <div className='flex justify-between' key={index}>
-                            <p key={material.id} className='hover:underline'>
-                              <a
-                                href={material.link}
-                                target='blank'
-                              >
-                                {material.title}
-                              </a>
-                            </p>
-                            <div className='flex gap-2'>
-                              <FontAwesomeIcon
-                                icon={faPenToSquare}
-                                className='hover:text-gray'
-                              />
-                              <FontAwesomeIcon
-                                icon={faTrash}
-                              />
-                            </div>
-                          </div>
-                        ))
-                      }
-                    </div>
-                    </form>
-                  </div>
-                </Surface>
-            </>
-          ) :
-          <p>Loading ....</p>
-        }
+      <Surface>
+        <div className='flex justify-between'>
+          <div className='flex flex-row gap-6'>
+            <button type="button" className='text-delete-light hover:text-delete' onClick={() => deleteLesson(params.lessonId)}>Delete</button>
+            <button type="button" className='text-update-light hover:text-update' onClick={updateLessonButton}>Update</button>
+          </div>
+        </div>
+        <TextField
+          variant='standard'
+          multiline
+          fullWidth
+          value={title}
+          onChange={e => setTitle(e.target.value)}
+          inputProps={{style: {fontWeight: 'bold', fontSize: 24}}} // font size of input text
+          InputLabelProps={{style: {fontWeight: 'bold'}}} // font size of input label
+        />
+        <div className='flex flex-row'>
+          <Typography sx={{fontWeight: 'bold', paddingTop: 3}}>Objective</Typography>
+          <button
+            type="button"
+            className='font-semibold text-ai underline decoration-ai'
+            onClick={() => updateObjectiveAi(objective)}
+          >
+            AI Rewrite
+          </button>
+        </div>
+        <TextField
+          variant='standard'
+          fullWidth
+          multiline
+          value={objective}
+          onChange={e => setObjective(e.target.value)}
+        />
+        <Typography sx={{fontWeight: 'bold', paddingTop: 3}}>Standards</Typography>
+        <TextField
+          variant='standard'
+          fullWidth
+          multiline
+          value={standard}
+          onChange={e => setStandard(e.target.value)}
+        />
+        <Typography sx={{fontWeight: 'bold', paddingTop: 3}}>Lesson Outline</Typography>
+        <CKeditor
+          name="description"
+          onChange={(data) => {
+            setBody(data);
+          } }
+          editorLoaded={editorLoaded} value={body}
+        />
+        </Surface>
+
+        <Surface>
+          <Typography sx={{fontWeight: 'bold'}}>Materials</Typography>
+          { lesson ?
+            (lesson.materials && lesson.materials.length > 0) &&
+              <List>
+                {
+                  lesson.materials.map((material) => (
+                      <ListItem key={material.id} disablePadding>
+                        <ListItemButton href={material.link} target="_blank">
+                          <ListItemText primary={material.title}/>
+                        </ListItemButton>
+                      </ListItem>
+                  ))
+                }
+              </List>
+            :
+            <CircularProgress color="inherit" />
+          }
+        </Surface>
     </div>
-    <Paper elevation={4}>hellow</Paper>
-    </>
   )
 }
