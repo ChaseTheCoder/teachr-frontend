@@ -8,7 +8,8 @@ import Surface from '../../../../components/surface/Surface';
 import Textarea from '../../../../components/Textarea';
 import CKeditor from '../../../../components/CKeditor';
 import { lessonAi } from './lessonAi';
-import { CircularProgress, List, ListItem, ListItemButton, ListItemText, TextField, Typography } from '@mui/material';
+import { Button, CircularProgress, Fade, Icon, IconButton, List, ListItem, ListItemButton, ListItemText, Paper, Popper, PopperPlacementType, TextField, Typography } from '@mui/material';
+import { AutoAwesome, DeleteOutline, MoreVert, Update } from '@mui/icons-material';
 
 export default function Unit({
   params,
@@ -49,6 +50,18 @@ export default function Unit({
     if(standard !== '') update['standard'] = standard;
     if(body !== '') update['body'] = body;
   }, [title, objective, standard, body]);
+
+  const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
+  const [open, setOpen] = React.useState(false);
+  const [placement, setPlacement] = React.useState<PopperPlacementType>();
+
+  const handleClick =
+    (newPlacement: PopperPlacementType) =>
+    (event: React.MouseEvent<HTMLButtonElement>) => {
+      setAnchorEl(event.currentTarget);
+      setOpen((prev) => placement !== newPlacement || !prev);
+      setPlacement(newPlacement);
+    };
 
   const updateLessonButton = () => {
     fetch(url, {      
@@ -92,14 +105,15 @@ export default function Unit({
           InputLabelProps={{style: {fontWeight: 'bold'}}} // font size of input label
         />
         <div className='flex flex-row'>
-          <Typography sx={{fontWeight: 'bold', paddingTop: 3}}>Objective</Typography>
-          <button
-            type="button"
-            className='font-semibold text-ai underline decoration-ai'
+          <Typography sx={{fontWeight: 'bold'}}>Objective</Typography>
+          <Button 
+            aria-label='delete'
+            size='small'
+            color='secondary'
             onClick={() => updateObjectiveAi(objective)}
           >
-            AI Rewrite
-          </button>
+            AI Rewrite { /*<AutoAwesome /> */}
+          </Button>
         </div>
         <TextField
           variant='standard'
@@ -128,15 +142,48 @@ export default function Unit({
 
         <Surface>
           <Typography sx={{fontWeight: 'bold'}}>Materials</Typography>
+          <Popper
+            sx={{ zIndex: 1200 }}
+            open={open}
+            anchorEl={anchorEl}
+            placement={placement}
+            transition
+          >
+            {({ TransitionProps }) => (
+              <Fade {...TransitionProps} timeout={350}>
+                <Paper>
+                  <List>
+                    <ListItemButton sx={{ padding: 1, gap: 3 }}>
+                      <DeleteOutline/>   <Typography>Delete</Typography>
+                    </ListItemButton>
+                    <ListItemButton sx={{ padding: 1, gap: 3 }}>
+                      <Update/>   <Typography>Update</Typography>
+                    </ListItemButton>
+                  </List>
+                </Paper>
+              </Fade>
+            )}
+          </Popper>
           { lesson ?
             (lesson.materials && lesson.materials.length > 0) &&
               <List>
                 {
                   lesson.materials.map((material) => (
                       <ListItem key={material.id} disablePadding>
-                        <ListItemButton href={material.link} target="_blank">
+                        <ListItemButton 
+                          href={material.link}
+                          target='_blank'
+                          sx={{ padding: 0 }}
+                        >
                           <ListItemText primary={material.title}/>
                         </ListItemButton>
+                        <IconButton 
+                          aria-label='options'
+                          size='small'
+                          onClick={handleClick('top-end')}
+                        >
+                          <MoreVert fontSize="inherit" />
+                        </IconButton>
                       </ListItem>
                   ))
                 }
