@@ -8,8 +8,21 @@ import Surface from '../../../../components/surface/Surface';
 import Textarea from '../../../../components/Textarea';
 import CKeditor from '../../../../components/CKeditor';
 import { lessonAi } from './lessonAi';
-import { Button, CircularProgress, Fade, Icon, IconButton, List, ListItem, ListItemButton, ListItemText, Paper, Popper, PopperPlacementType, TextField, Typography } from '@mui/material';
-import { AutoAwesome, DeleteOutline, MoreVert, Update } from '@mui/icons-material';
+import { Box, Button, CircularProgress, Fade, Icon, IconButton, List, ListItem, ListItemButton, ListItemText, Modal, Paper, Popper, PopperPlacementType, TextField, Typography } from '@mui/material';
+import { AutoAwesome, ControlPoint, DeleteOutline, MoreVert, Update } from '@mui/icons-material';
+import MaterialModal from './materialModal';
+
+const style = {
+  position: 'absolute' as 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  radius: 2,
+  boxShadow: 24,
+  p: 4,
+};
 
 export default function Unit({
   params,
@@ -17,6 +30,7 @@ export default function Unit({
   params: { lessonId: string, unitId: string };
 }) {
   const url = `http://localhost:8000/lessonplan/${params.lessonId}/`;
+  const urlMaterial = 'http://localhost:8000/material/'
   let update = {}
   const [lesson, setLesson] = useState<any>('');
   const [title, setTitle] = useState<string>('');
@@ -24,6 +38,9 @@ export default function Unit({
   const [standard, setStandard] = useState<string>('');
   const [body, setBody] = useState<string>('');
   const [editorLoaded, setEditorLoaded] = useState(false);
+  const [openModal, setOpenModel] = useState(false);
+  const handleOpen = () => setOpenModel(true);
+  const handleClose = () => setOpenModel(false);
 
   useEffect(() => {
     setEditorLoaded(true);
@@ -73,6 +90,17 @@ export default function Unit({
         JSON.stringify(update),
     })
     .then((response) => response.json())
+    .catch(error => console.log(error))
+  }
+
+  const deleteMaterial = (id: number) => {
+    fetch(`${urlMaterial}${id}/`, {      
+      method: 'DELETE'
+    })
+    .then((response) => {
+      response.json();
+      handleClose()
+    })
     .catch(error => console.log(error))
   }
 
@@ -142,6 +170,9 @@ export default function Unit({
 
         <Surface>
           <Typography sx={{fontWeight: 'bold'}}>Materials</Typography>
+          <IconButton>
+            <ControlPoint/>
+          </IconButton>
           <Popper
             sx={{ zIndex: 1200 }}
             open={open}
@@ -153,10 +184,10 @@ export default function Unit({
               <Fade {...TransitionProps} timeout={350}>
                 <Paper>
                   <List>
-                    <ListItemButton sx={{ padding: 1, gap: 3 }}>
+                    <ListItemButton sx={{ padding: 1, gap: 3 }} onClick={() => handleOpen()}>
                       <DeleteOutline/>   <Typography>Delete</Typography>
                     </ListItemButton>
-                    <ListItemButton sx={{ padding: 1, gap: 3 }}>
+                    <ListItemButton sx={{ padding: 1, gap: 3 }} onClick={() => handleOpen()}>
                       <Update/>   <Typography>Update</Typography>
                     </ListItemButton>
                   </List>
@@ -169,6 +200,7 @@ export default function Unit({
               <List>
                 {
                   lesson.materials.map((material) => (
+                    <>
                       <ListItem key={material.id} disablePadding>
                         <ListItemButton 
                           href={material.link}
@@ -185,6 +217,33 @@ export default function Unit({
                           <MoreVert fontSize="inherit" />
                         </IconButton>
                       </ListItem>
+                      {/* <MaterialModal
+                        title={material.title}
+                        link={material.link}
+                        id={material.id}
+                      /> */}
+                      <Modal
+                        open={openModal}
+                        onClose={handleClose}
+                        aria-labelledby="modal-modal-title"
+                        aria-describedby="modal-modal-description"
+                      >
+                        <Box sx={style}>
+                          <Typography variant="h6" component="h2">
+                            Delete forever?
+                          </Typography>
+                          <Button color='error' startIcon={<DeleteOutline />} onClick={() => deleteMaterial(material.id)}>
+                            Delete
+                          </Button>
+                          <Typography variant="h6" component="h2">
+                            Go back to screen.
+                          </Typography>
+                          <Button startIcon={<DeleteOutline />} onClick={() => handleClose()}>
+                            Cancle
+                          </Button>
+                        </Box>
+                      </Modal>
+                    </>
                   ))
                 }
               </List>
