@@ -169,10 +169,12 @@ export default function Unit({
         </Surface>
 
         <Surface>
-          <Typography sx={{fontWeight: 'bold'}}>Materials</Typography>
-          <IconButton>
-            <ControlPoint/>
-          </IconButton>
+          <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+            <Typography variant='h2' sx={{fontWeight: 'bold', fontSize: '24px'}}>Materials</Typography>
+            <IconButton size='small'>
+              <ControlPoint/>
+            </IconButton>
+          </Box>
           <Popper
             sx={{ zIndex: 1200 }}
             open={open}
