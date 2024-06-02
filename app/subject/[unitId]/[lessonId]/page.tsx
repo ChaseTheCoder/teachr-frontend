@@ -2,16 +2,11 @@
 
 import React from 'react';
 import { useEffect, useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPenToSquare, faTrash } from '@fortawesome/free-solid-svg-icons';
 import Surface from '../../../../components/surface/Surface';
-import Textarea from '../../../../components/Textarea';
 import CKeditor from '../../../../components/CKeditor';
 import { lessonAi } from './lessonAi';
-import { Box, Button, CircularProgress, Fade, Icon, IconButton, List, ListItem, ListItemButton, ListItemText, Modal, Paper, Popper, PopperPlacementType, Skeleton, TextField, Typography } from '@mui/material';
+import { Box, Button, Fade, IconButton, List, ListItem, ListItemButton, ListItemText, Modal, Paper, Popper, PopperPlacementType, Skeleton, TextField, Typography } from '@mui/material';
 import { AutoAwesome, ControlPoint, DeleteOutline, MoreVert, Update } from '@mui/icons-material';
-import MaterialModal from './materialModal';
-import { setMaxListeners } from 'events';
 import { NextResponse } from 'next/server';
 
 interface ILessonData {
@@ -20,7 +15,7 @@ interface ILessonData {
   objective: string;
   standard: string;
   materials: any;
-  lesson_outline: any
+  lesson_outline: any;
   body: string;
 }
 
@@ -44,11 +39,12 @@ export default function Unit({
   const url = `http://localhost:8000/lessonplan/${params.lessonId}/`;
   const urlMaterial = 'http://localhost:8000/material/'
   let update = {}
-  const [lesson, setLesson] = useState<any>('');
-  const [title, setTitle] = useState<string>('');
+  const [loadingLesson, setLoadingLesson] = useState<Boolean>(true)
+  const [lesson, setLesson] = useState<any>(null);
+  const [title, setTitle] = useState<string | null>(null);
   const [objective, setObjective] = useState<string>('');
   const [standard, setStandard] = useState<string>('');
-  const [body, setBody] = useState<string>('');
+  const [body, setBody] = useState<string | null>(null);
   const [editorLoaded, setEditorLoaded] = useState(false);
   const [openModal, setOpenModel] = useState(false);
   const [disableUpdate, setDisableUpdate] = useState(true);
@@ -67,21 +63,21 @@ export default function Unit({
   }, []);
 
   async function getLesson() {
-    // setLoading(true)
+    setLoadingLesson(true)
     try {
       fetch(url)
       .then((res) => res.json())
       .then((data) => {
-        setLesson(data);
-        setTitle(data.title);
-        setObjective(data.objective);
-        setStandard(data.standard);
-        setBody(data.body);
+        setLesson(data)
+        setTitle(data.title)
+        setObjective(data.objective)
+        setStandard(data.standard)
+        setBody(data.body)
+        setLoadingLesson(false)
       })
     } catch (error) {
-      console.error('Error fetching data:', error);
-      // setLoading(false)
-      // setError(true)
+      setLoadingLesson(false)
+      console.error('Error fetching data:', error)
     }
   }
 
@@ -90,15 +86,16 @@ export default function Unit({
   }, []);
 
   useEffect(() => {
-    if(title !== lesson.title) update['title'] = title;
-    if(title == lesson.title) delete update['title'];
-    if(objective !== lesson.objective) update['objective'] = objective;
-    if(objective == lesson.objective) delete update['objective'];
-    if(standard !== lesson.standard) update['standard'] = standard;
-    if(standard == lesson.standard) delete update['standard'];
-    if(body !== lesson.body) update['body'] = body;
-    if(body == lesson.body) delete update['body'];
-    console.log(update);
+    if(lesson !== null) {
+      if(title !== lesson.title) update['title'] = title;
+      if(title == lesson.title) delete update['title'];
+      if(objective !== lesson.objective) update['objective'] = objective;
+      if(objective == lesson.objective) delete update['objective'];
+      if(standard !== lesson.standard) update['standard'] = standard;
+      if(standard == lesson.standard) delete update['standard'];
+      if(body !== lesson.body) update['body'] = body;
+      if(body == lesson.body) delete update['body'];
+    }
   }, [title, objective, standard, body, update, lesson]);
 
   useEffect(() => {
@@ -224,15 +221,18 @@ export default function Unit({
     <Box sx={{paddingTop: '4rem', display: 'flex-column', gap: '3rem'}}>
       <Surface>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          <TextField
-            variant='standard'
-            multiline
-            fullWidth
-            value={title}
-            onChange={e => setTitle(e.target.value)}
-            inputProps={{style: {fontWeight: 'bold', fontSize: 24}}} // font size of input text
-            InputLabelProps={{style: {fontWeight: 'bold'}}} // font size of input label
-          />
+          {title ?
+            <TextField
+              variant='standard'
+              multiline
+              fullWidth
+              value={title}
+              onChange={e => setTitle(e.target.value)}
+              inputProps={{style: {fontWeight: 'bold', fontSize: 24}}} // font size of input text
+              InputLabelProps={{style: {fontWeight: 'bold'}}} // font size of input label
+            /> :
+            <Skeleton />
+          }
           <Box>
             <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'flex-end', gap: '10px' }}>
               <Typography sx={{fontWeight: 'bold'}}>Objective</Typography>
@@ -244,23 +244,29 @@ export default function Unit({
                 <AutoAwesome sx={{ fontSize: 18 }} />
               </IconButton>
             </Box>
-            <TextField
-              size='small'
-              fullWidth
-              multiline
-              value={objective}
-              onChange={e => setObjective(e.target.value)}
-            />
+            {objective ?
+              <TextField
+                size='small'
+                fullWidth
+                multiline
+                value={objective}
+                onChange={e => setObjective(e.target.value)}
+              /> :
+              <Skeleton />
+            }
           </Box>
           <Box>
             <Typography sx={{fontWeight: 'bold'}}>Standards</Typography>
-            <TextField
-              size='small'
-              fullWidth
-              multiline
-              value={standard}
-              onChange={e => setStandard(e.target.value)}
-            />
+            {standard ?
+              <TextField
+                size='small'
+                fullWidth
+                multiline
+                value={standard}
+                onChange={e => setStandard(e.target.value)}
+              /> :
+              <Skeleton />
+            }
           </Box>
           <Box>
             <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'flex-end', gap: '10px' }}>
@@ -273,13 +279,17 @@ export default function Unit({
                 <AutoAwesome sx={{ fontSize: 18 }} />
               </IconButton>
             </Box>
-            <CKeditor
-              name="description"
-              onChange={(data) => {
-                setBody(data);
-              } }
-              editorLoaded={editorLoaded} value={body}
-            />
+            {editorLoaded ?
+              <CKeditor
+                name="description"
+                onChange={(data) => {
+                  setBody(data);
+                } }
+                editorLoaded={editorLoaded}
+                value={body}
+              /> :
+              <Skeleton height={118} />
+            }
           </Box>
           <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', gap: '10px' }}>
             <Button
@@ -315,35 +325,6 @@ export default function Unit({
             <ControlPoint/>
           </IconButton>
         </Box>
-        <Popper
-          sx={{ zIndex: 1200 }}
-          open={open}
-          anchorEl={anchorEl}
-          placement={placement}
-          transition
-        >
-          {({ TransitionProps }) => (
-            <Fade {...TransitionProps} timeout={350}>
-              <Paper>
-                <List>
-                  <ListItemButton sx={{ padding: 1, gap: 3 }} onClick={() => {
-                    setModelContent('DELETE')
-                    setOpen(false)
-                    handleOpen()}}>
-                    <DeleteOutline/>   <Typography>Delete</Typography>
-                  </ListItemButton>
-                  <ListItemButton sx={{ padding: 1, gap: 3 }} onClick={() => {
-                    setModelContent('UPDATE')
-                    setOpen(false)
-                    handleOpen()
-                  }}>
-                    <Update/>   <Typography>Update</Typography>
-                  </ListItemButton>
-                </List>
-              </Paper>
-            </Fade>
-          )}
-        </Popper>
         { lesson ?
           (lesson.materials && lesson.materials.length > 0) &&
             <List>
@@ -383,66 +364,92 @@ export default function Unit({
                             </Button>
                           </>
                         }
-                        {modelContent === 'CREATE' &&
+                        {(modelContent === 'CREATE' || modelContent === 'UPDATE') &&
                           <>
-                            <TextField
-                              size='small'
-                              fullWidth
-                              multiline
-                              value={materailTitle}
-                              onChange={e => setMaterailTitle(e.target.value)}
-                            />
-                            <TextField
-                              size='small'
-                              fullWidth
-                              multiline
-                              value={materailLink}
-                              onChange={e => setMaterailLink(e.target.value)}
-                            />
-                            <Button
-                              color='error'
-                              disabled={disableMaterail}
-                              onClick={() => postMaterail()}
-                            >
-                              Add New Material
-                            </Button>
+                            <Box sx={{display: 'flex', flexDirection: 'column', gap: '10px'}}>
+                              <TextField
+                                label='Title'
+                                size='small'
+                                fullWidth
+                                multiline
+                                value={materailTitle}
+                                onChange={e => setMaterailTitle(e.target.value)}
+                              />
+                              <TextField
+                                label='Link'
+                                size='small'
+                                fullWidth
+                                multiline
+                                value={materailLink}
+                                onChange={e => setMaterailLink(e.target.value)}
+                              />
+                              {modelContent === 'CREATE' &&
+                                <Button
+                                  color='error'
+                                  disabled={disableMaterail}
+                                  onClick={() => postMaterail()}
+                                >
+                                  Add New Material
+                                </Button>
+                              }
+                              {modelContent === 'UPDATE' &&
+                                <Button
+                                color='error'
+                                disabled={disableMaterail}
+                                onClick={() => patchMaterail(material.id)}
+                                >
+                                  Update
+                                </Button>
+                              }
+                            </Box>
                           </>
                         }
-                        {modelContent === 'UPDATE' &&
-                          <>
-                            <TextField
-                              size='small'
-                              fullWidth
-                              multiline
-                              value={''}
-                              onChange={e => setMaterailTitle(e.target.value)}
-                            />
-                            <TextField
-                              size='small'
-                              fullWidth
-                              multiline
-                              value={''}
-                              onChange={e => setMaterailLink(e.target.value)}
-                            />
-                            <Button
-                              color='error'
-                              disabled={disableMaterail}
-                            >
-                              Update
-                            </Button>
-                          </>
-                        }
-                        <Button startIcon={<DeleteOutline />} onClick={() => patchMaterail(material.id)}>
+                        <Button startIcon={<DeleteOutline />} onClick={() => {
+                          setMaterailTitle('')
+                          setMaterailLink('')
+                          handleClose()
+                        }}
+                          >
                           Cancle
                         </Button>
                       </Box>
                     </Modal>
+                    <Popper
+                      sx={{ zIndex: 1200 }}
+                      open={open}
+                      anchorEl={anchorEl}
+                      placement={placement}
+                      transition
+                    >
+                      {({ TransitionProps }) => (
+                        <Fade {...TransitionProps} timeout={350}>
+                          <Paper>
+                            <List>
+                              <ListItemButton sx={{ padding: 1, gap: 3 }} onClick={() => {
+                                setModelContent('DELETE')
+                                setOpen(false)
+                                handleOpen()}}>
+                                <DeleteOutline/>   <Typography>Delete</Typography>
+                              </ListItemButton>
+                              <ListItemButton sx={{ padding: 1, gap: 3 }} onClick={() => {
+                                setMaterailTitle(material.title)
+                                setMaterailLink(material.link)
+                                setModelContent('UPDATE')
+                                setOpen(false)
+                                handleOpen()
+                              }}>
+                                <Update/>   <Typography>Update</Typography>
+                              </ListItemButton>
+                            </List>
+                          </Paper>
+                        </Fade>
+                      )}
+                    </Popper>
                   </>
                 ))
               }
             </List>
           :
-          // <CircularProgress color="inherit" />
           <Skeleton />
         }
       </Surface>
