@@ -11,6 +11,8 @@ import { lessonAi } from './lessonAi';
 import { Box, Button, CircularProgress, Fade, Icon, IconButton, List, ListItem, ListItemButton, ListItemText, Modal, Paper, Popper, PopperPlacementType, Skeleton, TextField, Typography } from '@mui/material';
 import { AutoAwesome, ControlPoint, DeleteOutline, MoreVert, Update } from '@mui/icons-material';
 import MaterialModal from './materialModal';
+import { setMaxListeners } from 'events';
+import { NextResponse } from 'next/server';
 
 interface ILessonData {
   id: number;
@@ -52,6 +54,7 @@ export default function Unit({
   const [disableUpdate, setDisableUpdate] = useState(true);
   const [materailTitle, setMaterailTitle] = useState('');
   const [materailLink, setMaterailLink] = useState('');
+  const [disableMaterail, setDisableMaterail] = useState(true);
   const [modelContent, setModelContent] = useState<null | 'CREATE' | 'UPDATE' | 'DELETE'>(null);
   const handleOpen = () => setOpenModel(true);
   const handleClose = () => {
@@ -63,20 +66,28 @@ export default function Unit({
     setEditorLoaded(true);
   }, []);
 
-  useEffect(() => {
-    fetch(url)
-    .then((res) => res.json())
-    .then((data) => {
-      setLesson(data);
-      setTitle(data.title);
-      setObjective(data.objective);
-      setStandard(data.standard);
-      setBody(data.body);
-    })
-    .catch((error) => {
+  async function getLesson() {
+    // setLoading(true)
+    try {
+      fetch(url)
+      .then((res) => res.json())
+      .then((data) => {
+        setLesson(data);
+        setTitle(data.title);
+        setObjective(data.objective);
+        setStandard(data.standard);
+        setBody(data.body);
+      })
+    } catch (error) {
       console.error('Error fetching data:', error);
-    })
-  }, [url]);
+      // setLoading(false)
+      // setError(true)
+    }
+  }
+
+  useEffect(() => {
+    getLesson()
+  }, []);
 
   useEffect(() => {
     if(title !== lesson.title) update['title'] = title;
@@ -89,6 +100,10 @@ export default function Unit({
     if(body == lesson.body) delete update['body'];
     console.log(update);
   }, [title, objective, standard, body, update, lesson]);
+
+  useEffect(() => {
+    if(materailTitle !== '' && materailLink !== '') setDisableMaterail(false);
+  }, [materailTitle, materailLink])
 
   useEffect(() => {
     Object.keys(update).length > 0 ? setDisableUpdate(false) : setDisableUpdate(true);
@@ -106,7 +121,7 @@ export default function Unit({
       setPlacement(newPlacement);
     };
 
-  const updateLessonButton = () => {
+  const patchLesson = () => {
     fetch(url, {      
       method: 'PATCH',
       headers: {
@@ -120,28 +135,60 @@ export default function Unit({
     )
     .finally(() => {
       update = {}
-      console.log(update)
-      console.log('update')
     })
     .catch(error => console.log(error))
   }
 
-  const createMaterailButton = () => {
-    fetch(url, {      
+  async function postMaterail() {
+    try {
+      const res = await fetch(urlMaterial, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          title: materailTitle,
+          link: materailLink,
+          lesson_plan: lesson.id
+        }),
+      })
+      const data = await res.json()
+      return NextResponse.json(data)
+    } catch (err) {
+      console.log('ERROR: MATERAIL NOT POSTED')
+      console.log(err)
+    } finally {
+      setMaterailTitle('')
+      setMaterailLink('')
+      getLesson()
+      handleClose()
+    }
+  }
+
+  useEffect(() => {
+    postMaterail();
+  }, []);
+
+  const patchMaterail = (id: number) => {
+    fetch(`${urlMaterial}${id}/`, {      
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json'
       },
       body: 
-        JSON.stringify(update),
+        JSON.stringify({
+          title: materailTitle,
+          link: materailLink,
+        }),
     })
     .then(
       (response) => response.json()
     )
     .finally(() => {
-      update = {}
-      console.log(update)
-      console.log('update')
+      setMaterailTitle('')
+      setMaterailLink('')
+      getLesson()
+      handleClose()
     })
     .catch(error => console.log(error))
   }
@@ -152,6 +199,7 @@ export default function Unit({
     })
     .then((response) => {
       response.json();
+      getLesson()
       handleClose()
     })
     .catch(error => console.log(error))
@@ -238,7 +286,7 @@ export default function Unit({
               variant='contained'
               disabled={disableUpdate}
               size='small'
-              onClick={updateLessonButton}
+              onClick={patchLesson}
             >
               Update
             </Button>
@@ -341,6 +389,31 @@ export default function Unit({
                               size='small'
                               fullWidth
                               multiline
+                              value={materailTitle}
+                              onChange={e => setMaterailTitle(e.target.value)}
+                            />
+                            <TextField
+                              size='small'
+                              fullWidth
+                              multiline
+                              value={materailLink}
+                              onChange={e => setMaterailLink(e.target.value)}
+                            />
+                            <Button
+                              color='error'
+                              disabled={disableMaterail}
+                              onClick={() => postMaterail()}
+                            >
+                              Add New Material
+                            </Button>
+                          </>
+                        }
+                        {modelContent === 'UPDATE' &&
+                          <>
+                            <TextField
+                              size='small'
+                              fullWidth
+                              multiline
                               value={''}
                               onChange={e => setMaterailTitle(e.target.value)}
                             />
@@ -351,15 +424,15 @@ export default function Unit({
                               value={''}
                               onChange={e => setMaterailLink(e.target.value)}
                             />
-                            <Button color='error'>
-                              Add New Material
+                            <Button
+                              color='error'
+                              disabled={disableMaterail}
+                            >
+                              Update
                             </Button>
                           </>
                         }
-                        <Typography variant="h6" component="h2">
-                          Go back to screen.
-                        </Typography>
-                        <Button startIcon={<DeleteOutline />} onClick={() => handleClose()}>
+                        <Button startIcon={<DeleteOutline />} onClick={() => patchMaterail(material.id)}>
                           Cancle
                         </Button>
                       </Box>
