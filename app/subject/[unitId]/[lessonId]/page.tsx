@@ -42,8 +42,8 @@ export default function Unit({
   const [loadingLesson, setLoadingLesson] = useState<Boolean>(true)
   const [lesson, setLesson] = useState<any>(null);
   const [title, setTitle] = useState<string | null>(null);
-  const [objective, setObjective] = useState<string>('');
-  const [standard, setStandard] = useState<string>('');
+  const [objective, setObjective] = useState<string>(null);
+  const [standard, setStandard] = useState<string>(null);
   const [body, setBody] = useState<string | null>(null);
   const [editorLoaded, setEditorLoaded] = useState(false);
   const [openModal, setOpenModel] = useState(false);
@@ -221,7 +221,7 @@ export default function Unit({
     <Box sx={{paddingTop: '4rem', display: 'flex-column', gap: '3rem'}}>
       <Surface>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          {title ?
+          {title !== null ?
             <TextField
               variant='standard'
               multiline
@@ -244,7 +244,7 @@ export default function Unit({
                 <AutoAwesome sx={{ fontSize: 18 }} />
               </IconButton>
             </Box>
-            {objective ?
+            {objective !== null ?
               <TextField
                 size='small'
                 fullWidth
@@ -257,7 +257,7 @@ export default function Unit({
           </Box>
           <Box>
             <Typography sx={{fontWeight: 'bold'}}>Standards</Typography>
-            {standard ?
+            {standard !== null ?
               <TextField
                 size='small'
                 fullWidth
