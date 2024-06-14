@@ -7,16 +7,19 @@ import Surface from '../../components/surface/Surface';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronRight, faEllipsisVertical, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { NextResponse } from 'next/server';
+import { Box, IconButton, ListItem, ListItemButton, ListItemText, Typography } from '@mui/material';
+import { ControlPoint, MoreVert } from '@mui/icons-material';
 
 export default function Subject() {
-  const [subject, setSubject] = useState<any[]>([]);
+  const urlSubjects = 'http://localhost:8000/subject/';
+  const [subject, setSubject] = useState<any | null>(null);
   const [isLoading, setLoading] = useState(true);
   const [isError, setError] = useState(false);
 
   async function getSubjects() {
     setLoading(true)
     try {
-      fetch('http://localhost:8000/subject/')
+      fetch(urlSubjects)
       .then((res) => res.json())
       .then((subject) => {
         setSubject(subject)
@@ -34,7 +37,7 @@ export default function Subject() {
 
   async function postSubject() {
     try {
-      const res = await fetch('http://localhost:8000/subject/', {
+      const res = await fetch(urlSubjects, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -58,7 +61,7 @@ export default function Subject() {
   
   async function deleteSubject(id: number) {
     try {
-      fetch(`http://localhost:8000/subject/${id}`, {
+      fetch(`${urlSubjects}${id}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -100,6 +103,45 @@ export default function Subject() {
   }
 
   return (
+    <>
+    <Box sx={{ paddingTop: '4rem', display: 'flex-column' }}>
+      {subject !== null && (
+        subject.map((subject) => (
+          <Surface key={subject.id}>
+            <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+              <Typography variant='h2' sx={{fontWeight: 'bold', fontSize: '22px'}}>{subject.subject}</Typography>
+              <IconButton
+                size='small'
+                // onClick={() => {
+                //   setModelContent('CREATE')
+                //   handleOpen()
+                // }}
+              >
+                <ControlPoint/>
+              </IconButton>
+            </Box>
+            { subject.units.map((unit, index) => (
+              <ListItem key={unit.id} disablePadding>
+                <ListItemButton 
+                  href={`/subject/${unit.id}`}
+                  sx={{ padding: 0 }}
+                >
+                  <ListItemText primary={unit.title}/>
+                </ListItemButton>
+                <IconButton 
+                  aria-label='options'
+                  size='small'
+                  // onClick={handleClick('top-end')}
+                >
+                  <MoreVert fontSize="inherit" />
+                </IconButton>
+              </ListItem>
+            ) )}
+          </Surface>
+        ))
+      )}
+    </Box>
+
     <div className='space-y-3'>
       <div className='h-12 flex justify-center'>
         <div className='flex items-center hover:bg-gray'>
@@ -145,5 +187,6 @@ export default function Subject() {
         <p>No subject data</p>
       }
     </div>
+    </>
   )
 }

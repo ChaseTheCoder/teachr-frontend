@@ -28,6 +28,7 @@ export default function Unit({
 }: {
   params: { unitId: string };
 }) {
+  console.log('hello');
   const url = 'http://localhost:8000/api/unitplan/' + params.unitId;
   const urlResource = 'http://localhost:8000/resource/'
   const urlLesson = 'http://localhost:8000/lessonplan/'
@@ -272,8 +273,8 @@ export default function Unit({
             <List>
               {
                 resources.map((resource) => (
-                  <>
-                    <ListItem key={resource.id} disablePadding>
+                  <div key={resource.id}>
+                    <ListItem disablePadding>
                       <ListItemButton 
                         href={resource.link}
                         target='_blank'
@@ -387,7 +388,7 @@ export default function Unit({
                         </Fade>
                       )}
                     </Popper>
-                  </>
+                  </div>
                 ))
               }
             </List>

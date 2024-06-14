@@ -1,22 +1,14 @@
 import './globals.css'
 import type { Metadata } from 'next'
-import { Montserrat } from 'next/font/google'
 import React from 'react'
-import Nav from '../components/Nav'
 import SideNav from '../components/sideNav/SideNav'
 import Script from 'next/script'
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { config } from "@fortawesome/fontawesome-svg-core";
 import Reminders from '../components/Reminders'
+import ResponsiveAppBar from '../components/TopNav'
+import { Box, Grid } from '@mui/material'
 config.autoAddCss = false;
-
-
-const metrophobic = Montserrat({
-  subsets: ['latin'],
-  style: ['normal', 'italic'],
-  display: 'swap',
-  weight: ['400', '500', '600', '700']
-})
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -31,19 +23,16 @@ export default function RootLayout({
   return (
     <html lang='en'>
       <Script src="https://kit.fontawesome.com/ba9dfab5fa.js" crossOrigin="anonymous"/>
-      <body className={`${metrophobic.className} bg-background`}>
-        <Nav/>
-        <div className='flex gap-8'>
-          <div className='w-1/5'>
+      <body>
+        <ResponsiveAppBar/>
+        <Grid container>
+          <Grid xs={3} sx={{ paddingRight: '10px' }}>
             <SideNav/>
-          </div>
-          <div className='w-3/5'>
+          </Grid>
+          <Grid xs={9}>
             {children}
-          </div>
-          <div className='w-1/5'>
-            <Reminders/>
-          </div>
-        </div>
+          </Grid>
+        </Grid>
       </body>
     </html>
   )
