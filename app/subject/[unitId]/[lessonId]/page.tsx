@@ -279,7 +279,7 @@ export default function Unit({
                 <AutoAwesome sx={{ fontSize: 18 }} />
               </IconButton>
             </Box>
-            {editorLoaded ?
+            {(editorLoaded && body) ?
               <CKeditor
                 name="description"
                 onChange={(data) => {

@@ -94,8 +94,9 @@ export default function Unit({
         setLoadingUnit(false)
       })
     } catch (error) {
-      setLoadingUnit(false)
       console.error('Error fetching data:', error)
+    } finally {
+      setLoadingUnit(false)
     }
   }
 

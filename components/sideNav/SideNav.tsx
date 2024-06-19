@@ -6,32 +6,31 @@ import {
 import Link from 'next/link';
 import Reminders from '../Reminders';
 import { Box } from '@mui/material';
+import Surface from '../surface/Surface';
 
 export default function SideNav() {
 
   return (
-    <aside className='pt-16'>
-      <Box sx={{padding: '16px, 8px, 8px, 8px'}}>
-        <ul className='space-y-3'>
-          <li className='bg-surface drop-shadow-md rounded-r-2xl hover:drop-shadow-xl p-4'>
-            <Link href='/' className='ml-5 target:underline'>
-              <FontAwesomeIcon icon={faHouse} className='pr-3'/>
+    <aside>
+      <Box sx={{padding: '0, 8px, 8px, 8px', gap: '3rem'}}>
+        <Link href='/' className='ml-5 target:underline'>
+          <Surface>
+              <FontAwesomeIcon icon={faHouse}/>
               Home
-            </Link>
-          </li>
-          <li className='bg-surface drop-shadow-md rounded-r-2xl hover:drop-shadow-xl p-4'>
-            <Link href='/subject' className='ml-5'>
-              <FontAwesomeIcon icon={faNoteSticky} className='pr-3'/>
-              Subjects
-            </Link>
-          </li>
-          <li className='bg-surface drop-shadow-md rounded-r-2xl hover:drop-shadow-xl p-4'>
-            <Link href='/calendar' className='ml-5'>
-              <FontAwesomeIcon icon={faCalendar} className='pr-3'/>
-              Schedule
-            </Link>
-          </li>
-        </ul>
+          </Surface>
+        </Link>
+        <Surface>
+          <Link href='/subject' >
+            <FontAwesomeIcon icon={faNoteSticky}/>
+            Subjects
+          </Link>
+        </Surface>
+        <Surface>
+          <Link href='/schedule' >
+            <FontAwesomeIcon icon={faCalendar}/>
+            Schedule
+          </Link>
+        </Surface>
         <Reminders />
       </Box>
     </aside>
