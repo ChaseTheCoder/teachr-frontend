@@ -4,35 +4,35 @@ import {
   faHouse, faNoteSticky, faCalendar
 } from "@fortawesome/free-solid-svg-icons";
 import Link from 'next/link';
-import Reminders from '../Reminders';
-import { Box } from '@mui/material';
-import Surface from '../surface/Surface';
+import { Grid, Stack, Typography } from '@mui/material';
 
 export default function SideNav() {
 
   return (
     <aside>
-      <Box sx={{padding: '0, 8px, 8px, 8px', gap: '3rem'}}>
-        <Link href='/' className='ml-5 target:underline'>
-          <Surface>
-              <FontAwesomeIcon icon={faHouse}/>
-              Home
-          </Surface>
-        </Link>
-        <Surface>
+      <Grid container sx={{ padding: '8px', gap: '1rem'}}>
+        <Grid xs={12}>
+          <Link href='/'>
+          <Stack>
+            <FontAwesomeIcon icon={faHouse}/>
+            <Typography>Home</Typography>
+            
+          </Stack>
+          </Link>
+        </Grid>
+        <Grid xs={12}>
           <Link href='/subject' >
             <FontAwesomeIcon icon={faNoteSticky}/>
             Subjects
           </Link>
-        </Surface>
-        <Surface>
+        </Grid>
+        <Grid xs={12}>
           <Link href='/schedule' >
             <FontAwesomeIcon icon={faCalendar}/>
             Schedule
           </Link>
-        </Surface>
-        <Reminders />
-      </Box>
+        </Grid>
+      </Grid>
     </aside>
   )
 }
