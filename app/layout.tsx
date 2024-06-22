@@ -26,13 +26,15 @@ export default function RootLayout({
       <body>
         <ResponsiveAppBar/>
         <Grid container>
-          <Grid xs={1} sx={{ paddingTop: '36px' }}>
+          <Grid xs={1}  sx={{ paddingTop: '18px' }}>
             <SideNav/>
           </Grid>
           <Grid xs={9}>
-            {children}
+            <Box sx={{ paddingTop: '18px', paddingX: '18px' }}>
+              {children}
+            </Box>
           </Grid>
-          <Grid xs={2} sx={{ paddingTop: '36px' }}>
+          <Grid xs={2}  sx={{ paddingTop: '18px' }}>
             <Reminders />
           </Grid>
         </Grid>

@@ -2,19 +2,20 @@
 
 import React from 'react';
 import Surface from '../components/surface/Surface';
+import { Box, Typography } from '@mui/material';
 
 export default function Home() {
 
   return (
-    <div className='pt-16'>
+    <Box sx={{ paddingTop: '12px' }}>
       <Surface>
-        <h1 className='text-6xl text-center'>
+        <Typography variant='h1' fontSize={68} align='center'>
           Teachr Lounge
-        </h1>
-        <h2 className='text-xl text-center pt-4'>
+        </Typography>
+        <Typography variant='h2' fontSize={48} align='center'>
           Home Page
-        </h2>
+        </Typography>
       </Surface>
-    </div>
+    </Box>
   )
 }
