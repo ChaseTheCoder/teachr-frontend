@@ -5,14 +5,13 @@ import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 interface CKeditorProps {
   onChange: (data: string) => void;
   editorLoaded: boolean;
-  name: string;
   value: string;
 }
 
 export default function CKeditor({
   onChange,
   editorLoaded,
-  name,
+  // name,
   value,
 }: CKeditorProps) {
   const editorRef = useRef<{ CKEditor: typeof CKEditor; ClassicEditor: typeof ClassicEditor }>();

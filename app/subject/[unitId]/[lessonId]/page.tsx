@@ -6,6 +6,7 @@ import Surface from '../../../../components/surface/Surface';
 import CKeditor from '../../../../components/CKeditor';
 import { lessonAi } from './lessonAi';
 import { Box, Button, Fade, IconButton, List, ListItem, ListItemButton, ListItemText, Modal, Paper, Popper, PopperPlacementType, Skeleton, TextField, Typography } from '@mui/material';
+import LoadingButton from '@mui/lab/LoadingButton';
 import { AutoAwesome, ControlPoint, DeleteOutline, MoreVert, Update } from '@mui/icons-material';
 import { NextResponse } from 'next/server';
 
@@ -29,6 +30,9 @@ const style = {
   radius: 2,
   boxShadow: 24,
   p: 4,
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '16px'
 };
 
 export default function Unit({
@@ -37,14 +41,15 @@ export default function Unit({
   params: { lessonId: string, unitId: string };
 }) {
   const url = `http://localhost:8000/lessonplan/${params.lessonId}/`;
-  const urlMaterial = 'http://localhost:8000/material/'
-  let update = {}
+  const urlMaterial = 'http://localhost:8000/material/';
   const [loadingLesson, setLoadingLesson] = useState<Boolean>(true)
+  const [update, setUpdate] = useState({})
   const [lesson, setLesson] = useState<any>(null);
   const [title, setTitle] = useState<string | null>(null);
   const [objective, setObjective] = useState<string>(null);
   const [standard, setStandard] = useState<string>(null);
   const [body, setBody] = useState<string | null>(null);
+  const [loadingUpdate, setLoadingUpdate] = useState(false);
   const [editorLoaded, setEditorLoaded] = useState(false);
   const [openModal, setOpenModel] = useState(false);
   const [disableUpdate, setDisableUpdate] = useState(true);
@@ -73,11 +78,11 @@ export default function Unit({
         setObjective(data.objective)
         setStandard(data.standard)
         setBody(data.body)
-        setLoadingLesson(false)
       })
     } catch (error) {
-      setLoadingLesson(false)
       console.error('Error fetching data:', error)
+    } finally {
+      setLoadingLesson(false)
     }
   }
 
@@ -87,24 +92,29 @@ export default function Unit({
 
   useEffect(() => {
     if(lesson !== null) {
-      if(title !== lesson.title) update['title'] = title;
-      if(title == lesson.title) delete update['title'];
-      if(objective !== lesson.objective) update['objective'] = objective;
-      if(objective == lesson.objective) delete update['objective'];
-      if(standard !== lesson.standard) update['standard'] = standard;
-      if(standard == lesson.standard) delete update['standard'];
-      if(body !== lesson.body) update['body'] = body;
-      if(body == lesson.body) delete update['body'];
+      if(title !== lesson.title) setUpdate({
+        ...update,
+        title: title
+      });
+      if(objective !== lesson.objective) setUpdate({
+        ...update,
+        objective: objective
+      });
+      if(standard !== lesson.standard) setUpdate({
+        ...update,
+        standard: standard
+      });
+      if(body !== lesson.body) setUpdate({
+        ...update,
+        body: body
+      });
     }
-  }, [title, objective, standard, body, update, lesson]);
+    Object.keys(update).length > 0 ? setDisableUpdate(false) : setDisableUpdate(true);
+  }, [title, objective, standard, body, lesson]);
 
   useEffect(() => {
     if(materailTitle !== '' && materailLink !== '') setDisableMaterail(false);
   }, [materailTitle, materailLink])
-
-  useEffect(() => {
-    Object.keys(update).length > 0 ? setDisableUpdate(false) : setDisableUpdate(true);
-  }, [update]);
 
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
   const [open, setOpen] = React.useState(false);
@@ -119,6 +129,7 @@ export default function Unit({
     };
 
   const patchLesson = () => {
+    setLoadingUpdate(true);
     fetch(url, {      
       method: 'PATCH',
       headers: {
@@ -130,41 +141,40 @@ export default function Unit({
     .then(
       (response) => response.json()
     )
-    .finally(() => {
-      update = {}
-    })
     .catch(error => console.log(error))
+    .finally(() => {
+      setUpdate({});
+      setTimeout(() => {setLoadingUpdate(false)}, 2000);
+      setDisableUpdate(true);
+    })
   }
 
-  async function postMaterail() {
-    try {
-      const res = await fetch(urlMaterial, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          title: materailTitle,
-          link: materailLink,
-          lesson_plan: lesson.id
-        }),
-      })
-      const data = await res.json()
-      return NextResponse.json(data)
-    } catch (err) {
-      console.log('ERROR: MATERAIL NOT POSTED')
-      console.log(err)
-    } finally {
+  const postMaterail = () => {
+    console.log(urlMaterial)
+    fetch(urlMaterial, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        title: materailTitle,
+        link: materailLink,
+        lesson_plan: params.lessonId
+      }),
+    })
+    .then(response => {
+      console.log(response)
+      response.json()})
+    .catch(error => {
+      console.error(error);
+    })
+    .finally(() => {
       setMaterailTitle('')
       setMaterailLink('')
       getLesson()
       handleClose()
-    }
-  }
-
-  useEffect(() => {
-    postMaterail();
-  }, []);
+  })
+}
 
   const patchMaterail = (id: number) => {
     fetch(`${urlMaterial}${id}/`, {      
@@ -208,7 +218,7 @@ export default function Unit({
   }
 
   async function updateLessonOutlineAi(prompt: string) {
-    const promptFinal = 'Write a lesson plan based on the following information: ' + prompt;
+    const promptFinal = `Write a lesson plan based on the following information: ` + prompt;
     const promptResponse = await lessonAi(promptFinal);
     setBody(promptResponse);
   }
@@ -218,7 +228,7 @@ export default function Unit({
   }
 
   return (
-    <Box sx={{paddingTop: '4rem', display: 'flex-column', gap: '3rem'}}>
+    <Box sx={{ display: 'flex-column', gap: '3rem' }}>
       <Surface>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           {title !== null ?
@@ -279,9 +289,8 @@ export default function Unit({
                 <AutoAwesome sx={{ fontSize: 18 }} />
               </IconButton>
             </Box>
-            {(editorLoaded && body) ?
+            {body !== null ?
               <CKeditor
-                name="description"
                 onChange={(data) => {
                   setBody(data);
                 } }
@@ -292,14 +301,15 @@ export default function Unit({
             }
           </Box>
           <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', gap: '10px' }}>
-            <Button
+            <LoadingButton
               variant='contained'
               disabled={disableUpdate}
               size='small'
               onClick={patchLesson}
+              loading={loadingUpdate}
             >
               Update
-            </Button>
+            </LoadingButton>
             <Button
               variant='outlined'
               color='error'
@@ -330,7 +340,7 @@ export default function Unit({
             <List>
               {
                 lesson.materials.map((material) => (
-                  <>
+                  <div key={material.id}>
                     <ListItem key={material.id} disablePadding>
                       <ListItemButton 
                         href={material.link}
@@ -356,59 +366,64 @@ export default function Unit({
                       <Box sx={style}>
                         {modelContent === 'DELETE' &&
                           <>
-                            <Typography variant="h6" component="h2">
+                            <Typography>
                               Delete forever?
                             </Typography>
-                            <Button color='error' startIcon={<DeleteOutline />} onClick={() => deleteMaterial(material.id)}>
+                            <Button
+                              variant='contained'
+                              color='error'
+                              startIcon={<DeleteOutline />}
+                              onClick={() => deleteMaterial(material.id)}
+                            >
                               Delete
                             </Button>
                           </>
                         }
                         {(modelContent === 'CREATE' || modelContent === 'UPDATE') &&
-                          <>
-                            <Box sx={{display: 'flex', flexDirection: 'column', gap: '10px'}}>
-                              <TextField
-                                label='Title'
-                                size='small'
-                                fullWidth
-                                multiline
-                                value={materailTitle}
-                                onChange={e => setMaterailTitle(e.target.value)}
-                              />
-                              <TextField
-                                label='Link'
-                                size='small'
-                                fullWidth
-                                multiline
-                                value={materailLink}
-                                onChange={e => setMaterailLink(e.target.value)}
-                              />
-                              {modelContent === 'CREATE' &&
-                                <Button
-                                  color='error'
-                                  disabled={disableMaterail}
-                                  onClick={() => postMaterail()}
-                                >
-                                  Add New Material
-                                </Button>
-                              }
-                              {modelContent === 'UPDATE' &&
-                                <Button
-                                color='error'
-                                disabled={disableMaterail}
-                                onClick={() => patchMaterail(material.id)}
-                                >
-                                  Update
-                                </Button>
-                              }
-                            </Box>
-                          </>
+                          <TextField
+                          label='Title'
+                          size='small'
+                          fullWidth
+                          multiline
+                            value={materailTitle}
+                            onChange={e => setMaterailTitle(e.target.value)}
+                          />
                         }
-                        <Button startIcon={<DeleteOutline />} onClick={() => {
-                          setMaterailTitle('')
-                          setMaterailLink('')
-                          handleClose()
-                        }}
+                        {(modelContent === 'CREATE' || modelContent === 'UPDATE') &&
+                          <TextField
+                            label='Link'
+                            size='small'
+                            fullWidth
+                            multiline
+                            value={materailLink}
+                            onChange={e => setMaterailLink(e.target.value)}
+                          />
+                        }
+                        {modelContent === 'CREATE' &&
+                          <Button
+                            variant='contained'
+                            disabled={disableMaterail}
+                            onClick={postMaterail}
+                          >
+                            Add New Material
+                          </Button>
+                        }
+                        {modelContent === 'UPDATE' &&
+                          <Button
+                            variant='contained'
+                            disabled={disableMaterail}
+                            onClick={() => patchMaterail(material.id)}
+                          >
+                            Update
+                          </Button>
+                        }
+                        <Button
+                          startIcon={<DeleteOutline />} 
+                          onClick={() => {
+                            setMaterailTitle('')
+                            setMaterailLink('')
+                            handleClose()
+                          }}
                           >
                           Cancle
                         </Button>
@@ -445,7 +460,7 @@ export default function Unit({
                         </Fade>
                       )}
                     </Popper>
-                  </>
+                  </div>
                 ))
               }
             </List>

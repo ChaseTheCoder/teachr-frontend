@@ -3,10 +3,6 @@
 import React from 'react';
 import { useEffect, useState } from 'react';
 import Surface from '../../../components/surface/Surface';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
-import Link from 'next/link';
-// import TextField from '../../../components/TextField';
 import { Box, Button, Fade, IconButton, List, ListItem, ListItemButton, ListItemText, Modal, Paper, Popper, PopperPlacementType, Skeleton, TextField, Typography } from '@mui/material';
 import { ControlPoint, DeleteOutline, MoreVert, Update } from '@mui/icons-material';
 import { NextResponse } from 'next/server';
@@ -21,6 +17,9 @@ const style = {
   radius: 2,
   boxShadow: 24,
   p: 4,
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '16px'
 };
 
 export default function Unit({
@@ -28,7 +27,6 @@ export default function Unit({
 }: {
   params: { unitId: string };
 }) {
-  console.log('hello');
   const url = 'http://localhost:8000/api/unitplan/' + params.unitId;
   const urlResource = 'http://localhost:8000/resource/'
   const urlLesson = 'http://localhost:8000/lessonplan/'
@@ -211,7 +209,7 @@ export default function Unit({
   }
 
   return (
-    <Box sx={{ paddingTop: '4rem', display: 'flex-column' }}>
+    <Box sx={{ display: 'flex-column' }}>
       <Surface>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           {title ?
@@ -413,10 +411,9 @@ export default function Unit({
         </Box>
         { lessons ?
           (lessons.length > 0) &&
-            <List>
+            <List key='lesson-key'>
               {
                 lessons.map((lesson) => (
-                  <>
                     <ListItem key={lesson.id} disablePadding>
                       <ListItemButton 
                         href={`/subject/${unit.id}/${lesson.id}/`}
@@ -431,78 +428,73 @@ export default function Unit({
                       >
                         <MoreVert fontSize="inherit" />
                       </IconButton>
-                    </ListItem>
-                    <Modal
-                      open={openModalLesson}
-                      onClose={handleCloseLesson}
-                      aria-labelledby="modal-modal-title"
-                      aria-describedby="modal-modal-description"
-                    >
-                      <Box sx={style}>
-                        {modelContentLesson === 'DELETE' &&
-                          <>
-                            <Typography variant="h6" component="h2">
-                              Delete forever?
-                            </Typography>
-                            <Button color='error' startIcon={<DeleteOutline />} onClick={() => deleteLesson(lesson.id)}>
-                              Delete
+                      <Modal
+                        open={openModalLesson}
+                        onClose={handleCloseLesson}
+                        aria-labelledby="modal-modal-title"
+                        aria-describedby="modal-modal-description"
+                      >
+                        <Box sx={style}>
+                          {modelContentLesson === 'DELETE' &&
+                            <>
+                              <Typography variant="h6" component="h2">
+                                Delete forever?
+                              </Typography>
+                              <Button color='error' startIcon={<DeleteOutline />} onClick={() => deleteLesson(lesson.id)}>
+                                Delete
+                              </Button>
+                            </>
+                          }
+                          {modelContentLesson === 'CREATE' &&
+                            <TextField
+                              label='Title'
+                              size='small'
+                              fullWidth
+                              multiline
+                              value={lessonTitle}
+                              onChange={e => setLessonTitle(e.target.value)}
+                            />
+                          }
+                          {modelContentLesson === 'CREATE' &&
+                            <Button
+                              color='error'
+                              onClick={() => postLesson()}
+                            >
+                              Add New Lesson
                             </Button>
-                          </>
-                        }
-                        {modelContentLesson === 'CREATE' &&
-                          <>
-                            <Box sx={{display: 'flex', flexDirection: 'column', gap: '10px'}}>
-                              <TextField
-                                label='Title'
-                                size='small'
-                                fullWidth
-                                multiline
-                                value={lessonTitle}
-                                onChange={e => setLessonTitle(e.target.value)}
-                              />
-                              {modelContentLesson === 'CREATE' &&
-                                <Button
-                                  color='error'
-                                  onClick={() => postLesson()}
-                                >
-                                  Add New Lesson
-                                </Button>
-                              }
-                            </Box>
-                          </>
-                        }
-                        <Button startIcon={<DeleteOutline />} onClick={() => {
-                          setLessonTitle('')
-                          handleCloseLesson()
-                        }}
+                          }
+                          <Button startIcon={<DeleteOutline />} onClick={() => {
+                            setLessonTitle('')
+                            handleCloseLesson()
+                          }}
                           >
-                          Cancle
-                        </Button>
-                      </Box>
-                    </Modal>
-                    <Popper
-                      sx={{ zIndex: 1200 }}
-                      open={openLesson}
-                      anchorEl={anchorElLesson}
-                      placement={placement}
-                      transition
-                    >
-                      {({ TransitionProps }) => (
-                        <Fade {...TransitionProps} timeout={350}>
-                          <Paper>
-                            <List>
-                              <ListItemButton sx={{ padding: 1, gap: 3 }} onClick={() => {
-                                setModelContentLesson('DELETE')
-                                setOpenLesson(false)
-                                handleOpenLesson()}}>
-                                <DeleteOutline/>   <Typography>Delete</Typography>
-                              </ListItemButton>
-                            </List>
-                          </Paper>
-                        </Fade>
-                      )}
-                    </Popper>
-                  </>
+                            Cancle
+                          </Button>
+                        </Box>
+                      </Modal>
+                      <Popper
+                        sx={{ zIndex: 1200 }}
+                        open={openLesson}
+                        anchorEl={anchorElLesson}
+                        placement={placement}
+                        transition
+                      >
+                        {({ TransitionProps }) => (
+                          <Fade {...TransitionProps} timeout={350}>
+                            <Paper>
+                              <List>
+                                <ListItemButton sx={{ padding: 1, gap: 3 }} onClick={() => {
+                                  setModelContentLesson('DELETE')
+                                  setOpenLesson(false)
+                                  handleOpenLesson()}}>
+                                  <DeleteOutline/>   <Typography>Delete</Typography>
+                                </ListItemButton>
+                              </List>
+                            </Paper>
+                          </Fade>
+                        )}
+                      </Popper>
+                    </ListItem>
                 ))
               }
             </List>

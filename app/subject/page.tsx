@@ -2,13 +2,11 @@
 
 import React from 'react';
 import { useEffect, useState } from 'react';
-import Link from 'next/link';
 import Surface from '../../components/surface/Surface';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronRight, faEllipsisVertical, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { NextResponse } from 'next/server';
-import { Box, IconButton, ListItem, ListItemButton, ListItemText, Typography } from '@mui/material';
+import { Box, Button, IconButton, ListItem, ListItemButton, ListItemText, Typography } from '@mui/material';
 import { ControlPoint, MoreVert } from '@mui/icons-material';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 
 export default function Subject() {
   const urlSubjects = 'http://localhost:8000/subject/';
@@ -105,13 +103,16 @@ export default function Subject() {
   return (
     <>
     <Box sx={{ display: 'flex-column' }}>
-      <h1 className='pr-2 text-xl'>Subject</h1>
-      <button 
-        className='h-6 w-6 rounded-full bg-primary hover:primaryhover flex items-center justify-center'
-        onClick={postSubject}
-      >
-        <FontAwesomeIcon icon={faPlus} style={{color: 'fff'}}/>
-      </button>
+      <Box display='flex' justifyContent='center'>
+        <Button
+          component="label"
+          role={undefined}
+          startIcon={<AddCircleOutlineIcon />}
+          onClick={postSubject}
+        >
+          Subject
+        </Button>
+      </Box>
       {subject !== null && (
         subject.map((subject) => (
           <Surface key={subject.id}>

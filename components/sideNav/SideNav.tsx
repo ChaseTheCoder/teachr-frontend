@@ -1,10 +1,6 @@
 import React from 'react';
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faHouse, faNoteSticky, faCalendar
-} from "@fortawesome/free-solid-svg-icons";
-import Link from 'next/link';
 import { Box, Button, Grid, Stack, Typography } from '@mui/material';
+import { CalendarMonth, House, Note } from '@mui/icons-material';
 
 export default function SideNav() {
 
@@ -16,7 +12,7 @@ export default function SideNav() {
             <Box
               textAlign='center'
             >
-              <FontAwesomeIcon icon={faHouse}/>
+              <House/>
               <Typography>Home</Typography>
             </Box>
           </Button>
@@ -26,7 +22,7 @@ export default function SideNav() {
             <Box
               textAlign='center'
             >
-              <FontAwesomeIcon icon={faNoteSticky}/>
+              <Note/>
               <Typography>Subjects</Typography>
             </Box>
           </Button>
@@ -36,7 +32,7 @@ export default function SideNav() {
             <Box
               textAlign='center'
             >
-              <FontAwesomeIcon icon={faCalendar}/>
+              <CalendarMonth/>
               <Typography>Schedule</Typography>
             </Box>
           </Button>

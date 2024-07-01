@@ -1,29 +1,47 @@
 import React from 'react';
 import Surface from './surface/Surface';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircle, faCircleCheck } from '@fortawesome/free-solid-svg-icons';
-import { Box } from '@mui/material';
+import { Box, Checkbox, FormControlLabel, FormGroup, Typography } from '@mui/material';
+
+const reminders = [
+  {
+    id: '1',
+    title: 'Make Angles poster',
+    checked: false,
+  },
+  {
+    id: '2',
+    title: 'Get glue',
+    checked: false,
+  },
+  {
+    id: '3',
+    title: 'Classroom Newsletter',
+    checked: true,
+  }
+]
 
 export default function Reminders() {
 
   return (
     <Box sx={{ paddingRight: '8px' }}>
       <Surface>
-        <div className='space-y-2'>
-          <h3 className='font-bold'>Reminders</h3>
-          <div className='flex items-center'>
-            <FontAwesomeIcon icon={faCircle} size='2xs' style={{color: '#ad0000',}} />
-            <p className='pl-2'>Make Angles poster</p>
-          </div>
-          <div className='flex items-center'>
-            <FontAwesomeIcon icon={faCircle} size='2xs' style={{color: '#ad0000',}} />
-            <p className='pl-2'>Get glue</p>
-          </div>
-          <div className='flex items-center'>
-            <FontAwesomeIcon icon={faCircleCheck} size='2xs' style={{color: '#008f0a',}} />
-            <p className='pl-2'>Classroom Newsletter</p>
-          </div>
-        </div>
+        <Typography variant='h3' fontSize={18} fontWeight='bold'>
+          Reminders
+        </Typography>
+        <FormGroup>
+          {
+            reminders.map((reminder) => {
+              return (
+                <FormControlLabel
+                  key={reminder.id}
+                  control={<Checkbox size='small' />}
+                  color='success'
+                  label={reminder.title}
+                />
+              )
+            })
+          }
+        </FormGroup>
       </Surface>
     </Box>
   )

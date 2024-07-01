@@ -3,12 +3,9 @@ import type { Metadata } from 'next'
 import React from 'react'
 import SideNav from '../components/sideNav/SideNav'
 import Script from 'next/script'
-import "@fortawesome/fontawesome-svg-core/styles.css";
-import { config } from "@fortawesome/fontawesome-svg-core";
 import Reminders from '../components/Reminders'
 import ResponsiveAppBar from '../components/TopNav'
 import { Box, Grid } from '@mui/material'
-config.autoAddCss = false;
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -22,19 +19,18 @@ export default function RootLayout({
 }) {
   return (
     <html lang='en'>
-      <Script src="https://kit.fontawesome.com/ba9dfab5fa.js" crossOrigin="anonymous"/>
       <body>
         <ResponsiveAppBar/>
         <Grid container>
-          <Grid xs={1}  sx={{ paddingTop: '18px' }}>
+          <Grid xs={1} item={true} sx={{ paddingTop: '18px' }}>
             <SideNav/>
           </Grid>
-          <Grid xs={9}>
+          <Grid xs={9} item={true}>
             <Box sx={{ paddingTop: '18px', paddingX: '18px' }}>
               {children}
             </Box>
           </Grid>
-          <Grid xs={2}  sx={{ paddingTop: '18px' }}>
+          <Grid xs={2} item={true} sx={{ paddingTop: '18px' }}>
             <Reminders />
           </Grid>
         </Grid>

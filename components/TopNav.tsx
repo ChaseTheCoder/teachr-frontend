@@ -39,7 +39,7 @@ function ResponsiveAppBar() {
   };
 
   return (
-    <AppBar position="static" sx={{ bgcolor: 'white' }}>
+    <AppBar position="static" elevation={2} sx={{ bgcolor: 'white' }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Box sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }}>
@@ -89,6 +89,7 @@ function ResponsiveAppBar() {
               ))}
             </Menu>
           </Box>
+
           <Box sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }}>
             <Link href='/'>
               <Image
@@ -99,22 +100,14 @@ function ResponsiveAppBar() {
               />
             </Link>
           </Box>
+
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {/* {pages?.map((page) => (
-              <Button
-                key={page}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, display: 'block' }}
-              >
-                {page}
-              </Button>
-            ))} */}
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                <Avatar alt="Remy Sharp" />
               </IconButton>
             </Tooltip>
             <Menu
