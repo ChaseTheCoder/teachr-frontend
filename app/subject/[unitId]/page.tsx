@@ -52,6 +52,7 @@ export default function Unit({
     setModelContent(null);
   }
   const [openLesson, setOpenLesson] = React.useState(false);
+  const [lessonId, setLessonId] = React.useState(null);
   const [anchorElLesson, setAnchorElLesson] = React.useState<HTMLButtonElement | null>(null);
   const [openModalLesson, setOpenModelLesson] = useState(false);
   const [modelContentLesson, setModelContentLesson] = useState<null | 'CREATE' | 'DELETE'>(null);
@@ -180,6 +181,7 @@ export default function Unit({
           title: lessonTitle,
           standard: '',
           objective: '',
+          body: '',
           unit_plan: unit.id
         }),
       })
@@ -204,8 +206,13 @@ export default function Unit({
       response.json();
       getUnit()
       handleCloseLesson()
+      setLessonId(null)
     })
-    .catch(error => console.log(error))
+    .catch((error) => {
+      console.log(error)
+      handleCloseLesson()
+      setLessonId(null)
+    })
   }
 
   return (
@@ -428,50 +435,6 @@ export default function Unit({
                       >
                         <MoreVert fontSize="inherit" />
                       </IconButton>
-                      <Modal
-                        open={openModalLesson}
-                        onClose={handleCloseLesson}
-                        aria-labelledby="modal-modal-title"
-                        aria-describedby="modal-modal-description"
-                      >
-                        <Box sx={style}>
-                          {modelContentLesson === 'DELETE' &&
-                            <>
-                              <Typography variant="h6" component="h2">
-                                Delete forever?
-                              </Typography>
-                              <Button color='error' startIcon={<DeleteOutline />} onClick={() => deleteLesson(lesson.id)}>
-                                Delete
-                              </Button>
-                            </>
-                          }
-                          {modelContentLesson === 'CREATE' &&
-                            <TextField
-                              label='Title'
-                              size='small'
-                              fullWidth
-                              multiline
-                              value={lessonTitle}
-                              onChange={e => setLessonTitle(e.target.value)}
-                            />
-                          }
-                          {modelContentLesson === 'CREATE' &&
-                            <Button
-                              color='error'
-                              onClick={() => postLesson()}
-                            >
-                              Add New Lesson
-                            </Button>
-                          }
-                          <Button startIcon={<DeleteOutline />} onClick={() => {
-                            setLessonTitle('')
-                            handleCloseLesson()
-                          }}
-                          >
-                            Cancle
-                          </Button>
-                        </Box>
-                      </Modal>
                       <Popper
                         sx={{ zIndex: 1200 }}
                         open={openLesson}
@@ -484,6 +447,7 @@ export default function Unit({
                             <Paper>
                               <List>
                                 <ListItemButton sx={{ padding: 1, gap: 3 }} onClick={() => {
+                                  setLessonId(lesson.id)
                                   setModelContentLesson('DELETE')
                                   setOpenLesson(false)
                                   handleOpenLesson()}}>
@@ -502,6 +466,52 @@ export default function Unit({
           <Skeleton />
         }
       </Surface>
+
+      <Modal
+        open={openModalLesson}
+        onClose={handleCloseLesson}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          {modelContentLesson === 'DELETE' &&
+            <>
+              <Typography variant="h6" component="h2">
+                Delete forever?
+              </Typography>
+              <Button color='error' startIcon={<DeleteOutline />} onClick={() => deleteLesson(lessonId)}>
+                Delete
+              </Button>
+            </>
+          }
+          {modelContentLesson === 'CREATE' &&
+            <TextField
+              label='Title'
+              size='small'
+              fullWidth
+              multiline
+              value={lessonTitle}
+              onChange={e => setLessonTitle(e.target.value)}
+            />
+          }
+          {modelContentLesson === 'CREATE' &&
+            <Button
+              onClick={() => postLesson()}
+            >
+              Add New Lesson
+            </Button>
+          }
+          <Button
+            onClick={() => {
+              setLessonTitle('')
+              handleCloseLesson()
+          }}
+          >
+            Cancle
+          </Button>
+        </Box>
+      </Modal>
+
     </Box>
   )
 }

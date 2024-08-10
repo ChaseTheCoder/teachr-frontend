@@ -53,12 +53,14 @@ export default function Unit({
   const [editorLoaded, setEditorLoaded] = useState(false);
   const [openModal, setOpenModel] = useState(false);
   const [disableUpdate, setDisableUpdate] = useState(true);
-  const [materailTitle, setMaterailTitle] = useState('');
-  const [materailLink, setMaterailLink] = useState('');
+  const [materialTitle, setMaterialTitle] = useState('');
+  const [materialLink, setMaterialLink] = useState('');
+  const [materialId, setMaterialId] = useState(null);
   const [disableMaterail, setDisableMaterail] = useState(true);
   const [modelContent, setModelContent] = useState<null | 'CREATE' | 'UPDATE' | 'DELETE'>(null);
   const handleOpen = () => setOpenModel(true);
   const handleClose = () => {
+    setMaterialId(null);
     setOpenModel(false);
     setModelContent(null);
   }
@@ -113,8 +115,8 @@ export default function Unit({
   }, [title, objective, standard, body, lesson]);
 
   useEffect(() => {
-    if(materailTitle !== '' && materailLink !== '') setDisableMaterail(false);
-  }, [materailTitle, materailLink])
+    if(materialTitle !== '' && materialLink !== '') setDisableMaterail(false);
+  }, [materialTitle, materialLink])
 
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
   const [open, setOpen] = React.useState(false);
@@ -126,7 +128,7 @@ export default function Unit({
       setAnchorEl(event.currentTarget);
       setOpen((prev) => placement !== newPlacement || !prev);
       setPlacement(newPlacement);
-    };
+  };
 
   const patchLesson = () => {
     setLoadingUpdate(true);
@@ -150,31 +152,28 @@ export default function Unit({
   }
 
   const postMaterail = () => {
-    console.log(urlMaterial)
     fetch(urlMaterial, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        title: materailTitle,
-        link: materailLink,
-        lesson_plan: params.lessonId
+        title: materialTitle,
+        link: materialLink,
+        lesson_plan: lesson.id
       }),
     })
-    .then(response => {
-      console.log(response)
-      response.json()})
+    .then(response => response.json())
     .catch(error => {
       console.error(error);
     })
     .finally(() => {
-      setMaterailTitle('')
-      setMaterailLink('')
+      setMaterialTitle('')
+      setMaterialLink('')
       getLesson()
       handleClose()
-  })
-}
+    })
+  }
 
   const patchMaterail = (id: number) => {
     fetch(`${urlMaterial}${id}/`, {      
@@ -184,16 +183,16 @@ export default function Unit({
       },
       body: 
         JSON.stringify({
-          title: materailTitle,
-          link: materailLink,
+          title: materialTitle,
+          link: materialLink,
         }),
     })
     .then(
       (response) => response.json()
     )
     .finally(() => {
-      setMaterailTitle('')
-      setMaterailLink('')
+      setMaterialTitle('')
+      setMaterialLink('')
       getLesson()
       handleClose()
     })
@@ -357,78 +356,6 @@ export default function Unit({
                         <MoreVert fontSize="inherit" />
                       </IconButton>
                     </ListItem>
-                    <Modal
-                      open={openModal}
-                      onClose={handleClose}
-                      aria-labelledby="modal-modal-title"
-                      aria-describedby="modal-modal-description"
-                    >
-                      <Box sx={style}>
-                        {modelContent === 'DELETE' &&
-                          <>
-                            <Typography>
-                              Delete forever?
-                            </Typography>
-                            <Button
-                              variant='contained'
-                              color='error'
-                              startIcon={<DeleteOutline />}
-                              onClick={() => deleteMaterial(material.id)}
-                            >
-                              Delete
-                            </Button>
-                          </>
-                        }
-                        {(modelContent === 'CREATE' || modelContent === 'UPDATE') &&
-                          <TextField
-                          label='Title'
-                          size='small'
-                          fullWidth
-                          multiline
-                            value={materailTitle}
-                            onChange={e => setMaterailTitle(e.target.value)}
-                          />
-                        }
-                        {(modelContent === 'CREATE' || modelContent === 'UPDATE') &&
-                          <TextField
-                            label='Link'
-                            size='small'
-                            fullWidth
-                            multiline
-                            value={materailLink}
-                            onChange={e => setMaterailLink(e.target.value)}
-                          />
-                        }
-                        {modelContent === 'CREATE' &&
-                          <Button
-                            variant='contained'
-                            disabled={disableMaterail}
-                            onClick={postMaterail}
-                          >
-                            Add New Material
-                          </Button>
-                        }
-                        {modelContent === 'UPDATE' &&
-                          <Button
-                            variant='contained'
-                            disabled={disableMaterail}
-                            onClick={() => patchMaterail(material.id)}
-                          >
-                            Update
-                          </Button>
-                        }
-                        <Button
-                          startIcon={<DeleteOutline />} 
-                          onClick={() => {
-                            setMaterailTitle('')
-                            setMaterailLink('')
-                            handleClose()
-                          }}
-                          >
-                          Cancle
-                        </Button>
-                      </Box>
-                    </Modal>
                     <Popper
                       sx={{ zIndex: 1200 }}
                       open={open}
@@ -442,13 +369,15 @@ export default function Unit({
                             <List>
                               <ListItemButton sx={{ padding: 1, gap: 3 }} onClick={() => {
                                 setModelContent('DELETE')
+                                setMaterialId(material.id)
                                 setOpen(false)
                                 handleOpen()}}>
                                 <DeleteOutline/>   <Typography>Delete</Typography>
                               </ListItemButton>
                               <ListItemButton sx={{ padding: 1, gap: 3 }} onClick={() => {
-                                setMaterailTitle(material.title)
-                                setMaterailLink(material.link)
+                                setMaterialTitle(material.title)
+                                setMaterialLink(material.link)
+                                setMaterialId(material.id)
                                 setModelContent('UPDATE')
                                 setOpen(false)
                                 handleOpen()
@@ -468,6 +397,80 @@ export default function Unit({
           <Skeleton />
         }
       </Surface>
+
+      <Modal
+        open={openModal}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          {modelContent === 'DELETE' &&
+            <>
+              <Typography>
+                Delete forever?
+              </Typography>
+              <Button
+                variant='contained'
+                color='error'
+                startIcon={<DeleteOutline />}
+                onClick={() => deleteMaterial(materialId)}
+              >
+                Delete
+              </Button>
+            </>
+          }
+          {(modelContent === 'CREATE' || modelContent === 'UPDATE') &&
+            <TextField
+            label='Title'
+            size='small'
+            fullWidth
+            multiline
+              value={materialTitle}
+              onChange={e => setMaterialTitle(e.target.value)}
+            />
+          }
+          {(modelContent === 'CREATE' || modelContent === 'UPDATE') &&
+            <TextField
+              label='Link'
+              size='small'
+              fullWidth
+              multiline
+              value={materialLink}
+              onChange={e => setMaterialLink(e.target.value)}
+            />
+          }
+          {modelContent === 'CREATE' &&
+            <Button
+              variant='contained'
+              disabled={disableMaterail}
+              onClick={postMaterail}
+            >
+              Add New Material
+            </Button>
+          }
+          {modelContent === 'UPDATE' &&
+            <Button
+              variant='contained'
+              disabled={disableMaterail}
+              onClick={() => patchMaterail(materialId)}
+            >
+              Update
+            </Button>
+          }
+          <Button
+            startIcon={<DeleteOutline />} 
+            onClick={() => {
+              setMaterialTitle('')
+              setMaterialLink('')
+              handleClose()
+            }}
+            >
+            Cancle
+          </Button>
+        </Box>
+      </Modal>
+
     </Box>
   )
 }
