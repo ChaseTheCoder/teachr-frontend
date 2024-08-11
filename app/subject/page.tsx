@@ -7,6 +7,7 @@ import { NextResponse } from 'next/server';
 import { Box, Button, Fade, IconButton, List, ListItem, ListItemButton, ListItemText, Modal, Paper, Popper, PopperPlacementType, TextField, Typography } from '@mui/material';
 import { ControlPoint, DeleteOutline, MoreVert, Update } from '@mui/icons-material';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import UniversalModal from '../../components/UniversalModal';
 
 const style = {
   position: 'absolute' as 'absolute',
@@ -30,24 +31,40 @@ export default function Subject() {
   const [isLoading, setLoading] = useState(true);
   const [isError, setError] = useState(false);
   const [openModal, setOpenModal] = useState(false);
-  const [subjectTitle, setSubjectTitle] = useState('');
-  const [subjectGrade, setSubjectGrade] = useState('');
-  const [subjectId, setSubjectId] = useState('');
-  const [unitTitle, setUnitTitle] = useState('');
+  const [subjectTitle, setSubjectTitle] = useState(null);
+  const [subjectGrade, setSubjectGrade] = useState(null);
+  const [subjectId, setSubjectId] = useState(null);
+  const [unitTitle, setUnitTitle] = useState(null);
+  const [unitId, setUnitId] = useState(null);
   const [modalContent, setModalContent] = useState('');
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
   const [open, setOpen] = React.useState(false);
+  const [anchorElSubject, setAnchorElSubject] = React.useState<HTMLButtonElement | null>(null);
+  const [openSubject, setOpenSubject] = React.useState(false);
   const [placement, setPlacement] = React.useState<PopperPlacementType>();
+  const [placementSubject, setPlacementSubject] = React.useState<PopperPlacementType>();
+
+  const createSubectButton = 'Create New Subject';
+  const deleteSubjectButton = 'Confirm Deleting Subject and Units it has?';
+  const updateSubjectButton = 'Update Subject';
+  const createUnitButton = 'Create New Unit';
+  const [label1, setLabel1] = useState(null);
+  const [value1, setValue1] = useState(null);
+  const [label2, setLabel2] = useState(null);
+  const [value2, setValue2] = useState(null);
+  const [buttonTitle, setButtonTitle] = useState(null);
 
   const handleOpen = (type: string) => {
-    setModalContent(type);
+    // setModalContent(type);
     setOpenModal(true)
   }
   const handleClose = () => {
-    setModalContent('')
-    setSubjectTitle('')
-    setSubjectGrade('')
-    setUnitTitle('')
+    setLabel1(null)
+    setValue1(null)
+    setLabel2(null)
+    setValue2(null)
+    setButtonTitle(null)
+    setSubjectId(null)
     setOpenModal(false)
   };
 
@@ -57,6 +74,17 @@ export default function Subject() {
       setAnchorEl(event.currentTarget);
       setOpen((prev) => placement !== newPlacement || !prev);
       setPlacement(newPlacement);
+  };
+
+  const handleClickSubject =
+    (newPlacementSubject: PopperPlacementType, subjectId: number, title: string, grade: string) =>
+    (event: React.MouseEvent<HTMLButtonElement>) => {
+      setSubjectId(subjectId)
+      setSubjectTitle(title)
+      setSubjectGrade(grade)
+      setAnchorElSubject(event.currentTarget);
+      setOpenSubject((prev) => placementSubject !== newPlacementSubject || !prev);
+      setPlacementSubject(newPlacementSubject);
   };
 
   async function getSubjects() {
@@ -79,8 +107,6 @@ export default function Subject() {
   }, []);
 
   async function postSubject() {
-    subjectTitle ?? setSubjectTitle('Subject');
-    subjectGrade ?? setSubjectGrade('Subject');
     try {
       const res = await fetch(urlSubjects, {
         method: 'POST',
@@ -88,8 +114,8 @@ export default function Subject() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          subject: subjectTitle,
-          grade: subjectGrade
+          subject: value1,
+          grade: value2
         }),
       })
       
@@ -107,6 +133,31 @@ export default function Subject() {
     }
   }
 
+  async function updateSubject() {
+    try {
+      const res = await fetch(`${urlSubjects}${subjectId}/`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          subject: value1,
+          grade: value2
+        }),
+      })
+      const data = await res.json()
+      return NextResponse.json(data)
+    } catch (err) {
+      console.log('ERROR: SUBJECT NOT PATCHED')
+      console.log(err)
+    } finally {
+      getSubjects()
+      setSubjectTitle('')
+      setSubjectGrade('')
+      handleClose()
+    }
+  }
+
   async function postUnit() {
     try {
       const res = await fetch(urlUnit, {
@@ -115,7 +166,7 @@ export default function Subject() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          title: unitTitle,
+          title: value1,
           subject: subjectId
         }),
       })
@@ -127,38 +178,55 @@ export default function Subject() {
       console.log('ERROR: UNIT NOT POSTED')
       console.log(err)
     } finally {
-      getSubjects()
-      setUnitTitle('')
       handleClose()
     }
   }
   
-  async function deleteSubject(id: number) {
-    subjectTitle ?? setSubjectTitle('Subject');
-    subjectGrade ?? setSubjectGrade('Subject');
+  async function deleteSubject() {
     try {
-      fetch(`${urlSubjects}${id}`, {
+      fetch(`${urlSubjects}${subjectId}/`, {
         method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          "subject": subjectTitle,
-          "grade": subjectGrade
-        })
       })
       .then(async (response) => {
-        const subject = await response.json();
-        if (response.ok) {
-          getSubjects()
-        } else {
-          const error = (subject && subject.message) || response.status;
-          return Promise.reject(error);
-        }
+        response.json();
+        getSubjects();
       })
     } catch (err) {
       console.log('ERROR: SUBJECT NOT DELETED')
       console.log(err)
+    } finally {
+      getSubjects();
+      handleClose();
+    }
+  }
+  
+  async function deleteUnit() {
+    try {
+      fetch(`${urlUnit}${unitId}/`, {
+        method: 'DELETE',
+      })
+      .then(async (response) => {
+        response.json();
+        getSubjects();
+      })
+    } catch (err) {
+      console.log('ERROR: SUBJECT NOT DELETED')
+      console.log(err)
+    } finally {
+      handleClose();
+    }
+  }
+
+  function modalCall() {
+    switch(buttonTitle) {
+      case createSubectButton:
+          postSubject()
+      case createUnitButton:
+          postUnit()
+      case deleteSubjectButton:
+          deleteSubject()
+      case updateSubjectButton:
+          updateSubject()
     }
   }
 
@@ -190,7 +258,12 @@ export default function Subject() {
             component="label"
             role={undefined}
             startIcon={<AddCircleOutlineIcon />}
-            onClick={() => handleOpen('CREATE-SUBJECT')}
+            onClick={() => {
+              setLabel1('Subject Title')
+              setLabel2('Grade')
+              setButtonTitle(createSubectButton)
+              handleOpen('CREATE-SUBJECT')
+            }}
           >
             Subject
           </Button>
@@ -201,17 +274,66 @@ export default function Subject() {
               <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
                 <Typography variant='h2' sx={{fontWeight: 'bold', fontSize: '22px'}}>{subject.grade}, {subject.subject}</Typography>
                 <IconButton
+                  aria-label='options'
                   size='small'
-                  onClick={() => {
-                    setSubjectId(subject.id)
-                    handleOpen('CREATE-UNIT')
-                  }}
+                  onClick={handleClickSubject('top-end', subject.id, subject.subject, subject.grade)}
+                  key={subject.id}
                 >
-                  <ControlPoint/>
+                  <MoreVert fontSize="inherit" />
                 </IconButton>
+                <Popper
+                  sx={{ zIndex: 1200 }}
+                  open={openSubject}
+                  anchorEl={anchorElSubject}
+                  placement={placementSubject}
+                  transition
+                >
+                  {({ TransitionProps }) => (
+                    <Fade {...TransitionProps}>
+                      <Paper>
+                        <List>
+                          <ListItemButton 
+                            sx={{ padding: 1, gap: 3 }}
+                            onClick={() => {
+                              setLabel1('Unit Title')
+                              setValue1(setUnitTitle)
+                              setButtonTitle(createUnitButton)
+                              setOpenSubject(false)
+                              handleOpen('')
+                            }}
+                          >
+                            <AddCircleOutlineIcon />   <Typography>Create Unit</Typography>
+                          </ListItemButton>
+                          <ListItemButton sx={{ padding: 1, gap: 3 }} onClick={() => {
+                            setButtonTitle(deleteSubjectButton)
+                            setOpenSubject(false);
+                            handleOpen('');
+                          } }>
+                            <DeleteOutline />   <Typography>Delete Subject</Typography>
+                          </ListItemButton>
+                          <ListItemButton 
+                            sx={{ padding: 1, gap: 3 }}
+                            onClick={() => {
+                              setLabel1('Subject Title')
+                              setValue1(subjectTitle)
+                              setLabel2('Grade')
+                              setValue2(subjectGrade)
+                              setButtonTitle(updateSubjectButton)
+                              setOpenSubject(false)
+                              handleOpen('')
+                            }}
+                            key={subject.id}
+                          >
+                            <Update />   <Typography>Update Subject</Typography>
+                          </ListItemButton>
+                        </List>
+                      </Paper>
+                    </Fade>
+                  )}
+                </Popper>
               </Box>
-              { subject.units.map((unit, index) => (
-                <>
+              { subject.units.map((unit) => (
+                <div key={unit.id}>
                   <ListItem key={unit.id} disablePadding>
                     <ListItemButton
                       href={`/subject/${unit.id}`}
@@ -222,6 +344,7 @@ export default function Subject() {
                     <IconButton
                       aria-label='options'
                       size='small'
+                      onClick={handleClick('top-end')}
                     >
                       <MoreVert fontSize="inherit" />
                     </IconButton>
@@ -238,7 +361,7 @@ export default function Subject() {
                         <Paper>
                           <List>
                             <ListItemButton sx={{ padding: 1, gap: 3 }} onClick={() => {
-                              setSubjectId(subject.id);
+                              setUnitId(unit.id);
                               setOpen(false);
                               handleOpen('DELETE-UNIT');
                             } }>
@@ -246,7 +369,7 @@ export default function Subject() {
                             </ListItemButton>
                             <ListItemButton sx={{ padding: 1, gap: 3 }} onClick={() => {
                               setUnitTitle(unit.title);
-                              setSubjectId(unit.id);
+                              setUnitId(unit.id);
                               setOpen(false);
                               handleOpen('UPDATE-UNIT');
                             } }>
@@ -257,13 +380,69 @@ export default function Subject() {
                       </Fade>
                     )}
                   </Popper>
-                </>
+                </div>
               ) )}
             </Surface>
           ))
         )}
       </Box>
       <Modal
+        open={openModal}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          {label1 && (
+            <TextField
+              label={label1}
+              size='small'
+              fullWidth
+              multiline
+              value={value1}
+              onChange={e => setValue1(e.target.value)}
+            />
+          )}
+          {label2 && (
+            <TextField
+              label={label2}
+              size='small'
+              fullWidth
+              multiline
+              value={value2}
+              onChange={e => setValue2(e.target.value)}
+            />
+          )}
+          <Button
+            // variant='contained'
+            onClick={() => modalCall()}
+          >
+            {buttonTitle}
+          </Button>
+          <Button
+            color='error'
+            startIcon={<DeleteOutline />} 
+            onClick={() => {
+              handleClose()
+            }}
+          >
+            Cancle
+          </Button>
+        </Box>
+      </Modal>
+      {/* <UniversalModal
+          openModal={openModal}
+          handleClose={handleClose}
+          label1={label1}
+          value1={value1}
+          setValue1={setValue1}
+          label2={label2}
+          value2={value2}
+          setValue2={setValue2}
+          crudCall={crudCall}
+          buttonTitle={buttonTitle}
+      /> */}
+      {/* <Modal
         open={openModal}
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
@@ -313,22 +492,14 @@ export default function Subject() {
               </Button>
             </>
           )}
-          { modalContent === 'CREATE-UNIT' && (
-            <>
-              <TextField
-                label='Unit Title'
-                size='small'
-                fullWidth
-                multiline
-                value={unitTitle}
-                onChange={e => setUnitTitle(e.target.value)}
-              />
-              <Button
-                onClick={postUnit}
-              >
-                Add New Unit
-              </Button>
-            </>
+          { modalContent === 'DELETE-UNIT' && (
+            <Button
+              variant='contained'
+              color='error'
+              onClick={postUnit}
+            >
+              Delete Unit
+            </Button>
           )}
           <Button
             color='error'
@@ -340,7 +511,7 @@ export default function Subject() {
             Cancle
           </Button>
         </Box>
-      </Modal>
+      </Modal> */}
     </>
   )
 }
