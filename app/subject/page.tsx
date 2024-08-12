@@ -5,9 +5,8 @@ import { useEffect, useState } from 'react';
 import Surface from '../../components/surface/Surface';
 import { NextResponse } from 'next/server';
 import { Box, Button, Fade, IconButton, List, ListItem, ListItemButton, ListItemText, Modal, Paper, Popper, PopperPlacementType, TextField, Typography } from '@mui/material';
-import { ControlPoint, DeleteOutline, MoreVert, Update } from '@mui/icons-material';
+import { DeleteOutline, MoreVert, Update } from '@mui/icons-material';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import UniversalModal from '../../components/UniversalModal';
 
 const style = {
   position: 'absolute' as 'absolute',
@@ -36,7 +35,6 @@ export default function Subject() {
   const [subjectId, setSubjectId] = useState(null);
   const [unitTitle, setUnitTitle] = useState(null);
   const [unitId, setUnitId] = useState(null);
-  const [modalContent, setModalContent] = useState('');
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
   const [open, setOpen] = React.useState(false);
   const [anchorElSubject, setAnchorElSubject] = React.useState<HTMLButtonElement | null>(null);
@@ -47,7 +45,9 @@ export default function Subject() {
   const createSubectButton = 'Create New Subject';
   const deleteSubjectButton = 'Confirm Deleting Subject and Units it has?';
   const updateSubjectButton = 'Update Subject';
+  const deleteUnitButton = 'Confirm Deleting Unit and Lessons it Contains?';
   const createUnitButton = 'Create New Unit';
+  const updateUnitButton = 'Update Unit';
   const [label1, setLabel1] = useState(null);
   const [value1, setValue1] = useState(null);
   const [label2, setLabel2] = useState(null);
@@ -66,18 +66,32 @@ export default function Subject() {
     setButtonTitle(null)
     setSubjectId(null)
     setOpenModal(false)
+    setUnitId(null)
+    setUnitTitle(null)
+    setSubjectId(null)
+    setSubjectTitle(null)
+    setSubjectGrade(null)
   };
 
-  const handleClick =
-    (newPlacement: PopperPlacementType) =>
+  const handleClickUnit = (
+    newPlacement: PopperPlacementType,
+    unitId: number,
+    title: string
+  ) =>
     (event: React.MouseEvent<HTMLButtonElement>) => {
+      setUnitId(unitId)
+      setUnitTitle(title)
       setAnchorEl(event.currentTarget);
       setOpen((prev) => placement !== newPlacement || !prev);
       setPlacement(newPlacement);
   };
 
-  const handleClickSubject =
-    (newPlacementSubject: PopperPlacementType, subjectId: number, title: string, grade: string) =>
+  const handleClickSubject = (
+    newPlacementSubject: PopperPlacementType,
+    subjectId: number,
+    title: string,
+    grade: string
+  ) =>
     (event: React.MouseEvent<HTMLButtonElement>) => {
       setSubjectId(subjectId)
       setSubjectTitle(title)
@@ -127,8 +141,6 @@ export default function Subject() {
       console.log(err)
     } finally {
       getSubjects()
-      setSubjectTitle('')
-      setSubjectGrade('')
       handleClose()
     }
   }
@@ -152,8 +164,6 @@ export default function Subject() {
       console.log(err)
     } finally {
       getSubjects()
-      setSubjectTitle('')
-      setSubjectGrade('')
       handleClose()
     }
   }
@@ -182,6 +192,31 @@ export default function Subject() {
     }
   }
   
+
+  async function updateUnit() {
+    try {
+      const res = await fetch(`${urlUnit}${unitId}/`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          title: value1
+        }),
+      })
+      
+      const data = await res.json()
+      
+      return NextResponse.json(data)
+    } catch (err) {
+      console.log('ERROR: UNIT NOT PATCHED')
+      console.log(err)
+    } finally {
+      getSubjects()
+      handleClose()
+    }
+  }
+  
   async function deleteSubject() {
     try {
       fetch(`${urlSubjects}${subjectId}/`, {
@@ -189,14 +224,13 @@ export default function Subject() {
       })
       .then(async (response) => {
         response.json();
-        getSubjects();
       })
     } catch (err) {
       console.log('ERROR: SUBJECT NOT DELETED')
       console.log(err)
     } finally {
-      getSubjects();
-      handleClose();
+      getSubjects()
+      handleClose()
     }
   }
   
@@ -206,27 +240,38 @@ export default function Subject() {
         method: 'DELETE',
       })
       .then(async (response) => {
-        response.json();
-        getSubjects();
+        response.json()
       })
     } catch (err) {
       console.log('ERROR: SUBJECT NOT DELETED')
       console.log(err)
     } finally {
-      handleClose();
+      getSubjects()
+      handleClose()
     }
   }
 
   function modalCall() {
-    switch(buttonTitle) {
-      case createSubectButton:
-          postSubject()
-      case createUnitButton:
-          postUnit()
-      case deleteSubjectButton:
-          deleteSubject()
-      case updateSubjectButton:
-          updateSubject()
+    if(buttonTitle === createSubectButton) {
+        postSubject()
+        setButtonTitle(null)
+    } else if(buttonTitle === updateSubjectButton) {
+        updateSubject()
+        setButtonTitle(null)
+    } else if(buttonTitle === deleteSubjectButton) {
+        deleteSubject()
+        setButtonTitle(null)
+    } else if(buttonTitle === createUnitButton) {
+        postUnit()
+        setButtonTitle(null)
+    } else if (buttonTitle === deleteUnitButton) {
+        deleteUnit()
+        setButtonTitle(null)
+    } else if(buttonTitle === updateUnitButton) {
+        updateUnit()
+        setButtonTitle(null)
+    } else {
+        console.log("NO MODAL CALL MADE")
     }
   }
 
@@ -296,7 +341,6 @@ export default function Subject() {
                             sx={{ padding: 1, gap: 3 }}
                             onClick={() => {
                               setLabel1('Unit Title')
-                              setValue1(setUnitTitle)
                               setButtonTitle(createUnitButton)
                               setOpenSubject(false)
                               handleOpen('')
@@ -344,7 +388,7 @@ export default function Subject() {
                     <IconButton
                       aria-label='options'
                       size='small'
-                      onClick={handleClick('top-end')}
+                      onClick={handleClickUnit('top-end', unit.id, unit.title)}
                     >
                       <MoreVert fontSize="inherit" />
                     </IconButton>
@@ -361,17 +405,18 @@ export default function Subject() {
                         <Paper>
                           <List>
                             <ListItemButton sx={{ padding: 1, gap: 3 }} onClick={() => {
-                              setUnitId(unit.id);
-                              setOpen(false);
-                              handleOpen('DELETE-UNIT');
+                              setButtonTitle(deleteUnitButton)
+                              setOpen(false)
+                              handleOpen('')
                             } }>
                               <DeleteOutline />   <Typography>Delete</Typography>
                             </ListItemButton>
                             <ListItemButton sx={{ padding: 1, gap: 3 }} onClick={() => {
-                              setUnitTitle(unit.title);
-                              setUnitId(unit.id);
-                              setOpen(false);
-                              handleOpen('UPDATE-UNIT');
+                              setLabel1('Unit Title')
+                              setValue1(unitTitle)
+                              setButtonTitle(updateUnitButton)
+                              setOpen(false)
+                              handleOpen('')
                             } }>
                               <Update />   <Typography>Update</Typography>
                             </ListItemButton>
@@ -399,7 +444,7 @@ export default function Subject() {
               size='small'
               fullWidth
               multiline
-              value={value1}
+              value={value1 ?? ''}
               onChange={e => setValue1(e.target.value)}
             />
           )}
@@ -409,13 +454,13 @@ export default function Subject() {
               size='small'
               fullWidth
               multiline
-              value={value2}
+              value={value2 ?? ''}
               onChange={e => setValue2(e.target.value)}
             />
           )}
           <Button
             // variant='contained'
-            onClick={() => modalCall()}
+            onClick={modalCall}
           >
             {buttonTitle}
           </Button>
@@ -430,88 +475,6 @@ export default function Subject() {
           </Button>
         </Box>
       </Modal>
-      {/* <UniversalModal
-          openModal={openModal}
-          handleClose={handleClose}
-          label1={label1}
-          value1={value1}
-          setValue1={setValue1}
-          label2={label2}
-          value2={value2}
-          setValue2={setValue2}
-          crudCall={crudCall}
-          buttonTitle={buttonTitle}
-      /> */}
-      {/* <Modal
-        open={openModal}
-        onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box sx={style}>
-          { modalContent === 'CREATE-SUBJECT' && (
-            <>
-              <TextField
-                label='Subject Title'
-                size='small'
-                fullWidth
-                multiline
-                value={subjectTitle}
-                onChange={e => setSubjectTitle(e.target.value)}
-              />
-              <TextField
-                label='Grade'
-                size='small'
-                fullWidth
-                multiline
-                value={subjectGrade}
-                onChange={e => setSubjectGrade(e.target.value)}
-              />
-              <Button
-                // variant='contained'
-                onClick={postSubject}
-              >
-                Add New Unit
-              </Button>
-            </>
-          )}
-          { modalContent === 'CREATE-UNIT' && (
-            <>
-              <TextField
-                label='Unit Title'
-                size='small'
-                fullWidth
-                multiline
-                value={unitTitle}
-                onChange={e => setUnitTitle(e.target.value)}
-              />
-              <Button
-                onClick={postUnit}
-              >
-                Add New Unit
-              </Button>
-            </>
-          )}
-          { modalContent === 'DELETE-UNIT' && (
-            <Button
-              variant='contained'
-              color='error'
-              onClick={postUnit}
-            >
-              Delete Unit
-            </Button>
-          )}
-          <Button
-            color='error'
-            startIcon={<DeleteOutline />} 
-            onClick={() => {
-              handleClose()
-            }}
-          >
-            Cancle
-          </Button>
-        </Box>
-      </Modal> */}
     </>
   )
 }
