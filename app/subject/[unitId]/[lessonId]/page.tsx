@@ -217,7 +217,7 @@ export default function Unit({
   }
 
   async function updateLessonOutlineAi(prompt: string) {
-    const promptFinal = `Write a lesson plan based on the following information: ` + prompt;
+    const promptFinal = `Write a lesson plan based on this ${objective !== '' && 'this objective, '+objective+', and '}`  + 'prompt, ' + prompt;
     const promptResponse = await lessonAi(promptFinal);
     setBody(promptResponse);
   }

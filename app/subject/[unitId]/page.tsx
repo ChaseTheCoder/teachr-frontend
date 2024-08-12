@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import Surface from '../../../components/surface/Surface';
 import { Box, Button, Fade, IconButton, List, ListItem, ListItemButton, ListItemText, Modal, Paper, Popper, PopperPlacementType, Skeleton, TextField, Typography } from '@mui/material';
 import { ControlPoint, DeleteOutline, MoreVert, Update } from '@mui/icons-material';
+import LoadingButton from '@mui/lab/LoadingButton';
 import { NextResponse } from 'next/server';
 
 const style = {
@@ -27,20 +28,17 @@ export default function Unit({
 }: {
   params: { unitId: string };
 }) {
-  const url = 'http://localhost:8000/api/unitplan/' + params.unitId;
-  const urlResource = 'http://localhost:8000/resource/'
+  const url = `http://localhost:8000/api/unitplan/${params.unitId}/`;
+  // const urlResource = 'http://localhost:8000/resource/'
   const urlLesson = 'http://localhost:8000/lessonplan/'
   const [loadingUnit, setLoadingUnit] = useState<Boolean>(true)
-  const [unit, setUnit] = useState<any>();
+  const [unit, setUnit] = useState<any>(null);
   const [lessons, setLessons] = useState<any>();
   const [lessonTitle, setLessonTitle] = useState<string>('');
   const [title, setTitle] = useState<string | null>(null);
   const [overview, setOverview] = useState<string | null>(null);
   const [standard, setStandard] = useState<string | null>(null);
-  const [resources, setResources] = useState<any>(null);
-  const [resourceTitle, setResourceTitle] = useState<string | null>('');
-  const [resourceLink, setResourceLink] = useState<string | null>('');
-  const [disableResource, setDisableResource] = useState(true);
+  const [update, setUpdate] = useState({});
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
   const [open, setOpen] = React.useState(false);
   const [placement, setPlacement] = React.useState<PopperPlacementType>();
@@ -56,11 +54,31 @@ export default function Unit({
   const [anchorElLesson, setAnchorElLesson] = React.useState<HTMLButtonElement | null>(null);
   const [openModalLesson, setOpenModelLesson] = useState(false);
   const [modelContentLesson, setModelContentLesson] = useState<null | 'CREATE' | 'DELETE'>(null);
+  const [disableUpdate, setDisableUpdate] = useState(true);
+  const [loadingUpdate, setLoadingUpdate] = useState(false);
   const handleOpenLesson = () => setOpenModelLesson(true);
   const handleCloseLesson = () => {
     setOpenModelLesson(false);
     setModelContentLesson(null);
   }
+
+  useEffect(() => {
+    if(unit !== null) {
+      if(title !== unit.title) setUpdate({
+        ...update,
+        title: title
+      });
+      if(overview !== unit.overiew) setUpdate({
+        ...update,
+        overview: overview
+      });
+      if(standard !== unit.standard) setUpdate({
+        ...update,
+        standard: standard
+      });
+    }
+    Object.keys(update).length > 0 ? setDisableUpdate(false) : setDisableUpdate(true);
+  }, [title, overview, standard]);
 
   const handleClickLesson =
     (newPlacement: PopperPlacementType) =>
@@ -81,17 +99,13 @@ export default function Unit({
   async function getUnit() {
     setLoadingUnit(true)
     try {
-      fetch(url)
-      .then((res) => res.json())
-      .then((data) => {
-        setUnit(data)
-        setTitle(data.title)
-        setOverview(data.overview)
-        setStandard(data.standard)
-        setResources(data.resources)
-        setLessons(data.lessons)
-        setLoadingUnit(false)
-      })
+      const response = await fetch(url);
+      const data = await response.json();
+      setUnit(data)
+      setTitle(data.title)
+      setOverview(data.overview)
+      setStandard(data.standard)
+      setLessons(data.lessons)
     } catch (error) {
       console.error('Error fetching data:', error)
     } finally {
@@ -100,75 +114,8 @@ export default function Unit({
   }
 
   useEffect(() => {
-    if(resourceTitle !== '' && resourceLink !== '') setDisableResource(false);
-  }, [resourceTitle, resourceLink])
-
-  async function patchResource(id: number) {
-    fetch(`${urlResource}${id}/`, {      
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: 
-        JSON.stringify({
-          title: resourceTitle,
-          link: resourceLink,
-        }),
-    })
-    .then(
-      (response) => response.json()
-    )
-    .finally(() => {
-      setResourceTitle('')
-      setResourceLink('')
-      getUnit()
-      handleClose()
-    })
-    .catch(error => console.log(error))
-  }
-
-  async function postResource() {
-    try {
-      const res = await fetch(urlResource, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          title: resourceTitle,
-          link: resourceLink,
-          unit_plan: unit.id
-        }),
-      })
-      const data = await res.json()
-      console.log(data)
-      return NextResponse.json(data)
-    } catch (err) {
-      console.log('ERROR: RESOURCE NOT POSTED')
-      console.log(err)
-    } finally {
-      setResourceTitle('')
-      setResourceLink('')
-      getUnit()
-      handleClose()
-    }
-  }
-
-  useEffect(() => {
-    postResource();
+    getUnit() 
   }, []);
-
-  const deleteResource = (id: number) => {
-    fetch(`${urlResource}${id}/`, {      
-      method: 'DELETE'
-    })
-    .then((response) => {
-      response.json();
-      getUnit()
-      handleClose()
-    })
-    .catch(error => console.log(error))
-  }
 
   async function postLesson() {
     try {
@@ -198,6 +145,28 @@ export default function Unit({
     }
   }
 
+  const patchLesson = () => {
+    setLoadingUpdate(true);
+    console.log(update)
+    fetch(url, {      
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: 
+        JSON.stringify(update),
+    })
+    .then(
+      (response) => response.json()
+    )
+    .catch(error => console.log(error))
+    .finally(() => {
+      setUpdate({})
+      setTimeout(() => {setLoadingUpdate(false)}, 2000)
+      setDisableUpdate(true)
+    })
+  }
+
   const deleteLesson = (id: number) => {
     fetch(`${urlLesson}${id}/`, {      
       method: 'DELETE'
@@ -219,7 +188,8 @@ export default function Unit({
     <Box sx={{ display: 'flex-column' }}>
       <Surface>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          {title ?
+          {loadingUnit ?
+            <Skeleton /> :
             <TextField
               variant='standard'
               multiline
@@ -228,40 +198,58 @@ export default function Unit({
               onChange={e => setTitle(e.target.value)}
               inputProps={{style: {fontWeight: 'bold', fontSize: 24}}} // font size of input text
               InputLabelProps={{style: {fontWeight: 'bold'}}} // font size of input label
-            /> :
-            <Skeleton />
+            />
           }
         </Box>
         <Box>
           <Typography sx={{fontWeight: 'bold'}}>Overview</Typography>
-          {overview ?
+          {loadingUnit ?
+            <Skeleton /> :
             <TextField
               size='small'
               fullWidth
               multiline
               value={overview}
               onChange={e => setOverview(e.target.value)}
-            /> :
-            <Skeleton />
+            />
           }
         </Box>
         <Box>
           <Typography sx={{fontWeight: 'bold'}}>Standards</Typography>
-          {standard ?
+          {loadingUnit ?
+            <Skeleton /> :
             <TextField
               size='small'
               fullWidth
               multiline
               value={standard}
               onChange={e => setStandard(e.target.value)}
-            /> :
-            <Skeleton />
+            />
           }
         </Box>
+        <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', gap: '10px' }}>
+            <LoadingButton
+              variant='contained'
+              // disabled={disableUpdate}
+              size='small'
+              onClick={patchLesson}
+              // loading={loadingUpdate}
+            >
+              Update
+            </LoadingButton>
+            <Button
+              variant='outlined'
+              color='error'
+              size='small'
+              // onClick={() => deleteLesson(params.unitId)}
+            >
+              Delete
+            </Button>
+          </Box>
 
       </Surface>
 
-      <Surface>
+      {/* <Surface>
         <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
           <Typography variant='h2' sx={{fontWeight: 'bold', fontSize: '24px'}}>Resources</Typography>
           <IconButton
@@ -401,7 +389,7 @@ export default function Unit({
           :
           <Skeleton />
         }
-      </Surface>
+      </Surface> */}
 
       <Surface>
         <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
@@ -416,7 +404,8 @@ export default function Unit({
             <ControlPoint/>
           </IconButton>
         </Box>
-        { lessons ?
+        { loadingUnit ?
+          <Skeleton /> :
           (lessons.length > 0) &&
             <List key='lesson-key'>
               {
@@ -462,8 +451,6 @@ export default function Unit({
                 ))
               }
             </List>
-          :
-          <Skeleton />
         }
       </Surface>
 

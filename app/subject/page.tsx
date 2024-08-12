@@ -188,6 +188,7 @@ export default function Subject() {
       console.log('ERROR: UNIT NOT POSTED')
       console.log(err)
     } finally {
+      getSubjects()
       handleClose()
     }
   }
@@ -380,7 +381,7 @@ export default function Subject() {
                 <div key={unit.id}>
                   <ListItem key={unit.id} disablePadding>
                     <ListItemButton
-                      href={`/subject/${unit.id}`}
+                      href={`/subject/${unit.id}/`}
                       sx={{ padding: 0 }}
                     >
                       <ListItemText primary={unit.title} />
