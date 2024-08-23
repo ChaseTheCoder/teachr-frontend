@@ -1,0 +1,59 @@
+'use server'
+import { getAccessToken } from '@auth0/nextjs-auth0';
+import { NextRequest, NextResponse } from 'next/server';
+import { redirect } from 'next/navigation'
+
+export async function getData(apiUrl) {
+  const accessToken = await getAccessToken();
+
+  const response = await fetch(apiUrl, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${accessToken.accessToken}`,
+    },
+  });
+  if (!response.ok) {
+    throw new Error(`HTTP error! Status: ${response.status}`);
+}
+  const result = await response.json();
+  return result;
+}
+
+export async function postOrPatchData(apiUrl, method, body) {
+  const accessToken = await getAccessToken();
+
+  const response = await fetch(apiUrl, {
+    method: method,
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${accessToken.accessToken}`,
+    },
+    body: JSON.stringify(body),
+  });
+  if (!response.ok) {
+    throw new Error(`HTTP error! Status: ${response.status}`);
+}
+  const result = await NextResponse.json(response);
+  return result;
+}
+
+export async function deleteData(apiUrl) {
+  const accessToken = await getAccessToken();
+
+  const response = await fetch(apiUrl, {
+    method: 'DELETE',
+    headers: {
+      'Authorization': `Bearer ${accessToken.accessToken}`,
+    }
+  });
+  if (!response.ok) {
+    throw new Error(`HTTP error! Status: ${response.status}`);
+}
+  const result = await NextResponse.json(response);
+  return result;
+}
+
+export async function navigate(url) {
+  redirect(url)
+}

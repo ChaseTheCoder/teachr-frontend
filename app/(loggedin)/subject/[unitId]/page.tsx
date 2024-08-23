@@ -2,11 +2,12 @@
 
 import React from 'react';
 import { useEffect, useState } from 'react';
-import Surface from '../../../components/surface/Surface';
 import { Box, Button, Fade, IconButton, List, ListItem, ListItemButton, ListItemText, Modal, Paper, Popper, PopperPlacementType, Skeleton, TextField, Typography } from '@mui/material';
 import { ControlPoint, DeleteOutline, MoreVert, Update } from '@mui/icons-material';
 import LoadingButton from '@mui/lab/LoadingButton';
 import { NextResponse } from 'next/server';
+import Surface from '../../../../components/surface/Surface';
+import { deleteData, getData, postOrPatchData } from '../../../../services/authenticatedApiCalls';
 
 const style = {
   position: 'absolute' as 'absolute',
@@ -28,7 +29,7 @@ export default function Unit({
 }: {
   params: { unitId: string };
 }) {
-  const url = `http://localhost:8000/api/unitplan/${params.unitId}/`;
+  const urlUnit = `http://localhost:8000/api/unitplan/${params.unitId}/`;
   // const urlResource = 'http://localhost:8000/resource/'
   const urlLesson = 'http://localhost:8000/lessonplan/'
   const [loadingUnit, setLoadingUnit] = useState<Boolean>(true)
@@ -99,8 +100,7 @@ export default function Unit({
   async function getUnit() {
     setLoadingUnit(true)
     try {
-      const response = await fetch(url);
-      const data = await response.json();
+      const data = await getData(urlUnit);
       setUnit(data)
       setTitle(data.title)
       setOverview(data.overview)
@@ -119,22 +119,14 @@ export default function Unit({
 
   async function postLesson() {
     try {
-      const res = await fetch(urlLesson, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
+      postOrPatchData(urlLesson, 'POST', {
           title: lessonTitle,
           standard: '',
           objective: '',
           body: '',
           unit_plan: unit.id
-        }),
-      })
-      const data = await res.json()
-      console.log(data)
-      return NextResponse.json(data)
+        }
+      )
     } catch (err) {
       console.log('ERROR: LESSON NOT POSTED')
       console.log(err)
@@ -145,43 +137,31 @@ export default function Unit({
     }
   }
 
-  const patchLesson = () => {
+  async function patchLesson() {
     setLoadingUpdate(true);
-    console.log(update)
-    fetch(url, {      
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: 
-        JSON.stringify(update),
-    })
-    .then(
-      (response) => response.json()
-    )
-    .catch(error => console.log(error))
-    .finally(() => {
+    try {
+      postOrPatchData(urlUnit, 'PATCH', update)
+    } catch (err) {
+      console.log('ERROR: SUBJECT NOT PATCHED')
+      console.log(err)
+    } finally {
       setUpdate({})
       setTimeout(() => {setLoadingUpdate(false)}, 2000)
       setDisableUpdate(true)
-    })
+    }
   }
 
-  const deleteLesson = (id: number) => {
-    fetch(`${urlLesson}${id}/`, {      
-      method: 'DELETE'
-    })
-    .then((response) => {
-      response.json();
+  async function deleteLesson(id: number) {
+    try {
+      deleteData(`${urlLesson}${id}/`)
+    } catch (err) {
+      console.log('ERROR: SUBJECT NOT DELETED')
+      console.log(err)
+    } finally {
       getUnit()
       handleCloseLesson()
       setLessonId(null)
-    })
-    .catch((error) => {
-      console.log(error)
-      handleCloseLesson()
-      setLessonId(null)
-    })
+    }
   }
 
   return (

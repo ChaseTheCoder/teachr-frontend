@@ -2,11 +2,13 @@
 
 import React from 'react';
 import { useEffect, useState } from 'react';
-import Surface from '../../components/surface/Surface';
+import Surface from '../../../components/surface/Surface';
 import { NextResponse } from 'next/server';
 import { Box, Button, Fade, IconButton, List, ListItem, ListItemButton, ListItemText, Modal, Paper, Popper, PopperPlacementType, TextField, Typography } from '@mui/material';
 import { DeleteOutline, MoreVert, Update } from '@mui/icons-material';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import LoadingIndicator from '../../../components/loading';
+import { deleteData, getData, postOrPatchData } from '../../../services/authenticatedApiCalls';
 
 const style = {
   position: 'absolute' as 'absolute',
@@ -104,15 +106,14 @@ export default function Subject() {
   async function getSubjects() {
     setLoading(true)
     try {
-      fetch(urlSubjects)
-      .then((res) => res.json())
+      getData(urlSubjects)
       .then((subject) => {
         setSubject(subject)
-        setLoading(false)
       })
     } catch (err) {
-      setLoading(false)
       setError(true)
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -122,20 +123,11 @@ export default function Subject() {
 
   async function postSubject() {
     try {
-      const res = await fetch(urlSubjects, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
+      postOrPatchData(urlSubjects, 'POST', {
           subject: value1,
           grade: value2
-        }),
-      })
-      
-      const data = await res.json()
-      
-      return NextResponse.json(data)
+        }
+      )
     } catch (err) {
       console.log('ERROR: SUBJECT NOT POSTED')
       console.log(err)
@@ -147,18 +139,11 @@ export default function Subject() {
 
   async function updateSubject() {
     try {
-      const res = await fetch(`${urlSubjects}${subjectId}/`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
+      postOrPatchData(`${urlSubjects}${subjectId}/`, 'PATCH', {
           subject: value1,
           grade: value2
-        }),
-      })
-      const data = await res.json()
-      return NextResponse.json(data)
+        }
+      )
     } catch (err) {
       console.log('ERROR: SUBJECT NOT PATCHED')
       console.log(err)
@@ -170,20 +155,11 @@ export default function Subject() {
 
   async function postUnit() {
     try {
-      const res = await fetch(urlUnit, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
+      postOrPatchData(urlUnit, 'POST', {
           title: value1,
           subject: subjectId
-        }),
-      })
-      
-      const data = await res.json()
-      
-      return NextResponse.json(data)
+        }
+      )
     } catch (err) {
       console.log('ERROR: UNIT NOT POSTED')
       console.log(err)
@@ -192,23 +168,13 @@ export default function Subject() {
       handleClose()
     }
   }
-  
 
   async function updateUnit() {
     try {
-      const res = await fetch(`${urlUnit}${unitId}/`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
+      postOrPatchData(`${urlUnit}${unitId}/`, 'PATCH', {
           title: value1
-        }),
-      })
-      
-      const data = await res.json()
-      
-      return NextResponse.json(data)
+        }
+      )
     } catch (err) {
       console.log('ERROR: UNIT NOT PATCHED')
       console.log(err)
@@ -217,15 +183,10 @@ export default function Subject() {
       handleClose()
     }
   }
-  
+
   async function deleteSubject() {
     try {
-      fetch(`${urlSubjects}${subjectId}/`, {
-        method: 'DELETE',
-      })
-      .then(async (response) => {
-        response.json();
-      })
+      deleteData(`${urlSubjects}${subjectId}/`)
     } catch (err) {
       console.log('ERROR: SUBJECT NOT DELETED')
       console.log(err)
@@ -234,15 +195,10 @@ export default function Subject() {
       handleClose()
     }
   }
-  
+
   async function deleteUnit() {
     try {
-      fetch(`${urlUnit}${unitId}/`, {
-        method: 'DELETE',
-      })
-      .then(async (response) => {
-        response.json()
-      })
+      deleteData(`${urlUnit}${unitId}/`)
     } catch (err) {
       console.log('ERROR: SUBJECT NOT DELETED')
       console.log(err)
@@ -282,9 +238,7 @@ export default function Subject() {
 
   if (isLoading) {
     return (
-      <div className='space-y-3'>
-        <p>Loading...</p>
-      </div>
+      <LoadingIndicator description='Loading subjects...'/>
     )
   }
 
@@ -314,7 +268,7 @@ export default function Subject() {
             Subject
           </Button>
         </Box>
-        {subject !== null && (
+        {(subject !== null && subject.length > 0) && (
           subject.map((subject) => (
             <Surface key={subject.id}>
               <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>

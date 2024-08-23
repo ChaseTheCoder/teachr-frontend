@@ -7,17 +7,17 @@ export default function SideNav() {
   return (
     <aside>
       <Grid container sx={{ gap: '1rem'}}>
-        <Grid xs={12}>
-          <Button size='small' href='/' sx={{ width: '100px'}}>
+        <Grid xs={12} item={true}>
+          <Button size='small' href='/dashboard' sx={{ width: '100px'}}>
             <Box
               textAlign='center'
             >
               <House/>
-              <Typography>Home</Typography>
+              <Typography>Dashboard</Typography>
             </Box>
           </Button>
         </Grid>
-        <Grid xs={12}>
+        <Grid xs={12} item={true}>
           <Button size='small' href='/subject' sx={{ width: '100px'}}>
             <Box
               textAlign='center'
@@ -27,7 +27,7 @@ export default function SideNav() {
             </Box>
           </Button>
         </Grid>
-        <Grid xs={12}>
+        <Grid xs={12} item={true}>
           <Button size='small' href='/schedule' sx={{ width: '100px'}}>
             <Box
               textAlign='center'
