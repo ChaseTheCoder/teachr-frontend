@@ -1,5 +1,5 @@
 'use server'
-import { getAccessToken } from '@auth0/nextjs-auth0';
+import { getAccessToken, getSession } from '@auth0/nextjs-auth0';
 import { NextRequest, NextResponse } from 'next/server';
 import { redirect } from 'next/navigation'
 
@@ -56,4 +56,9 @@ export async function deleteData(apiUrl) {
 
 export async function navigate(url) {
   redirect(url)
+}
+
+export async function getSessionId() {
+  const session = await getSession();
+  return session.user.sub;
 }
