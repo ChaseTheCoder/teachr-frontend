@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import Surface from '../../../components/surface/Surface';
 import { TextField, Button, Box } from '@mui/material';
-import { postOrPatchData } from '../../../services/authenticatedApiCalls';
+import { getDataNoUserId, postOrPatchData } from '../../../services/authenticatedApiCalls';
 import { useUser } from '@auth0/nextjs-auth0/client';
+import { useQuery } from '@tanstack/react-query';
 
 export default function RegisterPage() {
   const { user } = useUser();
