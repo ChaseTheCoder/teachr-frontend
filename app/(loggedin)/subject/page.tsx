@@ -8,7 +8,9 @@ import { Box, Button, Fade, IconButton, List, ListItem, ListItemButton, ListItem
 import { DeleteOutline, MoreVert, Update } from '@mui/icons-material';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import LoadingIndicator from '../../../components/loading';
-import { deleteData, getData, postOrPatchData } from '../../../services/authenticatedApiCalls';
+import { deleteData, getData, getDataNoUserId, postOrPatchData } from '../../../services/authenticatedApiCalls';
+import { QueryCache, useQuery } from '@tanstack/react-query';
+import { useUser } from '@auth0/nextjs-auth0/client';
 
 const style = {
   position: 'absolute' as 'absolute',
@@ -26,6 +28,7 @@ const style = {
 };
 
 export default function Subject() {
+  const { user } = useUser();
   const urlSubjects = 'http://localhost:8000/subject/';
   const urlUnit = 'http://localhost:8000/unitplan/';
   const [subject, setSubject] = useState<any | null>(null);
@@ -43,7 +46,14 @@ export default function Subject() {
   const [openSubject, setOpenSubject] = React.useState(false);
   const [placement, setPlacement] = React.useState<PopperPlacementType>();
   const [placementSubject, setPlacementSubject] = React.useState<PopperPlacementType>();
-
+  const userIdEncode = encodeURIComponent(user.sub);
+  const { data: profileData } = useQuery({
+    enabled: user !== undefined && user !== null,
+    queryKey: ['profile'],
+    queryFn: () => getDataNoUserId(`http://localhost:8000/userprofile/profile/${userIdEncode}/`),
+    staleTime: 1000 * 60 * 60, // 1 hour in ms
+    refetchOnWindowFocus: false,
+  })
   const createSubectButton = 'Create New Subject';
   const deleteSubjectButton = 'Confirm Deleting Subject and Units it has?';
   const updateSubjectButton = 'Update Subject';
@@ -106,7 +116,7 @@ export default function Subject() {
   async function getSubjects() {
     setLoading(true)
     try {
-      getData(urlSubjects)
+      getData(urlSubjects, profileData.id)
       .then((subject) => {
         setSubject(subject)
       })
@@ -125,7 +135,8 @@ export default function Subject() {
     try {
       postOrPatchData(urlSubjects, 'POST', {
           subject: value1,
-          grade: value2
+          grade: value2,
+          user_id: profileData.id
         }
       )
     } catch (err) {

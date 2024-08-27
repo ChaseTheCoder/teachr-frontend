@@ -4,45 +4,35 @@ import React, { useEffect } from 'react'
 import { useUser } from '@auth0/nextjs-auth0/client';
 import { Box, Grid } from '@mui/material'
 import SideNav from '../../components/sideNav/SideNav';
-import { getData, getSessionId } from '../../services/authenticatedApiCalls';
+import { getData, getDataNoUserId, getSessionId } from '../../services/authenticatedApiCalls';
 import RegisterPage from './register/page';
+import { useQuery } from '@tanstack/react-query';
 
 export default function AuthenticatedLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
-  const { user, error, isLoading } = useUser();
-  const [ready, setReady] = React.useState(false);
-  const [profile, setProfile] = React.useState(null);
-  
+  const { user, error, isLoading: userLoading } = useUser();
+  const [userIdEncode, setUserIdEncode] = React.useState<string | null>(null);
   useEffect(() => {
-    setReady(user && !isLoading && !error);
-  }, [user, error, isLoading]);
-
-  async function getUser() {
-    const getId = await getSessionId()
-    try {
-      getData(`http://localhost:8000/userprofile/profile/${getId}`)
-      .then((subject) => {
-        setProfile(subject)
-      })
-    } catch (err) {
-      console.error(err)
-    }
-  }
+    if(!userLoading && user !== undefined) {
+      setUserIdEncode(encodeURIComponent(user.sub))
+    };
+  }, [user, userLoading]);
+  const { data: profileData, isFetching, isLoading } = useQuery({
+    enabled: userIdEncode !== null,
+    queryKey: ['profile'],
+    queryFn: () => getDataNoUserId(`http://localhost:8000/userprofile/profile/${userIdEncode}/`),
+    staleTime: 1000 * 60 * 60, // 1 hour in ms
+    refetchOnWindowFocus: false,
+  })
   
-  useEffect(() => {
-    if(ready){
-      getUser();
-      console.log('profile use effect');
-      console.log(profile);
-    }
-  }, [ready]);
+  if(isLoading) return <div>Loading...</div>
   
   return (
     <Grid container>
-      { user && profile &&
+      { user &&
         <>
           <Grid xs={1} item={true} sx={{ paddingTop: '18px' }}>
             <SideNav/>
@@ -54,7 +44,7 @@ export default function AuthenticatedLayout({
           </Grid>
         </>
       }
-      { !profile &&     
+      { user && !profileData && !isLoading && !isFetching &&     
         <Grid xs={12} item={true} sx={{ paddingTop: '18px' }}>
           <RegisterPage />
         </Grid>

@@ -1,9 +1,10 @@
 'use server'
 import { getAccessToken, getSession } from '@auth0/nextjs-auth0';
 import { NextRequest, NextResponse } from 'next/server';
-import { redirect } from 'next/navigation'
+import { redirect } from 'next/navigation';
+import { QueryCache, useQuery } from '@tanstack/react-query';
 
-export async function getData(apiUrl) {
+export async function getData(apiUrl, id) {
   const accessToken = await getAccessToken();
 
   const response = await fetch(apiUrl, {
@@ -11,6 +12,24 @@ export async function getData(apiUrl) {
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${accessToken.accessToken}`,
+      'user_id': id,
+    },
+  });
+  if (!response.ok) {
+    throw new Error(`HTTP error! Status: ${response.status}`);
+  }
+  const result = await response.json();
+  return result;
+}
+
+export async function getDataNoUserId(apiUrl) {
+  const accessToken = await getAccessToken();
+
+  const response = await fetch(apiUrl, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${accessToken.accessToken}`
     },
   });
   if (!response.ok) {

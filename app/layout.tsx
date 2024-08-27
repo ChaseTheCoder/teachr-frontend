@@ -1,35 +1,31 @@
 'use client'
 
 import { UserProvider } from '@auth0/nextjs-auth0/client';
-import { getAccessToken } from '@auth0/nextjs-auth0';
 import React from 'react'
 import './globals.css'
 import ResponsiveAppBar from '../components/TopNav';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+const queryClient = new QueryClient();
 
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
-  // async function getToken() {
-  //   try {
-  //     const { accessToken } = await getAccessToken();
-  //     console.log(accessToken);
-  //   } catch {
-  //     console.log('error')
-  //   }
-  // }
-  // getToken();
   return (
     <html lang="en">
-      <UserProvider>  
-        <body>
-          <main>
-            <ResponsiveAppBar/>
-            {children}
-          </main>
-        </body>
-      </UserProvider>
+      <body>
+        <main>
+          <UserProvider>
+            <QueryClientProvider client={queryClient}>
+              <ResponsiveAppBar/>
+              {children}
+              <ReactQueryDevtools />
+            </QueryClientProvider>
+          </UserProvider>
+        </main>
+      </body> 
     </html>
   )
 }
