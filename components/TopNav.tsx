@@ -53,7 +53,7 @@ function ResponsiveAppBar() {
   };
 
   return (
-    <AppBar position="static" elevation={2} sx={{ bgcolor: 'white' }}>
+    <AppBar position="static" elevation={0} sx={{ bgcolor: 'white', borderRadius: 4 }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Box sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }}>

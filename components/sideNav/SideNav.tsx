@@ -1,43 +1,65 @@
 import React from 'react';
-import { Box, Button, Grid, Stack, Typography } from '@mui/material';
+import { Box, IconButton, Stack, Typography } from '@mui/material';
 import { CalendarMonth, House, Note } from '@mui/icons-material';
+import Link from 'next/link';
 
 export default function SideNav() {
 
   return (
     <aside>
-      <Grid container sx={{ gap: '1rem'}}>
-        <Grid xs={12} item={true}>
-          <Button size='small' href='/dashboard' sx={{ width: '100px'}}>
-            <Box
-              textAlign='center'
-            >
+      <Stack 
+        style={{textAlign: "center", paddingTop: 12 }}
+        gap={2}
+      >
+        <Link
+          href='/dashboard'
+        >
+          <Box
+            sx={{ borderRadius: 4, padding: 1, '&:hover': { backgroundColor: '#e0e0e0' } }}
+          >
+            <IconButton>
               <House/>
-              <Typography>Dashboard</Typography>
-            </Box>
-          </Button>
-        </Grid>
-        <Grid xs={12} item={true}>
-          <Button size='small' href='/subject' sx={{ width: '100px'}}>
-            <Box
-              textAlign='center'
+            </IconButton>
+            <Typography
+              variant='body2'
             >
+              Dashboard
+            </Typography>
+          </Box>
+        </Link>
+        <Link
+          href='/subject'
+        >
+          <Box
+            sx={{ borderRadius: 4, padding: 1, '&:hover': { backgroundColor: '#e0e0e0' } }}
+          >
+            <IconButton>
               <Note/>
-              <Typography>Subjects</Typography>
-            </Box>
-          </Button>
-        </Grid>
-        <Grid xs={12} item={true}>
-          <Button size='small' href='/schedule' sx={{ width: '100px'}}>
-            <Box
-              textAlign='center'
+            </IconButton>
+            <Typography
+              variant='body2'
             >
+              Subjects
+            </Typography>
+          </Box>
+        </Link>
+        <Link
+          href='/schedule'
+        >
+          <Box
+            sx={{ borderRadius: 4, padding: 1, '&:hover': { backgroundColor: '#e0e0e0' } }}
+          >
+            <IconButton>
               <CalendarMonth/>
-              <Typography>Schedule</Typography>
-            </Box>
-          </Button>
-        </Grid>
-      </Grid>
+            </IconButton>
+            <Typography
+              variant='body2'
+            >
+              Schedule
+            </Typography>
+          </Box>
+        </Link>
+      </Stack>
     </aside>
   )
 }

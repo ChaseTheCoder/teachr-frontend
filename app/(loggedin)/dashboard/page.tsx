@@ -1,7 +1,6 @@
 'use client'
 
 import React from 'react';
-import AuthenticatedLayout from '../layout'
 import Surface from '../../../components/surface/Surface';
 import { Box, Typography } from '@mui/material';
 

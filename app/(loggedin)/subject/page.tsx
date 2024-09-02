@@ -28,7 +28,18 @@ const style = {
 };
 
 export default function Subject() {
-  const { user } = useUser();
+  const { user, error, isLoading: userLoading } = useUser();
+  const [userIdEncode, setUserIdEncode] = React.useState<string | null>(null);
+  useEffect(() => {
+    if(!userLoading && user !== undefined) {
+      setUserIdEncode(encodeURIComponent(user.sub))
+    };
+  }, [user, userLoading]);
+  const { data: profileData, isFetching, isLoading: isLoadingProfile } = useQuery({
+    enabled: false,
+    queryKey: ['profile'],
+    queryFn: () => getDataNoUserId(`http://localhost:8000/userprofile/profile/${userIdEncode}/`),
+  })
   const urlSubjects = 'http://localhost:8000/subject/';
   const urlUnit = 'http://localhost:8000/unitplan/';
   const [subject, setSubject] = useState<any | null>(null);
@@ -46,14 +57,6 @@ export default function Subject() {
   const [openSubject, setOpenSubject] = React.useState(false);
   const [placement, setPlacement] = React.useState<PopperPlacementType>();
   const [placementSubject, setPlacementSubject] = React.useState<PopperPlacementType>();
-  const userIdEncode = encodeURIComponent(user.sub);
-  const { data: profileData } = useQuery({
-    enabled: user !== undefined && user !== null,
-    queryKey: ['profile'],
-    queryFn: () => getDataNoUserId(`http://localhost:8000/userprofile/profile/${userIdEncode}/`),
-    staleTime: 1000 * 60 * 60, // 1 hour in ms
-    refetchOnWindowFocus: false,
-  })
   const createSubectButton = 'Create New Subject';
   const deleteSubjectButton = 'Confirm Deleting Subject and Units it has?';
   const updateSubjectButton = 'Update Subject';
@@ -120,6 +123,7 @@ export default function Subject() {
       .then((subject) => {
         setSubject(subject)
       })
+      setError(false)
     } catch (err) {
       setError(true)
     } finally {
@@ -128,8 +132,10 @@ export default function Subject() {
   }
 
   useEffect(() => {
-    getSubjects() 
-  }, []);
+    if(profileData){
+      getSubjects() 
+    } 
+  }, [profileData]);
 
   async function postSubject() {
     try {
