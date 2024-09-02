@@ -1,4 +1,4 @@
-import { openai } from '../../../../utils/openai';
+import { openai } from "../../../../../utils/openai";
 
 export async function lessonAi(prompt: string) {
   const promptResponse = await openai.chat.completions.create({

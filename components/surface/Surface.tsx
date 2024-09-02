@@ -1,14 +1,13 @@
-import { Paper } from '@mui/material';
+import { Box } from '@mui/material';
 import React from 'react';
 
 export default function Surface({children}) {
 
   return (
-    <Paper
-      elevation={2}
-      sx={{ padding: 2, marginBottom: 1.5 }}
+    <Box
+      sx={{ padding: 2, marginBottom: 1.5, borderRadius: 4, bgcolor: '#ffffff' }}
     >
       {children}
-    </Paper>
+    </Box>
   )
 }
