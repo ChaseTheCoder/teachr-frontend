@@ -3,7 +3,7 @@
 import React from 'react';
 import Surface from '../../../components/surface/Surface';
 
-export default function Calendar({children}) {
+export default function Calendar() {
 
   return (
     <Surface>
