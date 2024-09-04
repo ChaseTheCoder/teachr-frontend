@@ -11,11 +11,11 @@ export default function Home() {
       <Surface>
         <Grid container spacing={2} alignItems="center">
           <Grid item xs={12} md={6}>
-            <img
+            {/* <img
               src="path/to/your/image.jpg"
               alt="Educational Illustration"
               style={{ width: '100%', height: 'auto' }}
-            />
+            /> */}
           </Grid>
           <Grid item xs={12} md={6}>
             <Typography variant='h1' fontSize={68} align='center' gutterBottom>
@@ -28,7 +28,7 @@ export default function Home() {
               AI to automate the mundane,
             </Typography>
             <Typography variant='body2' fontSize={14} align='center' paragraph>
-              to gain time for what can't be automated in the classroom.
+              to gain time for what cant be automated in the classroom.
             </Typography>
             <Button variant='contained' color='primary' size='large'>
               Get Started
