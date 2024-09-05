@@ -1,6 +1,7 @@
 'use client'
 
 import React from 'react';
+import Image from 'next/image'
 import Surface from '../components/surface/Surface';
 import { Box, Button, Grid, Typography } from '@mui/material';
 
@@ -11,31 +12,42 @@ export default function Home() {
       <Surface>
         <Grid container spacing={2} alignItems="center">
           <Grid item xs={12} md={6}>
-            {/* <img
-              src="path/to/your/image.jpg"
+            <Image
+              src="/designer-working.png"
               alt="Educational Illustration"
-              style={{ width: '100%', height: 'auto' }}
-            /> */}
+              height={400}
+              width={400}
+            />
           </Grid>
-          <Grid item xs={12} md={6}>
-            <Typography variant='h1' fontSize={68} align='center' gutterBottom>
+          <Grid item xs={12} md={6} gap={5}>
+            <Typography variant='h1' fontSize={68} fontWeight='bold' align='center' sx={{ paddingBottom: '18px' }}>
               Teachr Lounge
             </Typography>
-            <Typography variant='h2' fontSize={20} align='center' gutterBottom>
-              The future of lesson planning.
+            <Typography variant='h2' fontSize={22} align='center' sx={{ paddingBottom: '18px' }}>
+              A digital lounge for teachers (made by a teacher).
             </Typography>
-            <Typography variant='body2' fontSize={14} align='center' paragraph>
-              AI to automate the mundane,
+            <Typography fontSize={16} align='center' sx={{ paddingBottom: '44px' }}>
+              Join to automate lesson planning wiht AI. Stay to see all that AI can do to support teachers. 
             </Typography>
-            <Typography variant='body2' fontSize={14} align='center' paragraph>
-              to gain time for what cant be automated in the classroom.
-            </Typography>
-            <Button variant='contained' color='primary' size='large'>
-              Get Started
+            <Button 
+              href='/api/auth/login'
+              variant='contained'
+              color='primary'
+              size='large'
+            >
+              Register & Try for Free
             </Button>
           </Grid>
         </Grid>
       </Surface>
+
+    <Box
+      sx={{ padding: 2, marginBottom: 1.5, borderRadius: 4, bgcolor: '#e1f5fe' }}
+    >
+      <Typography fontSize={18} align='justify' padding={4}>
+        I&apos;m a teacher turned software engineer that&apos;s on a mission to build the tools for teachers that I wish I had when I was in the classroom. I&apos;m building Teachr Lounge to help teachers use AI to create co-create content specific for their students to save time so they can focus on the parts of their job that are most important: building relationships with students and helping them learn.
+      </Typography>
+    </Box>
     </Box>
   )
 }
