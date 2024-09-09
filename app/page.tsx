@@ -13,7 +13,7 @@ export default function Home() {
         <Grid container spacing={2} alignItems="center">
           <Grid item xs={12} md={6}>
             <Image
-              src="/designer-working.png"
+              src="/teacher-bluedot.png"
               alt="Educational Illustration"
               height={400}
               width={400}
@@ -24,10 +24,10 @@ export default function Home() {
               Teachr Lounge
             </Typography>
             <Typography variant='h2' fontSize={22} align='center' sx={{ paddingBottom: '18px' }}>
-              A digital lounge for teachers (made by a teacher).
+              Join to automate lesson planning with AI.
             </Typography>
-            <Typography fontSize={16} align='center' sx={{ paddingBottom: '44px' }}>
-              Join to automate lesson planning wiht AI. Stay to see all that AI can do to support teachers. 
+            <Typography variant='h2' fontSize={22} align='center' sx={{ paddingBottom: '18px' }}>
+              Stay to see all that AI can do to support teachers.
             </Typography>
             <Button 
               href='/api/auth/login'

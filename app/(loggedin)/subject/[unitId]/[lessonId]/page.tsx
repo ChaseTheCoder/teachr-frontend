@@ -40,7 +40,8 @@ export default function Unit({
 }: {
   params: { lessonId: string, unitId: string };
 }) {
-  const urlLesson = `http://localhost:8000/lessonplan/${params.lessonId}/`;
+  const urlLesson = `https://teachr-backend.onrender.com/lessonplan/${params.lessonId}/`;
+  const lessonOutline = '<p><strong>Introduction</strong>:</p> \n\n<p><strong>Activity</strong>:</p>\n\n<p><strong>Guided Practice</strong>:</p> \n\n<p><strong>Independent Practice</strong>:</p> \n\n<p><strong>Closure</strong>:</p> \n\n<p><strong>Assessment</strong>:</p> \n\n<p><strong>Materials</strong>:</p>';
   const [loadingLesson, setLoadingLesson] = useState<Boolean>(true)
   const [update, setUpdate] = useState({})
   const [lesson, setLesson] = useState<any>(null);
@@ -151,12 +152,13 @@ export default function Unit({
   }
 
   async function updateObjectiveAi(prompt: string) {
+    const objectivePrompt = `Write a lesson objective based on this prompt basing it in Common Core State Standards: ${prompt}`;
     const promptResponse = await lessonAi(prompt);
     setObjective(promptResponse);
   }
 
   async function updateLessonOutlineAi(prompt: string) {
-    const promptFinal = `Write a lesson plan based on this ${objective !== '' && 'this objective, '+objective+', and '}`  + 'prompt, ' + prompt;
+    const promptFinal = `Write a lesson plan within this format, ${lessonOutline} based on ${objective !== '' && 'this objective, '+objective+', and '}`  + 'this prompt: ' + prompt;
     const promptResponse = await lessonAi(promptFinal);
     setBody(promptResponse);
   }
