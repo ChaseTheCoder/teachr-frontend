@@ -39,7 +39,7 @@ export default function RegisterPage() {
 
   const handleSubmit = () => {
     try {
-      postOrPatchData('http://localhost:8000/userprofile/profile/', 'POST', {
+      postOrPatchData('https://teachr-backend.onrender.com/userprofile/profile/', 'POST', {
         auth0_user_id: user.sub,
         first_name: firstName,
         last_name: lastName,

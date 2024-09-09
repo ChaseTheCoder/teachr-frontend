@@ -23,7 +23,7 @@ export default function AuthenticatedLayout({
   const { data: profileData, isFetching, isLoading } = useQuery({
     enabled: !!userIdEncode,
     queryKey: ['profile'],
-    queryFn: () => getDataNoUserId(`http://localhost:8000/userprofile/profile/${userIdEncode}/`),
+    queryFn: () => getDataNoUserId(`https://teachr-backend.onrender.com/userprofile/profile/${userIdEncode}/`),
     staleTime: 1000 * 60 * 60, // 1 hour in ms
   })
   

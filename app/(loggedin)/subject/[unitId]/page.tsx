@@ -29,9 +29,9 @@ export default function Unit({
 }: {
   params: { unitId: string };
 }) {
-  const urlUnit = `http://localhost:8000/api/unitplan/${params.unitId}/`;
-  // const urlResource = 'http://localhost:8000/resource/'
-  const urlLesson = 'http://localhost:8000/lessonplan/'
+  const urlUnit = `https://teachr-backend.onrender.com/api/unitplan/${params.unitId}/`;
+  // const urlResource = 'https://teachr-backend.onrender.com/resource/'
+  const urlLesson = 'https://teachr-backend.onrender.com/lessonplan/'
   const [loadingUnit, setLoadingUnit] = useState<Boolean>(true)
   const [unit, setUnit] = useState<any>(null);
   const [lessons, setLessons] = useState<any>();

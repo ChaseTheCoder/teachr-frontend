@@ -38,10 +38,10 @@ export default function Subject() {
   const { data: profileData, isFetching, isLoading: isLoadingProfile } = useQuery({
     enabled: false,
     queryKey: ['profile'],
-    queryFn: () => getDataNoUserId(`http://localhost:8000/userprofile/profile/${userIdEncode}/`),
+    queryFn: () => getDataNoUserId(`https://teachr-backend.onrender.com/userprofile/profile/${userIdEncode}/`),
   })
-  const urlSubjects = 'http://localhost:8000/subject/';
-  const urlUnit = 'http://localhost:8000/unitplan/';
+  const urlSubjects = 'https://teachr-backend.onrender.com/subject/';
+  const urlUnit = 'https://teachr-backend.onrender.com/unitplan/';
   const [subject, setSubject] = useState<any | null>(null);
   const [isLoading, setLoading] = useState(true);
   const [isError, setError] = useState(false);

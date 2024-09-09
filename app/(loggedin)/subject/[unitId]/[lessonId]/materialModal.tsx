@@ -25,7 +25,7 @@ export default function MaterialModal({
   link: string
   id: number
 }) {
-  const urlMaterial = 'http://localhost:8000/material/'
+  const urlMaterial = 'https://teachr-backend.onrender.com/material/'
   const [openModal, setOpenModel] = useState(false);
   const handleClose = () => setOpenModel(false);
 
