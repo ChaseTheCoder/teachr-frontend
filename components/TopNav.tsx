@@ -20,19 +20,19 @@ import { Button } from '@mui/material';
 
 const pages = [
   {
-    title: 'Dashboard'
+    title: 'Dashboard',
     link: '/dashboard'
   }, 
   {
-    title: 'Subjects'
+    title: 'Subjects',
     link: '/subjects'
   }, 
   {
-    title: 'Plans'
+    title: 'Plans',
     link: '/plans'
   }, 
   {
-    title: 'Schedule'
+    title: 'Schedule',
     link: '/schedule'
   },
 ];
