@@ -14,12 +14,7 @@ export default function AuthenticatedLayout({
   children: React.ReactNode
 }) {
   const { user, error, isLoading: userLoading } = useUser();
-  const [userIdEncode, setUserIdEncode] = React.useState<string | null>(null);
-  useEffect(() => {
-    if(!userLoading && user?.sub) {
-      setUserIdEncode(encodeURIComponent(user.sub))
-    };  
-  }, [user, userLoading]);
+  const userIdEncode = user?.sub;
   const { data: profileData, isFetching, isLoading } = useQuery({
     enabled: !!userIdEncode,
     queryKey: ['profile'],

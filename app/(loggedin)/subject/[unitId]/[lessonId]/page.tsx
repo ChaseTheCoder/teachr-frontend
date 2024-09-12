@@ -152,12 +152,14 @@ export default function Unit({
   }
 
   async function updateObjectiveAi(prompt: string) {
+    console.log('updateObjectiveAi initiated')
     const objectivePrompt = `Write a lesson objective based on this prompt basing it in Common Core State Standards: ${prompt}`;
     const promptResponse = await lessonAi(prompt);
     setObjective(promptResponse);
   }
 
   async function updateLessonOutlineAi(prompt: string) {
+    console.log('updateLessonOutlineAi initiated')
     const promptFinal = `Write a lesson plan within this format, ${lessonOutline} based on ${objective !== '' && 'this objective, '+objective+', and '}`  + 'this prompt: ' + prompt;
     const promptResponse = await lessonAi(promptFinal);
     setBody(promptResponse);
