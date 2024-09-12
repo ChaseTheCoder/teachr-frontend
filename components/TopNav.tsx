@@ -18,7 +18,24 @@ import Link from 'next/link';
 import TeachrLogo from '../public/TeachrLogo.svg';
 import { Button } from '@mui/material';
 
-const pages = ['Home', 'Subjects', 'Schedule'];
+const pages = [
+  {
+    title: 'Dashboard'
+    link: '/dashboard'
+  }, 
+  {
+    title: 'Subjects'
+    link: '/subjects'
+  }, 
+  {
+    title: 'Plans'
+    link: '/plans'
+  }, 
+  {
+    title: 'Schedule'
+    link: '/schedule'
+  },
+];
 const settings = [
   // {
   //   title: 'Profile',
@@ -97,8 +114,10 @@ function ResponsiveAppBar() {
               }}
             >
               {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
+                <MenuItem key={page.title} onClick={handleCloseNavMenu}>
+                  <Link href={page.link>
+                    <Typography textAlign="center">{page}.title</Typography>
+                  </Link>
                 </MenuItem>
               ))}
             </Menu>
