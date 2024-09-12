@@ -34,7 +34,7 @@ const pages = [
   {
     title: 'Schedule',
     link: '/schedule'
-  },
+  }
 ];
 const settings = [
   // {
@@ -115,7 +115,7 @@ function ResponsiveAppBar() {
             >
               {pages.map((page) => (
                 <MenuItem key={page.title} onClick={handleCloseNavMenu}>
-                  <Link href={page.link>
+                  <Link href={page.link}>
                     <Typography textAlign="center">{page}.title</Typography>
                   </Link>
                 </MenuItem>
