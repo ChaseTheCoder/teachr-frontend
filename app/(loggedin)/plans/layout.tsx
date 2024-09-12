@@ -1,11 +1,10 @@
 'use client'
 
 import React, { useEffect, useState } from 'react';
-import Surface from '../../../components/surface/Surface';
-import { Button, Collapse, Divider, Grid, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
+import { Button, Collapse, Divider, Grid, List, ListItem, ListItemButton, ListItemText } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { getDataNoUserId } from '../../../services/authenticatedApiCalls';
-import { AddCircleOutline, ExpandLess, ExpandMore, MoreVert, StarBorder } from '@mui/icons-material';
+import { AddCircleOutline, ExpandLess, ExpandMore, MoreVert } from '@mui/icons-material';
 import { useUser } from '@auth0/nextjs-auth0/client';
 
 export default function PlansLayout({
@@ -13,8 +12,8 @@ export default function PlansLayout({
 }: {
   children: React.ReactNode
 }) {
-  const { user, error, isLoading: userLoading } = useUser();
-  const userIdEncode = user?.sub;
+  // const { user, error, isLoading: userLoading } = useUser();
+  // const userIdEncode = user?.sub;
 
   const [openUnits, setOpenUnits] = useState({});
   const handleClickUnit = (unitId) => {
@@ -32,19 +31,19 @@ export default function PlansLayout({
     }));
   };
 
-  const { data: profileData, isFetching: isFetchingProfle, isLoading: isLoadingProfile, isError: isErrorProfile } = useQuery({
-    queryKey: ['profile'],
-    queryFn: () => getDataNoUserId(`https://teachr-backend.onrender.com/userprofile/profile/${userIdEncode}/`),
-    staleTime: 1000 * 60 * 60, // 1 hour in ms
-  })
+  // const { data: profileData, isFetching: isFetchingProfle, isLoading: isLoadingProfile, isError: isErrorProfile } = useQuery({
+  //   queryKey: ['profile'],
+  //   queryFn: () => getDataNoUserId(`https://teachr-backend.onrender.com/userprofile/profile/${userIdEncode}/`),
+  //   staleTime: 1000 * 60 * 60, // 1 hour in ms
+  // })
 
-  const profile = profileData;
+  // const profile = profileData;
   
   const { data: plansData, isFetching, isLoading, isError } = useQuery({
     queryKey: ['plans'],
     queryFn: () => getDataNoUserId('https://teachr-backend.onrender.com/plans/'),
     staleTime: 1000 * 60 * 60,
-    enabled: !!profile,
+    // enabled: !!profile,
   })
 
   useEffect(() => {
@@ -56,11 +55,11 @@ export default function PlansLayout({
     setOpenPlans(initialOpenPlans);
   }, [plansData]);
 
-  if (isFetching || isLoading || isFetchingProfle || isLoadingProfile) {
+  if (isFetching || isLoading) {
     return <span>Loading...</span>
   }
 
-  if (isError || isErrorProfile) {
+  if (isError) {
     return <span>Error</span>
   }
 
@@ -84,7 +83,7 @@ export default function PlansLayout({
               {index !== 0 && <Divider />}
               <ListItem key={plan.id} disablePadding>
                 <ListItemButton
-                  href={`plans/subject/${plan.id}`}
+                  href={`/plans/subject/${plan.id}`}
                 >
                   <ListItemText
                     primary={`${plan.grade}, ${plan.subject}`}
@@ -105,7 +104,7 @@ export default function PlansLayout({
                       disablePadding
                     >
                       <ListItemButton
-                        href={`plans/unit/${unit.id}`}
+                        href={`/plans/unit/${unit.id}`}
                       >
                         <ListItemText
                           primary={unit.title}
@@ -124,7 +123,7 @@ export default function PlansLayout({
                         {unit.lessons.map((lesson) => (
                           <ListItem key={lesson.id} disablePadding>
                             <ListItemButton
-                              href={`plans/lesson/${lesson.id}`}
+                              href={`/plans/lesson/${lesson.id}`}
                             >
                               <ListItemText
                                 primary={lesson.title}

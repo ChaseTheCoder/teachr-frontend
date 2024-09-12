@@ -187,7 +187,7 @@ export default function Unit({
               <IconButton 
                 size='small'
                 color='secondary'
-                onClick={() => updateObjectiveAi(objective)}
+                // onClick={() => updateObjectiveAi(objective)}
               >
                 <AutoAwesome sx={{ fontSize: 18 }} />
               </IconButton>
@@ -222,7 +222,7 @@ export default function Unit({
               <IconButton 
                 size='small'
                 color='secondary'
-                onClick={() => updateLessonOutlineAi(body)}
+                // onClick={() => updateLessonOutlineAi(body)}
               >
                 <AutoAwesome sx={{ fontSize: 18 }} />
               </IconButton>
