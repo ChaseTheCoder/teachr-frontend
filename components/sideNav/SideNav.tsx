@@ -11,54 +11,54 @@ export default function SideNav() {
         style={{textAlign: "center", paddingTop: 12 }}
         gap={2}
       >
-        <Link
-          href='/dashboard'
-        >
-          <Box
-            sx={{ borderRadius: 4, padding: 1, '&:hover': { backgroundColor: '#e0e0e0' } }}
+        <Box>
+          <IconButton
+            href='/dashboard'
           >
-            <IconButton>
-              <House/>
-            </IconButton>
-            <Typography
-              variant='body2'
-            >
-              Dashboard
-            </Typography>
-          </Box>
-        </Link>
-        <Link
-          href='/subject'
-        >
-          <Box
-            sx={{ borderRadius: 4, padding: 1, '&:hover': { backgroundColor: '#e0e0e0' } }}
+            <House/>
+          </IconButton>
+          <Typography
+            variant='body2'
           >
-            <IconButton>
-              <Note/>
-            </IconButton>
-            <Typography
-              variant='body2'
-            >
-              Subjects
-            </Typography>
-          </Box>
-        </Link>
-        <Link
-          href='/schedule'
-        >
-          <Box
-            sx={{ borderRadius: 4, padding: 1, '&:hover': { backgroundColor: '#e0e0e0' } }}
+            Dashboard
+          </Typography>
+        </Box>
+        <Box>
+          <IconButton
+            href='/subject'
           >
-            <IconButton>
-              <CalendarMonth/>
-            </IconButton>
-            <Typography
-              variant='body2'
-            >
-              Schedule
-            </Typography>
-          </Box>
-        </Link>
+            <Note/>
+          </IconButton>
+          <Typography
+            variant='body2'
+          >
+            Subjects
+          </Typography>
+        </Box>
+        <Box>
+          <IconButton
+            href='/plans'
+          >
+            <Note/>
+          </IconButton>
+          <Typography
+            variant='body2'
+          >
+            Plans
+          </Typography>
+        </Box>
+        <Box>
+          <IconButton
+            href='/schedule'
+          >
+            <CalendarMonth/>
+          </IconButton>
+          <Typography
+            variant='body2'
+          >
+            Schedule
+          </Typography>
+        </Box>
       </Stack>
     </aside>
   )
