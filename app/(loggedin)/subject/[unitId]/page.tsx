@@ -386,7 +386,7 @@ export default function Unit({
         </Box>
         { loadingUnit ?
           <Skeleton /> :
-          (lessons.length > 0) &&
+          (lessons?.length > 0) &&
             <List key='lesson-key'>
               {
                 lessons.map((lesson) => (

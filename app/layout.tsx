@@ -16,15 +16,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
+            <QueryClientProvider client={queryClient}>
         <UserProvider>
           <main>
-            <QueryClientProvider client={queryClient}>
               <ResponsiveAppBar/>
               {children}
               <ReactQueryDevtools />
-            </QueryClientProvider>
           </main>
         </UserProvider>
+            </QueryClientProvider>
       </body> 
     </html>
   )
