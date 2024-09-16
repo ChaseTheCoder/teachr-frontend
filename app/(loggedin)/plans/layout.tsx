@@ -15,8 +15,6 @@ export default function PlansLayout({
   const { user, error, isLoading: userLoading } = useUser();
   const auth0Id = user?.sub;
   console.log(auth0Id);
-  const plansURL = `${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/plans/${auth0Id}`
-  console.log(plansURL);
 
   const [openUnits, setOpenUnits] = useState({});
   const handleClickUnit = (unitId) => {
@@ -36,7 +34,7 @@ export default function PlansLayout({
   
   const { data: plansData, isFetching, isLoading, isError } = useQuery({
     queryKey: ['plans'],
-    queryFn: () => getData(plansURL),
+    queryFn: () => getData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/plans/${auth0Id}`),
     staleTime: 1000 * 60 * 60,
     enabled: !!auth0Id,
   })
