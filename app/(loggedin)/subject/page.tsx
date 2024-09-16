@@ -9,7 +9,6 @@ import { DeleteOutline, MoreVert, Update } from '@mui/icons-material';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import LoadingIndicator from '../../../components/loading';
 import { deleteData, getData, getDataNoUserId, postOrPatchData } from '../../../services/authenticatedApiCalls';
-import { QueryCache, useQuery } from '@tanstack/react-query';
 import { useUser } from '@auth0/nextjs-auth0/client';
 
 const style = {
@@ -29,17 +28,7 @@ const style = {
 
 export default function Subject() {
   const { user, error, isLoading: userLoading } = useUser();
-  const [userIdEncode, setUserIdEncode] = React.useState<string | null>(null);
-  useEffect(() => {
-    if(!userLoading && user !== undefined) {
-      setUserIdEncode(encodeURIComponent(user.sub))
-    };
-  }, [user, userLoading]);
-  const { data: profileData, isFetching, isLoading: isLoadingProfile } = useQuery({
-    enabled: false,
-    queryKey: ['profile'],
-    queryFn: () => getDataNoUserId(`https://teachr-backend.onrender.com/userprofile/profile/${userIdEncode}/`),
-  })
+  const userId = user?.sub;
   const urlSubjects = 'https://teachr-backend.onrender.com/subject/';
   const urlUnit = 'https://teachr-backend.onrender.com/unitplan/';
   const [subject, setSubject] = useState<any | null>(null);
@@ -119,7 +108,7 @@ export default function Subject() {
   async function getSubjects() {
     setLoading(true)
     try {
-      getData(urlSubjects, profileData.id)
+      getData(urlSubjects)
       .then((subject) => {
         setSubject(subject)
       })
@@ -131,18 +120,12 @@ export default function Subject() {
     }
   }
 
-  useEffect(() => {
-    if(profileData){
-      getSubjects() 
-    } 
-  }, [profileData]);
-
   async function postSubject() {
     try {
       postOrPatchData(urlSubjects, 'POST', {
           subject: value1,
           grade: value2,
-          user_id: profileData.id
+          user_id: userId
         }
       )
     } catch (err) {
