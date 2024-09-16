@@ -15,8 +15,10 @@ export default function Home() {
             <Image
               src="/teacher-bluedot.png"
               alt="Educational Illustration"
-              height={400}
-              width={400}
+              width={0}
+              height={0}
+              sizes="60vw"
+              style={{ width: '60%', height: 'auto' }}
             />
           </Grid>
           <Grid item xs={12} md={6} gap={5}>

@@ -4,15 +4,14 @@ import { NextRequest, NextResponse } from 'next/server';
 import { redirect } from 'next/navigation';
 import { QueryCache, useQuery } from '@tanstack/react-query';
 
-export async function getData(apiUrl, id) {
+export async function getData(apiUrl) {
   const accessToken = await getAccessToken();
 
   const response = await fetch(apiUrl, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${accessToken.accessToken}`,
-      'user_id': id,
+      'Authorization': `Bearer ${accessToken.accessToken}`
     },
   });
   if (!response.ok) {

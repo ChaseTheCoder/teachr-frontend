@@ -2,8 +2,8 @@
 
 import React, { useEffect, useState } from 'react';
 import { Button, Collapse, Divider, Grid, List, ListItem, ListItemButton, ListItemText } from '@mui/material';
-import { useQuery } from '@tanstack/react-query';
-import { getDataNoUserId } from '../../../services/authenticatedApiCalls';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { getData, getDataNoUserId, postOrPatchData } from '../../../services/authenticatedApiCalls';
 import { AddCircleOutline, ExpandLess, ExpandMore, MoreVert } from '@mui/icons-material';
 import { useUser } from '@auth0/nextjs-auth0/client';
 
@@ -12,8 +12,9 @@ export default function PlansLayout({
 }: {
   children: React.ReactNode
 }) {
-  // const { user, error, isLoading: userLoading } = useUser();
-  // const userIdEncode = user?.sub;
+  const { user, error, isLoading: userLoading } = useUser();
+  const auth0Id = user?.sub;
+  console.log(auth0Id);
 
   const [openUnits, setOpenUnits] = useState({});
   const handleClickUnit = (unitId) => {
@@ -30,21 +31,25 @@ export default function PlansLayout({
       [planId]: !prevOpenPlans[planId],
     }));
   };
-
-  // const { data: profileData, isFetching: isFetchingProfle, isLoading: isLoadingProfile, isError: isErrorProfile } = useQuery({
-  //   queryKey: ['profile'],
-  //   queryFn: () => getDataNoUserId(`https://teachr-backend.onrender.com/userprofile/profile/${userIdEncode}/`),
-  //   staleTime: 1000 * 60 * 60, // 1 hour in ms
-  // })
-
-  // const profile = profileData;
   
   const { data: plansData, isFetching, isLoading, isError } = useQuery({
     queryKey: ['plans'],
-    queryFn: () => getDataNoUserId('https://teachr-backend.onrender.com/plans/'),
+    queryFn: () => getData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/plans/${auth0Id}`),
     staleTime: 1000 * 60 * 60,
-    // enabled: !!profile,
+    enabled: !!auth0Id,
   })
+
+  // const mutationSubject = useMutation({
+  //   mutationFn: (body) => {
+  //     return postOrPatchData(
+  //       `${process.env.API_BASE_URL}/subject/`,
+  //       'POST',
+  //       {
+  //         user_id: auth0Id,
+  //       }
+  //     )
+  //   }
+  // });
 
   useEffect(() => {
     // Set each planId to true initially
@@ -55,7 +60,7 @@ export default function PlansLayout({
     setOpenPlans(initialOpenPlans);
   }, [plansData]);
 
-  if (isFetching || isLoading) {
+  if (userLoading || isFetching || isLoading) {
     return <span>Loading...</span>
   }
 
@@ -73,7 +78,9 @@ export default function PlansLayout({
               component="label"
               role={undefined}
               startIcon={<AddCircleOutline/>}
-              onClick={() => {}}
+              onClick={() => { 
+                // mutationSubject.mutate()
+              }}
             >
               Subject
             </Button>
