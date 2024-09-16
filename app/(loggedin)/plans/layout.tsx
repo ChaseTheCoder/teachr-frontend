@@ -14,7 +14,7 @@ export default function PlansLayout({
 }) {
   const { user, error, isLoading: userLoading } = useUser();
   const auth0Id = user?.sub;
-  console.log(auth0Id);
+  console.log(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/plans/${auth0Id}`);
 
   const [openUnits, setOpenUnits] = useState({});
   const handleClickUnit = (unitId) => {
