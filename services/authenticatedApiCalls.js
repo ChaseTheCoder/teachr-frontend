@@ -2,7 +2,6 @@
 import { getAccessToken, getSession } from '@auth0/nextjs-auth0';
 import { NextRequest, NextResponse } from 'next/server';
 import { redirect } from 'next/navigation';
-import { QueryCache, useQuery } from '@tanstack/react-query';
 
 export async function getData(apiUrl) {
   const accessToken = await getAccessToken();
