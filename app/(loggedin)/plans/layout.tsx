@@ -2,8 +2,8 @@
 
 import React, { useEffect, useState } from 'react';
 import { Button, Collapse, Divider, Grid, List, ListItem, ListItemButton, ListItemText } from '@mui/material';
-import { useMutation, useQuery } from '@tanstack/react-query';
-import { getData, getDataNoUserId, postOrPatchData } from '../../../services/authenticatedApiCalls';
+import { useQuery } from '@tanstack/react-query';
+import { getData } from '../../../services/authenticatedApiCalls';
 import { AddCircleOutline, ExpandLess, ExpandMore, MoreVert } from '@mui/icons-material';
 import { useUser } from '@auth0/nextjs-auth0/client';
 
@@ -15,6 +15,8 @@ export default function PlansLayout({
   const { user, error, isLoading: userLoading } = useUser();
   const auth0Id = user?.sub;
   console.log(auth0Id);
+  const plansURL = `${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/plans/${auth0Id}`
+  console.log(plansURL);
 
   const [openUnits, setOpenUnits] = useState({});
   const handleClickUnit = (unitId) => {
@@ -34,22 +36,10 @@ export default function PlansLayout({
   
   const { data: plansData, isFetching, isLoading, isError } = useQuery({
     queryKey: ['plans'],
-    queryFn: () => getData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/plans/${auth0Id}`),
+    queryFn: () => getData(plansURL),
     staleTime: 1000 * 60 * 60,
     enabled: !!auth0Id,
   })
-
-  // const mutationSubject = useMutation({
-  //   mutationFn: (body) => {
-  //     return postOrPatchData(
-  //       `${process.env.API_BASE_URL}/subject/`,
-  //       'POST',
-  //       {
-  //         user_id: auth0Id,
-  //       }
-  //     )
-  //   }
-  // });
 
   useEffect(() => {
     // Set each planId to true initially
