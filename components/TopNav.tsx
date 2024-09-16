@@ -17,6 +17,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import TeachrLogo from '../public/TeachrLogo.svg';
 import { Button } from '@mui/material';
+import { usePathname } from 'next/navigation';
 
 const pages = ['Home', 'Subjects', 'Schedule'];
 const settings = [
@@ -36,6 +37,8 @@ function ResponsiveAppBar() {
   const { user } = useUser();
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+  const pathName = usePathname();
+  const isHomePage = pathName === '/';
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -119,7 +122,8 @@ function ResponsiveAppBar() {
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
-            { user ?
+            { user && isHomePage && <Button href='/dashboard'>Go To Dashboard</Button>}
+            { user && !isHomePage &&
               <>
                 <Tooltip title="Open settings">
                   <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
@@ -152,7 +156,9 @@ function ResponsiveAppBar() {
                     </MenuItem>
                   ))}
                 </Menu>
-              </> :
+              </>
+            }
+            { !user &&
               <Button href='/api/auth/login'>Log In</Button>
             }
           </Box>

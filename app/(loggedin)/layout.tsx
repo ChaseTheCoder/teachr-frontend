@@ -1,46 +1,28 @@
 'use client'
 
-import React, { useEffect } from 'react'
-import { useUser } from '@auth0/nextjs-auth0/client';
-import { Box, Grid, Stack } from '@mui/material'
+import React from 'react'
+import { Box, Stack } from '@mui/material'
 import SideNav from '../../components/sideNav/SideNav';
-import { getData, getDataNoUserId, getSessionId } from '../../services/authenticatedApiCalls';
-import RegisterPage from './register/page';
-import { useQuery } from '@tanstack/react-query';
+import { useUser } from '@auth0/nextjs-auth0/client';
 
 export default function AuthenticatedLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
-  const { user, error, isLoading: userLoading } = useUser();
-  const userIdEncode = user?.sub;
-  const { data: profileData, isFetching, isLoading } = useQuery({
-    enabled: !!userIdEncode,
-    queryKey: ['profile'],
-    queryFn: () => getDataNoUserId(`https://teachr-backend.onrender.com/userprofile/profile/${userIdEncode}/`),
-    staleTime: 1000 * 60 * 60, // 1 hour in ms
-  })
+  const { user } = useUser();
+  console.log(user);
   
   return (
     <>
-      { 
-        (!profileData && !isLoading && !isFetching && !userLoading) ?     
-        <Grid container>
-          <Grid xs={12} item={true} sx={{ paddingTop: '18px' }}>
-            <RegisterPage />
-          </Grid> 
-        </Grid>:
-      
-        <Stack
-          direction='row'
-        >
-          <SideNav/>
-            <Box sx={{ paddingTop: '18px', paddingX: '18px', width: '100%' }}>
-              {children}
-            </Box>
-        </Stack>
-      }
+      <Stack
+        direction='row'
+      >
+        <SideNav/>
+          <Box sx={{ paddingTop: '18px', paddingX: '18px', width: '100%' }}>
+            {children}
+          </Box>
+      </Stack>
     </>
   )
 }
