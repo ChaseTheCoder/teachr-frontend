@@ -11,7 +11,6 @@ export default function AuthenticatedLayout({
   children: React.ReactNode
 }) {
   const { user } = useUser();
-  console.log(user);
   
   return (
     <>

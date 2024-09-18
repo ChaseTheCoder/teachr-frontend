@@ -1,20 +1,57 @@
 'use client'
 
 import React, { useEffect, useState } from 'react';
-import { Button, Collapse, Divider, Grid, List, ListItem, ListItemButton, ListItemText } from '@mui/material';
-import { useQuery } from '@tanstack/react-query';
-import { getData } from '../../../services/authenticatedApiCalls';
-import { AddCircleOutline, ExpandLess, ExpandMore, MoreVert } from '@mui/icons-material';
+import { Button, Collapse, Divider, Fade, Grid, IconButton, List, ListItem, ListItemButton, ListItemText, Paper, Popper, PopperPlacementType, Typography } from '@mui/material';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { deleteData, getData, postOrPatchData } from '../../../services/authenticatedApiCalls';
+import { AddCircleOutline, DeleteOutline, ExpandLess, ExpandMore, MoreVert } from '@mui/icons-material';
 import { useUser } from '@auth0/nextjs-auth0/client';
+import { titleCase } from '../../../common/utils';
 
 export default function PlansLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  const queryClient = useQueryClient();
   const { user, error, isLoading: userLoading } = useUser();
   const auth0Id = user?.sub;
-  console.log(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/plans/${auth0Id}`);
+  const [createPlanType, setCreatePlanType] = useState<string | null>(null);
+  const [deletePlanType, setDeletePlanType] = useState<string | null>(null);
+  const [key, setKey] = useState<string | null>(null);
+  const [value, setValue] = useState<string | null>(null);
+  const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
+  const [open, setOpen] = React.useState(false);
+  const [placement, setPlacement] = React.useState<PopperPlacementType>();
+  console.log('createPlanType:', createPlanType);
+  console.log('deletePlanType:', deletePlanType);
+  console.log('key:', key);
+  console.log('value:', value);
+
+  const handleClickPopper =
+    (newPlacement: PopperPlacementType, childPlan: string, parentPlan: string, parentPlanTitle: string, parentId: string) =>
+    (event: React.MouseEvent<HTMLButtonElement>) => {
+      setCreatePlanType(childPlan);
+      setDeletePlanType(parentPlan);
+      setKey(parentPlanTitle);
+      setValue(parentId);
+      setAnchorEl(event.currentTarget);
+      setOpen((prev) => placement !== newPlacement || !prev);
+      setPlacement(newPlacement);
+    };
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (anchorEl && !anchorEl.contains(event.target as Node)) {
+        setOpen(false);
+      }
+    };
+  
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [anchorEl]);
 
   const [openUnits, setOpenUnits] = useState({});
   const handleClickUnit = (unitId) => {
@@ -39,6 +76,65 @@ export default function PlansLayout({
     enabled: !!auth0Id,
   })
 
+  const mutation = useMutation({
+    mutationFn: () => {
+      const body = {
+        user_id: auth0Id,
+      };
+      if(key !== null && value !== null) {
+        body[key] = value
+      }
+      console.log(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/${createPlanType}/`);
+      return postOrPatchData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/${createPlanType}/`, 'POST', body);
+    },
+    onSuccess: (data) => {
+      // Handle success (e.g., show a success message, update state, etc.)
+      console.log('Subject added successfully:', data);
+    },
+    onError: (error) => {
+      // Handle error (e.g., show an error message)
+      console.error('Error adding subject:', error);
+    },
+    onSettled: () => {
+      setKey(null);
+      setValue(null);
+      queryClient.refetchQueries({ queryKey: ['plans']})
+    }
+  });
+
+  const mutationDelete = useMutation({
+    mutationFn: () => {
+      const body = {
+        user_id: auth0Id,
+      };
+      if(key !== null && value !== null) {
+        body[key] = value
+      }
+      return deleteData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/${deletePlanType}/${value}/`);
+    },
+    onSuccess: (data) => {
+      // Handle success (e.g., show a success message, update state, etc.)
+      console.log('Subject added successfully:', data);
+    },
+    onError: (error) => {
+      // Handle error (e.g., show an error message)
+      console.error('Error adding subject:', error);
+    },
+    onSettled: () => {
+      setKey(null);
+      setValue(null);
+      queryClient.refetchQueries({ queryKey: ['plans']})
+    }
+  });
+
+  const handlePostPlans = () => {
+    mutation.mutate();
+  };
+
+  const handleDeletePlans = () => {
+    mutationDelete.mutate();
+  };
+
   useEffect(() => {
     // Set each planId to true initially
     const initialOpenPlans = {};
@@ -48,16 +144,40 @@ export default function PlansLayout({
     setOpenPlans(initialOpenPlans);
   }, [plansData]);
 
-  if (userLoading || isFetching || isLoading) {
-    return <span>Loading...</span>
-  }
-
   if (isError) {
     return <span>Error</span>
   }
 
   return (
     <Grid container spacing={1}>
+      <Popper
+        sx={{ zIndex: 1200 }}
+        open={open}
+        anchorEl={anchorEl}
+        placement={placement}
+        transition
+      >
+        {({ TransitionProps }) => (
+          <Fade {...TransitionProps} timeout={350}>
+            <Paper>
+              <List>
+                <ListItemButton 
+                  sx={{ padding: 1, gap: 3 }}
+                  onClick={() => handlePostPlans()}
+                >
+                  <AddCircleOutline fontSize='small'/>   <Typography fontSize='small'>Create {titleCase(createPlanType)}</Typography>
+                </ListItemButton>
+                <ListItemButton
+                  sx={{ padding: 1, gap: 3 }}
+                  onClick={() => handleDeletePlans()}
+                >
+                  <DeleteOutline fontSize='small'/>   <Typography fontSize='small'>Delete {titleCase(deletePlanType)}</Typography>
+                </ListItemButton>
+              </List>
+            </Paper>
+          </Fade>
+        )}
+      </Popper>
       <Grid item xs={3}>
         <List sx={{bgcolor: '#ffffff', borderRadius: 4 }} dense disablePadding>
           <ListItem disablePadding style={{display:'flex', justifyContent:'center'}}>
@@ -66,72 +186,81 @@ export default function PlansLayout({
               component="label"
               role={undefined}
               startIcon={<AddCircleOutline/>}
-              onClick={() => { 
-                // mutationSubject.mutate()
+              onClick={() => {
+                setCreatePlanType('subject')
+                setKey(null)
+                setValue(null)
+                handlePostPlans()
               }}
             >
               Subject
             </Button>
           </ListItem>
-          {plansData?.map((plan, index) => (
-            <>
-              {index !== 0 && <Divider />}
-              <ListItem key={plan.id} disablePadding>
-                <ListItemButton
-                  href={`/plans/subject/${plan.id}`}
-                >
-                  <ListItemText
-                    primary={`${plan.grade}, ${plan.subject}`}
-                    primaryTypographyProps={{
-                      fontSize: 18,
-                      fontWeight: 'bold'
-                    }}
-                  />
-                </ListItemButton>
-                <MoreVert fontSize='small' />
-                {openPlans[plan.id] ? <ExpandLess onClick={() => handleClickPlans(plan.id)}/> : <ExpandMore onClick={() => handleClickPlans(plan.id)}/>}
-              </ListItem>
-              {plan.units.map((unit) => (
-                <>
-                  <Collapse in={openPlans[plan.id]} timeout="auto" unmountOnExit>
-                    <ListItem
-                      key={unit.id}
-                      disablePadding
-                    >
-                      <ListItemButton
-                        href={`/plans/unit/${unit.id}`}
+          {
+            userLoading || isFetching || isLoading ? <span>Loading...</span> :
+            plansData?.map((subject, index) => (
+              <>
+                {index !== 0 && <Divider />}
+                <ListItem key={subject.id} disablePadding>
+                  <ListItemButton
+                    href={`/plans/subject/${subject.id}`}
+                  >
+                    <ListItemText
+                      primary={`${subject.grade}, ${subject.subject}`}
+                      primaryTypographyProps={{
+                        fontSize: 18,
+                        fontWeight: 'bold'
+                      }}
+                    />
+                  </ListItemButton>
+                  <IconButton onClick={handleClickPopper('bottom-start', 'unit', 'subject', 'subject', subject.id)}>
+                    <MoreVert fontSize='small' />
+                  </IconButton>
+                  {openPlans[subject.id] ? <ExpandLess onClick={() => handleClickPlans(subject.id)}/> : <ExpandMore onClick={() => handleClickPlans(subject.id)}/>}
+                </ListItem>
+                {subject.units.map((unit) => (
+                  <>
+                    <Collapse in={openPlans[subject.id]} timeout="auto" unmountOnExit>
+                      <ListItem
+                        key={unit.id}
+                        disablePadding
                       >
-                        <ListItemText
-                          primary={unit.title}
-                          primaryTypographyProps={{
-                            fontSize: 14,
-                            fontWeight: 'bold'
-                          }}
-                        />
-                      </ListItemButton>
-                      <MoreVert fontSize='small' />
-                      {openUnits[unit.id] ? <ExpandLess onClick={() => handleClickUnit(unit.id)}/> : <ExpandMore onClick={() => handleClickUnit(unit.id)}/>}
-                    </ListItem>
-                  </Collapse>
-                  <Collapse in={openUnits[unit.id]} timeout="auto" unmountOnExit>
-                    <List component="div" dense disablePadding>
-                        {unit.lessons.map((lesson) => (
-                          <ListItem key={lesson.id} disablePadding>
-                            <ListItemButton
-                              href={`/plans/lesson/${lesson.id}`}
-                            >
-                              <ListItemText
-                                primary={lesson.title}
-                                primaryTypographyProps={{
-                                  fontSize: 14
-                                }}
-                              />
-                            </ListItemButton>
-                          </ListItem>
-                        ))}
-                    </List>
-                  </Collapse>
-                </>
+                        <ListItemButton
+                          href={`/plans/unit/${unit.id}`}
+                        >
+                          <ListItemText
+                            primary={unit.title}
+                            primaryTypographyProps={{
+                              fontSize: 14,
+                              fontWeight: 'bold'
+                            }}
+                          />
+                        </ListItemButton>
+                        <IconButton onClick={handleClickPopper('bottom-start', 'lesson', 'unit', 'unit_plan', unit.id)}>
+                          <MoreVert fontSize='small' />
+                        </IconButton>
+                        {openUnits[unit.id] ? <ExpandLess onClick={() => handleClickUnit(unit.id)}/> : <ExpandMore onClick={() => handleClickUnit(unit.id)}/>}
+                      </ListItem>
+                    </Collapse>
+                    <Collapse in={openUnits[unit.id]} timeout="auto" unmountOnExit>
+                      <List component="div" dense disablePadding>
+                          {unit.lessons.map((lesson) => (
+                            <ListItem key={lesson.id} disablePadding>
+                              <ListItemButton
+                                href={`/plans/lesson/${lesson.id}`}
+                              >
+                                <ListItemText
+                                  primary={lesson.title}
+                                  primaryTypographyProps={{
+                                    fontSize: 14
+                                  }}
+                                />
+                              </ListItemButton>
+                            </ListItem>
+                          ))}
+                      </List>
+                    </Collapse>
+                  </>
               ))}
             </>
           ))}
