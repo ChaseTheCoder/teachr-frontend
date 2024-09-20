@@ -49,7 +49,7 @@ export default function Subject({
           grade: subjectGrade
         }
       )
-      queryClient.invalidateQueries('plans');
+      queryClient.invalidateQueries({ queryKey: ['plans'] });
     } catch (err) {
       console.log('ERROR: SUBJECT NOT PATCHED')
       console.log(err)
@@ -65,7 +65,7 @@ export default function Subject({
     try {
       await deleteData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/subject/${params.subjectId}/`)
       router.push('/plans')
-      queryClient.invalidateQueries('plans');
+      queryClient.invalidateQueries({ queryKey: ['plans'] });
     } catch (err) {
       console.log('ERROR: SUBJECT NOT DELETED')
       console.log(err)
@@ -96,9 +96,12 @@ export default function Subject({
   return (
     <Surface>
       <Stack spacing={2}>
-        <Typography variant='h6' >Subject</Typography>
+        <Typography
+          variant='h6'
+          sx={{display:'flex', justifyContent:'center', width: '100%'}}
+        >Subject</Typography>
         {isLoading || data === null ?
-          <Skeleton variant='text' />
+          <Skeleton variant='text' sx={{ height: '50px' }} />
           :
           <TextField 
             fullWidth
@@ -109,14 +112,18 @@ export default function Subject({
             onChange={(e) => setSubject(e.target.value)}
           />
         }
-        <TextField 
-          fullWidth
-          id="standard-basic"
-          label="Grade"
-          variant="standard"
-          value={subjectGrade}
-          onChange={(e) => setSubjectGrade(e.target.value)}
-        />
+        {isLoading || data === null ?
+          <Skeleton variant='text' sx={{ height: '50px' }} />
+          :
+          <TextField 
+            fullWidth
+            id="standard-basic"
+            label="Grade"
+            variant="standard"
+            value={subjectGrade}
+            onChange={(e) => setSubjectGrade(e.target.value)}
+          />
+        }
         <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
           <LoadingButton
             variant='contained'
