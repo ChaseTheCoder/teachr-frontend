@@ -2,18 +2,19 @@
 
 import React, { useEffect, useState } from 'react';
 import Surface from '../../../../../components/surface/Surface';
-import { Box, Button, Skeleton, Stack, TextField, Typography } from '@mui/material';
+import { Box, Skeleton, Stack, TextField, Typography } from '@mui/material';
 import { deleteData, getData, postOrPatchData } from '../../../../../services/authenticatedApiCalls';
 import { LoadingButton } from '@mui/lab';
-import { redirect } from 'next/navigation';
-import { useUser } from '@auth0/nextjs-auth0/client';
+import { redirect, useRouter } from 'next/navigation';
+import { useQueryClient } from '@tanstack/react-query';
 
 export default function Subject({
   params,
 }: {
   params: { subjectId: string };
 }) {
-  const { user, isLoading: isLoadingUser } = useUser();
+  const router = useRouter();
+  const queryClient = useQueryClient();
   const [isLoading, setLoading] = useState(false);
   const [isError, setError] = useState(false);
   const [data, setData] = useState(null);
@@ -27,12 +28,8 @@ export default function Subject({
   async function getSubject() {
     setLoading(true)
     try {
-      const response = await getData(url)
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      console.log('RESPONSE: ', response)
-      setData(response);
+      getData(url)
+      .then((response) => setData(response))
     } catch (err) {
       setError(true)
     } finally {
@@ -52,11 +49,13 @@ export default function Subject({
           grade: subjectGrade
         }
       )
+      queryClient.invalidateQueries('plans');
     } catch (err) {
       console.log('ERROR: SUBJECT NOT PATCHED')
       console.log(err)
       setError(true)
     } finally {
+      getSubject()
       setLoading(false)
     }
   }
@@ -65,7 +64,8 @@ export default function Subject({
     setLoading(true)
     try {
       await deleteData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/subject/${params.subjectId}/`)
-      redirect('/plans')
+      router.push('/plans')
+      queryClient.invalidateQueries('plans');
     } catch (err) {
       console.log('ERROR: SUBJECT NOT DELETED')
       console.log(err)
@@ -97,7 +97,7 @@ export default function Subject({
     <Surface>
       <Stack spacing={2}>
         <Typography variant='h6' >Subject</Typography>
-        {isLoading ?
+        {isLoading || data === null ?
           <Skeleton variant='text' />
           :
           <TextField 
@@ -120,7 +120,7 @@ export default function Subject({
         <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
           <LoadingButton
             variant='contained'
-            disabled={disableUpdate}
+            disabled={disableUpdate && !isLoading}
             size='small'
             onClick={() => updateSubject()}
             loading={isLoading}

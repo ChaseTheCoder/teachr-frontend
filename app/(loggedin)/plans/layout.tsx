@@ -211,7 +211,7 @@ export default function PlansLayout({
             </Button>
           </ListItem>
           {
-            userLoading || isFetching || isLoading && !plansData ? <span>Loading...</span> :
+            isLoading ? <span>Loading...</span> :
             plansData?.map((subject, index) => (
               <>
                 {index !== 0 && <Divider />}
