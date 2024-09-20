@@ -10,6 +10,8 @@ export async function getData(apiUrl) {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': `${process.env.NEXT_PUBLIC_API_URL}`,
+      'Access-Control-Allow-Credentials': 'true',
       'Authorization': `Bearer ${accessToken.accessToken}`
     },
   });
