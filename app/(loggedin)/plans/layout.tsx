@@ -23,10 +23,6 @@ export default function PlansLayout({
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
   const [open, setOpen] = React.useState(false);
   const [placement, setPlacement] = React.useState<PopperPlacementType>();
-  console.log('createPlanType:', createPlanType);
-  console.log('deletePlanType:', deletePlanType);
-  console.log('key:', key);
-  console.log('value:', value);
 
   const handleClickPopper =
     (newPlacement: PopperPlacementType, childPlan: string, parentPlan: string, parentPlanTitle: string, parentId: string) =>
@@ -180,6 +176,24 @@ export default function PlansLayout({
       </Popper>
       <Grid item xs={3}>
         <List sx={{bgcolor: '#ffffff', borderRadius: 4 }} dense disablePadding>
+          <ListItem 
+            disablePadding
+            sx={{ borderRadius: 4 }}
+          >
+            <ListItemButton
+              href={`/plans`}
+              sx={{ borderRadius: 4 }}
+            >
+              <ListItemText
+                primary='Plans Settings'
+                style={{display:'flex', justifyContent:'center', }}
+                primaryTypographyProps={{
+                  fontSize: 16,
+                  fontWeight: 'bold'
+                }}
+              />
+            </ListItemButton>
+          </ListItem>
           <ListItem disablePadding style={{display:'flex', justifyContent:'center'}}>
             <Button
               size='small'
@@ -197,7 +211,7 @@ export default function PlansLayout({
             </Button>
           </ListItem>
           {
-            userLoading || isFetching || isLoading ? <span>Loading...</span> :
+            userLoading || isFetching || isLoading && !plansData ? <span>Loading...</span> :
             plansData?.map((subject, index) => (
               <>
                 {index !== 0 && <Divider />}
@@ -208,7 +222,7 @@ export default function PlansLayout({
                     <ListItemText
                       primary={`${subject.grade}, ${subject.subject}`}
                       primaryTypographyProps={{
-                        fontSize: 18,
+                        fontSize: 16,
                         fontWeight: 'bold'
                       }}
                     />
