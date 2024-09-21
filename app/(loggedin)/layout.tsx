@@ -12,13 +12,13 @@ export default function AuthenticatedLayout({
   
   return (
     <>
-      <Stack
-        direction='row'
-      >
-        <SideNav/>
-          <Box sx={{ paddingTop: '18px', paddingX: '18px', width: '100%' }}>
-            {children}
-          </Box>
+      <Stack direction='row'>
+        <Box sx={{ display: { xs: 'none', md: 'block' } }}>
+          <SideNav />
+        </Box>
+        <Box sx={{ paddingTop: '18px', paddingX: '18px', width: '100%' }}>
+          {children}
+        </Box>
       </Stack>
     </>
   )
