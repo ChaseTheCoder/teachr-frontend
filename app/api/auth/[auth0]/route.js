@@ -15,6 +15,6 @@ export const GET = handleAuth({
     }
   }),
   logout: handleLogout({
-    returnTo: logoutUrl.join(''),
+    returnTo: process.env.AUTH0_BASE_URL,
   }),
 });
