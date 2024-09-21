@@ -8,6 +8,13 @@ import { LoadingButton } from '@mui/lab';
 import { redirect, useRouter } from 'next/navigation';
 import { useQueryClient } from '@tanstack/react-query';
 
+interface IUnitData {
+  title?: string;
+  overview?: string;
+  standard?: string;
+}
+
+
 export default function Unit({
   params,
 }: {
@@ -17,7 +24,7 @@ export default function Unit({
   const queryClient = useQueryClient();
   const [isLoading, setLoading] = useState(false);
   const [isError, setError] = useState(false);
-  const [update, setUpdate] = useState({})
+  const [update, setUpdate] = useState<IUnitData>({})
   const [data, setData] = useState(null);
   const [title, setTitle] = useState('');
   const [overview, setOverview] = useState('');
@@ -49,14 +56,19 @@ export default function Unit({
   }, []);
   
   async function updateUnit() {
-    setLoading(true)
+    setLoading(true);
+    const titleChannged = title !== data.title
     try {
-      postOrPatchData(
+      const result = await postOrPatchData(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/unit/${params.unitId}/`,
         'PATCH',
         update
       )
-      queryClient.invalidateQueries({ queryKey: ['plans'] });
+      titleChannged && queryClient.invalidateQueries({ queryKey: ['plans'] });
+      setData(result)
+      setTitle('')
+      setOverview('')
+      setStandard('')  
     } catch (err) {
       console.log('ERROR: SUBJECT NOT PATCHED')
       console.log(err)
@@ -88,13 +100,16 @@ export default function Unit({
 
   useEffect(() => {
   if(data !== null) {
+    if(title === data.title && update?.title) delete update.title;
+    if(overview === data.overview && update?.overview) delete update.overview;
+    if(standard === data.standard && update?.standard) delete update.standard;
     if(title !== data.title) setUpdate({
       ...update,
       title: title
     });
     if(overview !== data.overview) setUpdate({
       ...update,
-      overiew: overview
+      overview: overview
     });
     if(standard !== data.standard) setUpdate({
       ...update,
@@ -104,13 +119,7 @@ export default function Unit({
   }
   }, [title, overview, standard, data]);
 
-  // useEffect(() => {
-  //   if (Object.keys(update).length === 0) {
-  //     setDisableUpdate(false);
-  //   } else {
-  //     setDisableUpdate(true);
-  //   }
-  // }, [update]);
+  console.log('UPDATE: ', update)
 
   console.log('DATA: ', data)
   console.log('title: ', title)
@@ -124,7 +133,7 @@ export default function Unit({
           sx={{display:'flex', justifyContent:'center', width: '100%'}}
         >Subject</Typography>
         {isLoading || data === null ?
-          <Skeleton variant='text' sx={{ height: '75px' }} />
+          <Skeleton variant='text' sx={{ height: '50px' }} />
           :
           <TextField 
             fullWidth
@@ -136,7 +145,7 @@ export default function Unit({
           />
         }
         {isLoading || data === null ?
-          <Skeleton variant='text' sx={{ height: '75px' }} />
+          <Skeleton variant='text' sx={{ height: '50px' }} />
           :
           <TextField 
             fullWidth
@@ -148,7 +157,7 @@ export default function Unit({
           />
         }
         {isLoading || data === null ?
-          <Skeleton variant='text' sx={{ height: '75px' }} />
+          <Skeleton variant='text' sx={{ height: '50px' }} />
           :
           <TextField 
             fullWidth
