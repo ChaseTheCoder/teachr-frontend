@@ -47,7 +47,7 @@ const settings = [
   // },
   {
     title: 'Logout',
-    link: '/api/auth/logout'
+    link: '/api/auth/logout/'
   }];
 
 function ResponsiveAppBar() {
