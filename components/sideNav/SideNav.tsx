@@ -25,18 +25,6 @@ export default function SideNav() {
         </Box>
         <Box>
           <IconButton
-            href='/subject'
-          >
-            <Note/>
-          </IconButton>
-          <Typography
-            variant='body2'
-          >
-            Subjects
-          </Typography>
-        </Box>
-        <Box>
-          <IconButton
             href='/plans'
           >
             <Note/>
