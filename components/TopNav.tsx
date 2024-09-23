@@ -23,11 +23,7 @@ const pages = [
   {
     title: 'Dashboard',
     link: '/dashboard'
-  }, 
-  {
-    title: 'Subjects',
-    link: '/subjects'
-  }, 
+  },
   {
     title: 'Plans',
     link: '/plans'

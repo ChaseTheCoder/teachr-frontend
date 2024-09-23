@@ -4,14 +4,11 @@ import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 
 interface CKeditorProps {
   onChange: (data: string) => void;
-  editorLoaded: boolean;
   value: string;
 }
 
 export default function CKeditor({
   onChange,
-  editorLoaded,
-  // name,
   value,
 }: CKeditorProps) {
   const editorRef = useRef<{ CKEditor: typeof CKEditor; ClassicEditor: typeof ClassicEditor }>();
@@ -23,31 +20,25 @@ export default function CKeditor({
   }, []);
 
   return (
-    <>
-      {editorLoaded ? (
-        <CKEditor
-          editor={ClassicEditor}
-          data={value}
-          onChange={(event: any, editor: any) => {
-            const data = editor.getData();
-            onChange(data);
-          }}
-          config={{
-            toolbar: [
-              "heading",
-              "|",
-              "bold",
-              "italic",
-              "link",
-              "bulletedList",
-              "numberedList",
-              "blockQuote",
-            ],
-          }}
-        />
-      ) : (
-        <div>Editor loading</div>
-      )}
-    </>
+    <CKEditor
+      editor={ClassicEditor}
+      data={value}
+      onChange={(event: any, editor: any) => {
+        const data = editor.getData();
+        onChange(data);
+      }}
+      config={{
+        toolbar: [
+          "heading",
+          "|",
+          "bold",
+          "italic",
+          "link",
+          "bulletedList",
+          "numberedList",
+          "blockQuote",
+        ],
+      }}
+    />
   );
 }
