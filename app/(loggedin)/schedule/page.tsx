@@ -2,12 +2,15 @@
 
 import React from 'react';
 import Surface from '../../../components/surface/Surface';
+import { Box } from '@mui/material';
 
 export default function Calendar() {
 
   return (
-    <Surface>
-      Calendar, coming soon.
-    </Surface>
+    <Box style={{ minHeight: '90vh' }}>
+      <Surface>
+        Calendar, coming soon.
+      </Surface>
+    </Box>
   )
 }

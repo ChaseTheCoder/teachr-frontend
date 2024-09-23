@@ -151,6 +151,7 @@ export default function Lesson({
           <TextField 
             fullWidth
             multiline
+            color='success'
             id="standard-basic"
             label="Title"
             variant="standard"
@@ -175,6 +176,7 @@ export default function Lesson({
             <TextField 
               fullWidth
               multiline
+              color='success'
               id="standard-basic"
               variant="standard"
               value={objective}
@@ -188,6 +190,7 @@ export default function Lesson({
           <TextField 
             fullWidth
             multiline
+            color='success'
             id="standard-basic"
             label="Standards"
             variant="standard"
@@ -221,6 +224,7 @@ export default function Lesson({
         </Box>
         <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
           <LoadingButton
+            color='success'
             variant='contained'
             disabled={disableUpdate && !isLoading}
             size='small'
@@ -230,7 +234,7 @@ export default function Lesson({
             Update
           </LoadingButton>
           <LoadingButton
-            variant='contained'
+            variant='outlined'
             disabled={isLoading}
             size='small'
             color='error'

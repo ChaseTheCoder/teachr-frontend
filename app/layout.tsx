@@ -6,6 +6,7 @@ import './globals.css'
 import ResponsiveAppBar from '../components/TopNav';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import Footer from '../components/footer';
 const queryClient = new QueryClient();
 
 export default function RootLayout({
@@ -21,6 +22,7 @@ export default function RootLayout({
           <main>
               <ResponsiveAppBar/>
               {children}
+              <Footer/>
               <ReactQueryDevtools />
           </main>
         </UserProvider>
