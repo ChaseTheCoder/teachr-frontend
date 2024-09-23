@@ -103,7 +103,8 @@ export default function Subject({
         {isLoading || data === null ?
           <Skeleton variant='text' sx={{ height: '50px' }} />
           :
-          <TextField 
+          <TextField
+            color='success'
             fullWidth
             id="standard-basic"
             label="Subject"
@@ -117,6 +118,7 @@ export default function Subject({
           :
           <TextField 
             fullWidth
+            color='success'
             id="standard-basic"
             label="Grade"
             variant="standard"
@@ -126,6 +128,7 @@ export default function Subject({
         }
         <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
           <LoadingButton
+            color='success'
             variant='contained'
             disabled={disableUpdate && !isLoading}
             size='small'
@@ -135,7 +138,7 @@ export default function Subject({
             Update
           </LoadingButton>
           <LoadingButton
-            variant='contained'
+            variant='outlined'
             disabled={isLoading}
             size='small'
             color='error'

@@ -131,12 +131,13 @@ export default function Unit({
         <Typography
           variant='h6'
           sx={{display:'flex', justifyContent:'center', width: '100%'}}
-        >Subject</Typography>
+        >Unit</Typography>
         {isLoading || data === null ?
           <Skeleton variant='text' sx={{ height: '50px' }} />
           :
           <TextField 
             fullWidth
+            color='success'
             id="standard-basic"
             label="Subject"
             variant="standard"
@@ -149,6 +150,7 @@ export default function Unit({
           :
           <TextField 
             fullWidth
+            color='success'
             id="standard-basic"
             label="Overview"
             variant="standard"
@@ -161,6 +163,7 @@ export default function Unit({
           :
           <TextField 
             fullWidth
+            color='success'
             id="standard-basic"
             label="Standards"
             variant="standard"
@@ -170,6 +173,7 @@ export default function Unit({
         }
         <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
           <LoadingButton
+            color='success'
             variant='contained'
             disabled={disableUpdate && !isLoading}
             size='small'
@@ -179,7 +183,7 @@ export default function Unit({
             Update
           </LoadingButton>
           <LoadingButton
-            variant='contained'
+            variant='outlined'
             disabled={isLoading}
             size='small'
             color='error'

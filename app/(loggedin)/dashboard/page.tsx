@@ -7,7 +7,7 @@ import { Box, Typography } from '@mui/material';
 export default function Dashboard() {
 
   return (
-    <Box sx={{ paddingTop: '12px' }}>
+    <Box sx={{ paddingTop: '12px' }}  style={{ minHeight: '90vh' }}>
       <Surface>
         <Typography variant='h1' fontSize={68} align='center'>
           Teachr Lounge

@@ -3,17 +3,21 @@
 import React from 'react';
 import Image from 'next/image'
 import Surface from '../components/surface/Surface';
-import { Box, Button, Grid, Typography } from '@mui/material';
+import { Box, Button, Grid, Link, Stack, Typography } from '@mui/material';
+import { useUser } from '@auth0/nextjs-auth0/client';
+import { LoadingButton } from '@mui/lab';
+import { Email } from '@mui/icons-material';
 
 export default function Home() {
+  const { user, isLoading } = useUser();
 
   return (
     <Box sx={{ padding: '20px', textAlign: 'center' }}>
       <Surface>
-        <Grid container spacing={2} alignItems="center">
-          <Grid item xs={12} md={6}>
+        <Grid container spacing={2} alignItems="center" sx={{ paddingY: { md: '3rem', xs: 0 } }}>
+          <Grid item xs={12} md={5}>
             <Image
-              src="/teacher-bluedot.png"
+              src="/Main.png"
               alt="Educational Illustration"
               width={0}
               height={0}
@@ -21,35 +25,194 @@ export default function Home() {
               style={{ width: '60%', height: 'auto' }}
             />
           </Grid>
-          <Grid item xs={12} md={6} gap={5}>
-            <Typography variant='h1' fontSize={68} fontWeight='bold' align='center' sx={{ paddingBottom: '18px' }}>
-              Teachr Lounge
-            </Typography>
-            <Typography variant='h2' fontSize={22} align='center' sx={{ paddingBottom: '18px' }}>
-              Join to automate lesson planning with AI.
-            </Typography>
-            <Typography variant='h2' fontSize={22} align='center' sx={{ paddingBottom: '18px' }}>
-              Stay to see all that AI can do to support teachers.
-            </Typography>
-            <Button 
-              href='/api/auth/login'
-              variant='contained'
-              color='primary'
-              size='large'
+          <Grid item xs={12} md={7} gap={5}>
+            <Stack
+              gap={2}
             >
-              Register & Try for Free
-            </Button>
+              <Typography variant='h1' fontSize={68} fontWeight='bold' align='center'>
+                Teachr Lounge
+              </Typography>
+              <Typography variant='h2' fontSize={22} align='center'>
+                A digital lounge to create, share, and collaborate on unit & lesson plans.
+              </Typography>
+              <Typography variant='h2' fontSize={22} align='center'>
+                Software & AI tools to save educators time for what cannot be automated.
+              </Typography>
+              <Box display="flex" justifyContent="center">
+                <LoadingButton
+                  color='success'
+                  href={ user ? '/dashboard' : '/api/auth/login' }
+                  variant='contained'
+                  size='large'
+                  loading={isLoading}
+                >
+                  { user ? 'Go To Your Dashboard' : 'Register & Try for Free'}
+                </LoadingButton>
+              </Box>
+              <Box display="flex" justifyContent="center">
+                <Button
+                  variant='outlined'
+                  color='success'
+                  href="#what-is"
+                >
+                  Learn more about Teachr Lounge
+                </Button>
+              </Box>
+            </Stack>
           </Grid>
         </Grid>
       </Surface>
-
-    <Box
-      sx={{ padding: 2, marginBottom: 1.5, borderRadius: 4, bgcolor: '#e1f5fe' }}
-    >
-      <Typography fontSize={18} align='justify' padding={4}>
-        I&apos;m a teacher turned software engineer that&apos;s on a mission to build the tools for teachers that I wish I had when I was in the classroom. I&apos;m building Teachr Lounge to help teachers use AI to create co-create content specific for their students to save time so they can focus on the parts of their job that are most important: building relationships with students and helping them learn.
-      </Typography>
-    </Box>
+      <Grid container spacing={6} sx={{ paddingY: { md: '3rem', xs: 0 }, paddingX: { md: '3rem', xs: 0 } }}>
+        <Grid item xs={12} md={6}>
+          <Typography variant='h2' align='justify' fontSize={22} lineHeight={2}>
+            We are an emerging lesson planning app by teachers, for teachers. We want to solve all your lesson planning needs. We are currently in beta and would love your feedback.
+          </Typography>
+        </Grid>
+        <Grid item xs={12} md={6} gap={2} display="flex" flexDirection="column" alignItems="center" justifyContent="center">
+          <Button color='success' size='large' variant='outlined' href="mailto:teachrloungeai@google.com">
+            Send us your feedback, ask for new features, or tell us what you love!
+          </Button>
+        </Grid>
+      </Grid>
+      <Grid container spacing={4} sx={{ paddingY: { md: '3rem', xs: 0 }, paddingX: { md: '3rem', xs: '1rem' } }}>
+        <Grid item xs={12} id='what-is'>
+          <Typography variant='h1' align='center' fontSize={42} fontWeight='bold'>
+            What is Teachr Lounge?
+          </Typography>
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <Surface>
+            <Stack
+              gap={2}
+              alignItems='center'
+            >
+              <Image
+              src="/Plan.png"
+              alt="Educational Illustration"
+              width={0}
+              height={0}
+              sizes="60vw"
+              style={{ width: 'auto', height: '200px' }}
+              />
+              <Box>
+                <Typography
+                  variant='h4'
+                  fontWeight='bold'
+                  align='center'
+                >
+                  Write & save your plans.
+                </Typography> 
+                <Typography
+                  variant='body1'
+                  align='center'
+                  fontSize={20}
+                >
+                  Write your plans and save them under units and subjects. Have them to use year after year.
+                </Typography>
+              </Box>
+            </Stack>
+          </Surface>
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <Surface>
+            <Stack
+              gap={3}
+              alignItems='center'
+            >
+              <Image
+                src="/Automate.png"
+                alt="Educational Illustration"
+                width={0}
+                height={0}
+                sizes="60vw"
+                style={{ width: 'auto', height: '200px' }}
+              />
+              <Box>
+              <Typography
+                  variant='h4'
+                  fontWeight='bold'
+                  align='center'
+                >
+                  Automate planning.
+                </Typography> 
+                <Typography
+                  variant='body1'
+                  align='center'
+                  fontSize={20}
+                >
+                  AI tools to create content. Create a school year calendar and automate with your saved plans.
+                </Typography>
+              </Box>
+            </Stack>
+          </Surface>
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <Surface>
+            <Stack
+              gap={2}
+              alignItems='center'
+            >
+              <Image
+                src="/Collaborate.png"
+                alt="Educational Illustration"
+                width={0}
+                height={0}
+                sizes="60vw"
+                style={{ width: 'auto', height: '200px' }}
+              />
+              <Box>
+                <Typography
+                  variant='h4'
+                  fontWeight='bold'
+                  align='center'
+                >
+                  Collaborate with Educators.
+                </Typography> 
+                <Typography
+                  variant='body1'
+                  align='center'
+                  fontSize={20}
+                >
+                  Connect with fellow educators, mentors, and more. Request and recieve feedback alongside your plans.
+                </Typography>
+              </Box>
+            </Stack>
+          </Surface>
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <Surface>
+            <Stack
+              gap={2}
+              alignItems='center'
+            >
+              <Image
+                src="/Main.png"
+                alt="Educational Illustration"
+                width={0}
+                height={0}
+                sizes="60vw"
+                style={{ width: 'auto', height: '200px' }}
+              />
+              <Box>
+                <Typography
+                  variant='h4'
+                  fontWeight='bold'
+                  align='center'
+                >
+                  Share or find plans.
+                </Typography> 
+                <Typography
+                  variant='body1'
+                  align='center'
+                  fontSize={20}
+                >
+                  Share or find edcuator created plans in a public library. Add shared plans to your calendar in seconds.
+                </Typography>
+              </Box>
+            </Stack>
+          </Surface>
+        </Grid>
+      </Grid>
     </Box>
   )
 }

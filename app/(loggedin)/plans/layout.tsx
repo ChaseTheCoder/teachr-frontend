@@ -145,7 +145,7 @@ export default function PlansLayout({
   }
 
   return (
-    <Grid container spacing={1}>
+    <Grid container spacing={1} style={{ minHeight: '90vh' }}>
       <Popper
         sx={{ zIndex: 1200 }}
         open={open}
@@ -197,7 +197,8 @@ export default function PlansLayout({
           <ListItem disablePadding style={{display:'flex', justifyContent:'center'}}>
             <Button
               size='small'
-              component="label"
+              color='success'
+              component='label'
               role={undefined}
               startIcon={<AddCircleOutline/>}
               onClick={() => {
