@@ -12,7 +12,7 @@ export default function Home() {
   const { user, isLoading } = useUser();
 
   return (
-    <Box sx={{ padding: '20px', textAlign: 'center' }}>
+    <Box sx={{ padding: '20px', textAlign: 'center', display: 'flex', flexDirection: 'column' }} gap={4}>
       <Surface>
         <Grid container spacing={2} alignItems="center" sx={{ paddingY: { md: '3rem', xs: 0 } }}>
           <Grid item xs={12} md={5}>
@@ -29,13 +29,18 @@ export default function Home() {
             <Stack
               gap={2}
             >
-              <Typography variant='h1' fontSize={68} fontWeight='bold' align='center'>
+              <Typography 
+              variant='h1' 
+              fontSize={{ xs: 48, md: 68 }} 
+              fontWeight='bold' 
+              align='center'
+              >
                 Teachr Lounge
               </Typography>
-              <Typography variant='h2' fontSize={22} align='center'>
+              <Typography variant='h2' fontSize={{ xs: 18, md: 22 }} align='center'>
                 A digital lounge to create, share, and collaborate on unit & lesson plans.
               </Typography>
-              <Typography variant='h2' fontSize={22} align='center'>
+              <Typography variant='h2' fontSize={{ xs: 18, md: 22 }} align='center'>
                 Software & AI tools to save educators time for what cannot be automated.
               </Typography>
               <Box display="flex" justifyContent="center">
@@ -62,14 +67,14 @@ export default function Home() {
           </Grid>
         </Grid>
       </Surface>
-      <Grid container spacing={6} sx={{ paddingY: { md: '3rem', xs: 0 }, paddingX: { md: '3rem', xs: 0 } }}>
+      <Grid container spacing={{ xs: 2, md: 6 }} sx={{ paddingY: { md: '3rem', xs: 0 }, paddingX: { md: '3rem', xs: 0 } }}>
         <Grid item xs={12} md={6}>
-          <Typography variant='h2' align='justify' fontSize={22} lineHeight={2}>
+          <Typography variant='h2' align='justify' fontSize={{ xs: 18, md: 22 }} lineHeight={2}>
             We are an emerging lesson planning app by teachers, for teachers. We want to solve all your lesson planning needs. We are currently in beta and would love your feedback.
           </Typography>
         </Grid>
         <Grid item xs={12} md={6} gap={2} display="flex" flexDirection="column" alignItems="center" justifyContent="center">
-          <Button color='success' size='large' variant='outlined' href="mailto:teachrloungeai@google.com">
+          <Button color='success' size='large' variant='outlined' component='a' href="mailto:teachrloungeai@google.com">
             Send us your feedback, ask for new features, or tell us what you love!
           </Button>
         </Grid>
