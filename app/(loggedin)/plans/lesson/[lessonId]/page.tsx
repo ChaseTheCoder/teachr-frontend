@@ -164,7 +164,7 @@ export default function Lesson({
             <Typography sx={{fontWeight: 'bold'}}>Objective</Typography>
             <IconButton 
               size='small'
-              color='secondary'
+              color='success'
               onClick={() => updateObjectiveAi(objective)}
             >
               <AutoAwesome sx={{ fontSize: 18 }} />
@@ -203,7 +203,7 @@ export default function Lesson({
             <Typography sx={{fontWeight: 'bold'}}>Lesson Outline</Typography>
             <IconButton 
               size='small'
-              color='secondary'
+              color='success'
               onClick={() => updateLessonOutlineAi(body)}
             >
               <AutoAwesome sx={{ fontSize: 18 }} />
