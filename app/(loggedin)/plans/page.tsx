@@ -4,8 +4,11 @@ import Surface from '../../../components/surface/Surface';
 export default function Plans() {
   return (
     <Surface>
-      <h1>Welcome to the Page component!</h1>
-      <p>This is a basic page component.</p>
+      <h1>Your Curriculum and Plans</h1>
+      <p>Here you will be able to save details to help AI automate for your specific needs.</p>
+      <p>Click on the + Subject button to create a subject.</p>
+      <p>Then click on the tree dots to have the option to delete Subject or Add New Unit</p>
+      <p>Next, click on the three dots next to your new Unit to create a new lesson.</p>
     </Surface>
   );
 };

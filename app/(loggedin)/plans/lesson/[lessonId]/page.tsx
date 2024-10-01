@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import Surface from '../../../../../components/surface/Surface';
-import { Box, IconButton, Skeleton, Stack, TextField, Typography } from '@mui/material';
+import { Box, IconButton, Skeleton, Stack, TextField, Tooltip, Typography } from '@mui/material';
 import { deleteData, getData, postOrPatchData } from '../../../../../services/authenticatedApiCalls';
 import { LoadingButton } from '@mui/lab';
 import { redirect, useRouter } from 'next/navigation';
@@ -25,6 +25,8 @@ export default function Lesson({
   params: { lessonId: string };
 }) {
   const lessonOutline = '<p><strong>Introduction</strong>:</p> \n\n<p><strong>Activity</strong>:</p>\n\n<p><strong>Guided Practice</strong>:</p> \n\n<p><strong>Independent Practice</strong>:</p> \n\n<p><strong>Closure</strong>:</p> \n\n<p><strong>Assessment</strong>:</p> \n\n<p><strong>Materials</strong>:</p>';
+  const objectiveTooltip = 'Write the grade level, sentence starter, and what you want to cover and AI will write it for you. ex: "2nd grade lesson, count to 1000 by 100s, and make it start with: Students will be able to".'
+  const lessonTooltip = 'Write a prompt for the AI to create a lesson plan for you. It will use your object to help write it. ex: "Use 100 blocks to count to 1000 and then complete an addition worksheet adding 100 to get to 1000".'
   const router = useRouter();
   const queryClient = useQueryClient();
   const [isLoading, setLoading] = useState(false);
@@ -162,13 +164,15 @@ export default function Lesson({
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
           <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'flex-end', gap: '10px' }}>
             <Typography sx={{fontWeight: 'bold'}}>Objective</Typography>
-            <IconButton 
-              size='small'
-              color='success'
-              onClick={() => updateObjectiveAi(objective)}
-            >
-              <AutoAwesome sx={{ fontSize: 18 }} />
-            </IconButton>
+            <Tooltip title={objectiveTooltip} placement='top-start'>
+              <IconButton 
+                size='small'
+                color='success'
+                onClick={() => updateObjectiveAi(objective)}
+              >
+                <AutoAwesome sx={{ fontSize: 18 }} />
+              </IconButton>
+            </Tooltip>
           </Box>
           {objective === null ?
             <Skeleton variant='text' sx={{ height: '50px' }} />
@@ -201,13 +205,15 @@ export default function Lesson({
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
           <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'flex-end', gap: '10px' }}>
             <Typography sx={{fontWeight: 'bold'}}>Lesson Outline</Typography>
-            <IconButton 
-              size='small'
-              color='success'
-              onClick={() => updateLessonOutlineAi(body)}
-            >
-              <AutoAwesome sx={{ fontSize: 18 }} />
-            </IconButton>
+            <Tooltip title={lessonTooltip} placement='top-start'>
+              <IconButton 
+                size='small'
+                color='success'
+                onClick={() => updateLessonOutlineAi(body)}
+              >
+                <AutoAwesome sx={{ fontSize: 18 }} />
+              </IconButton>
+            </Tooltip>
           </Box>
           <Box>
             {body === null ?
