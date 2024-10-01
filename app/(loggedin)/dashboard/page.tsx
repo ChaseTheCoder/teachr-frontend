@@ -15,6 +15,9 @@ export default function Dashboard() {
         <Typography variant='h2' fontSize={48} align='center'>
           Dashboard
         </Typography>
+        <Typography sx={{ padding: '32px' }} >
+          Here you will eventurally see an ouline of all your classes for the current day, materails for the day that you need to print, and any other important information. We are also open to feedback to what teachers want to see on their dashboard to help them prepare for the day.
+        </Typography>
       </Surface>
     </Box>
   )

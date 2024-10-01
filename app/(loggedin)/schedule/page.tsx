@@ -9,7 +9,7 @@ export default function Calendar() {
   return (
     <Box style={{ minHeight: '90vh' }}>
       <Surface>
-        Calendar, coming soon.
+        Calendar, coming next.
       </Surface>
     </Box>
   )
