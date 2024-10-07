@@ -1,9 +1,10 @@
 import React from 'react';
-import { Box, IconButton, Stack, Typography } from '@mui/material';
-import { CalendarMonth, House, Note } from '@mui/icons-material';
-import Link from 'next/link';
+import { Badge, Box, IconButton, Stack, Typography } from '@mui/material';
+import { CalendarMonth, House, Note, Person } from '@mui/icons-material';
+import { usePathname } from 'next/navigation';
 
-export default function SideNav() {
+export default function SideNav({ profile }: { profile: boolean }) {
+  const pathname = usePathname()
 
   return (
     <aside>
@@ -14,6 +15,7 @@ export default function SideNav() {
         <Box>
           <IconButton
             href='/dashboard'
+            color={pathname === '/dashboard' ? 'success' : 'default'}
           >
             <House/>
           </IconButton>
@@ -26,6 +28,7 @@ export default function SideNav() {
         <Box>
           <IconButton
             href='/plans'
+            color={pathname === '/plans' ? 'success' : 'default'}
           >
             <Note/>
           </IconButton>
@@ -38,6 +41,7 @@ export default function SideNav() {
         <Box>
           <IconButton
             href='/schedule'
+            color={pathname === '/schedule' ? 'success' : 'default'}
           >
             <CalendarMonth/>
           </IconButton>
@@ -48,6 +52,31 @@ export default function SideNav() {
           </Typography>
         </Box>
       </Stack>
+      <Box
+        sx={{
+          position: 'absolute',
+          bottom: 0,
+          width: '100%',
+          padding: '16px',
+          boxSizing: 'border-box',
+        }}
+      >
+        <IconButton
+          href='/profile'
+          color={pathname === '/profile' ? 'success' : 'default'}
+        >
+          <Badge
+            color="error"
+            invisible={profile}
+            badgeContent="!"
+          >
+            <Person />
+          </Badge>
+        </IconButton>
+        <Typography variant='body2'>
+          Profile
+        </Typography>
+      </Box>
     </aside>
   )
 }
