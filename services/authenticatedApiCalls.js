@@ -24,7 +24,6 @@ export async function getDataWithParams(apiUrl, params) {
   const accessToken = await getAccessToken();
   let urlWithParams = new URL(apiUrl);
   await params.forEach(date => urlWithParams.searchParams.append('dates', date));
-  console.log(urlWithParams);
 
   const response = await fetch(urlWithParams, {
     method: 'GET',
