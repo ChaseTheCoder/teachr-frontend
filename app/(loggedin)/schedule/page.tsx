@@ -1,11 +1,11 @@
 'use client'
 
 import React, { useEffect, useState } from 'react';
-import { Box, FormControl, IconButton, InputLabel, MenuItem, Select, SelectChangeEvent, Typography } from '@mui/material';
+import { Box, Button, FormControl, IconButton, InputLabel, MenuItem, Select, SelectChangeEvent, Typography } from '@mui/material';
 import { getData, getDataWithParams } from '../../../services/authenticatedApiCalls';
 import { useQuery } from '@tanstack/react-query';
 import { useUser } from '@auth0/nextjs-auth0/client';
-import { ChevronLeft, ChevronRight } from '@mui/icons-material';
+import { ChevronLeft, ChevronRight, DateRange } from '@mui/icons-material';
 import { getMonthRange, getWeekDates } from '../../../utils/schedule-helpers';
 import Surface from '../../../components/surface/Surface';
 
@@ -83,18 +83,18 @@ export default function Calendar() {
     }
   }, [schedulesData]);
 
-  function RenderDay({ date, schoolDaysData }: { date: string, schoolDaysData: any[] }): JSX.Element {
-    console.log(date);
-    console.log(schoolDaysData);
+  function RenderDay({ date }: { date: string }): JSX.Element {
+    console.log('date: ' + date);
+    console.log('schoolDaysData: ' + schoolDaysData);
     return (
       <Box flex={1} display='flex' flexDirection='column' key={date}>
         <Box display='flex' flexDirection='column' sx={{ paddingY: '1rem' }}>
-          <Typography fontSize={24}>{new Date(date).toLocaleDateString('en-US', { weekday: 'long' })}</Typography>
-          <Typography>{new Date(date).getDate()}</Typography>
+          <Typography fontSize={24}>{new Date(date).toLocaleDateString('en-US', { weekday: 'long', timeZone: 'UTC' })}</Typography>
+          <Typography>{new Date(date).toLocaleDateString('en-US', { day: 'numeric', timeZone: 'UTC' })}</Typography>
         </Box>
         {schoolDaysData?.find((day: any) => day.date === date) ? (
           <Box sx={{ padding: 1.5, borderRadius: 4, bgcolor: '#ffffff' }}>
-            <Typography fontSize={14}>{schoolDaysData.find((day: any) => day.date === date).id}</Typography>
+            <Typography fontSize={14}>{schoolDaysData.find((day: any) => day.date === date).date}</Typography>
           </Box>
         ) : (
           <Box sx={{ padding: 1.5, borderRadius: 4, bgcolor: '#e0e0e0', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
@@ -107,7 +107,31 @@ export default function Calendar() {
 
   return (
     <Box style={{ minHeight: '90vh' }}>
-      <Box display='flex' flexDirection='row' alignItems='center' gap={5}>
+      <Box display='flex' flexDirection='row' alignItems='center' justifyContent='space-between'>
+        <Box display='flex' flexDirection='row' alignItems='center' gap={1}>
+          <Button
+            size='small'
+            startIcon={<DateRange />}
+            color='success'
+            onClick={() => setWeekOffset(0)}
+            disabled={weekOffset === 0}
+          >
+            Current Week
+          </Button>
+          <IconButton
+            aria-label="go to previous week"
+            onClick={handlePreviousWeek}
+          >
+            <ChevronLeft fontSize="inherit" />
+          </IconButton>
+          <IconButton
+            aria-label="go to previous week"
+            onClick={handleNextWeek}
+          >
+            <ChevronRight fontSize="inherit" />
+          </IconButton>
+          <Typography>{month}</Typography>
+        </Box>
         <Box display='flex' flexDirection='column'>
             <Typography variant='overline'>School Year</Typography>
             <FormControl variant="standard" sx={{ minWidth: 'auto' }}>
@@ -127,28 +151,13 @@ export default function Calendar() {
               </Select>
             </FormControl>
         </Box>
-        <Box display='flex' flexDirection='row' alignItems='center' gap={1}>
-          <IconButton
-            aria-label="go to previous week"
-            onClick={handlePreviousWeek}
-          >
-            <ChevronLeft fontSize="inherit" />
-          </IconButton>
-          <IconButton
-            aria-label="go to previous week"
-            onClick={handleNextWeek}
-          >
-            <ChevronRight fontSize="inherit" />
-          </IconButton>
-          <Typography>{month}</Typography>
-        </Box>
       </Box>
       <Box display="flex" flexDirection='row' width='100%' gap={1}>
-        <RenderDay date={weekDates.monday} schoolDaysData={schoolDaysData} />
-        <RenderDay date={weekDates.tuesday} schoolDaysData={schoolDaysData} />
-        <RenderDay date={weekDates.wednesday} schoolDaysData={schoolDaysData} />
-        <RenderDay date={weekDates.thursday} schoolDaysData={schoolDaysData} />
-        <RenderDay date={weekDates.friday} schoolDaysData={schoolDaysData} />
+        <RenderDay date={weekDates.monday}/>
+        <RenderDay date={weekDates.tuesday}/>
+        <RenderDay date={weekDates.wednesday}/>
+        <RenderDay date={weekDates.thursday}/>
+        <RenderDay date={weekDates.friday}/>
       </Box>
     </Box>
   )
