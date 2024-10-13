@@ -20,6 +20,26 @@ export async function getData(apiUrl) {
   return result;
 }
 
+export async function getDataWithParams(apiUrl, params) {
+  const accessToken = await getAccessToken();
+  let urlWithParams = new URL(apiUrl);
+  await params.forEach(date => urlWithParams.searchParams.append('dates', date));
+  console.log(urlWithParams);
+
+  const response = await fetch(urlWithParams, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${accessToken.accessToken}`
+    },
+  });
+  if (!response.ok) {
+    throw new Error(`HTTP error! Status: ${response.status}`);
+  }
+  const result = await response.json();
+  return result;
+}
+
 export async function getDataNoUserId(apiUrl) {
   const accessToken = await getAccessToken();
 
