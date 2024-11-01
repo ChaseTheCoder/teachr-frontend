@@ -98,3 +98,21 @@ export async function getSessionId() {
   const session = await getSession();
   return session.user.sub;
 }
+
+export async function postSchedule(body) {
+  const accessToken = await getAccessToken();
+
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/schedule`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${accessToken.accessToken}`
+    },
+    body: JSON.stringify(body),
+  });
+  if (!response.ok) {
+    throw new Error(`HTTP error! Status: ${response.status}`);
+  }
+  const result = await response.json();
+  return result;
+}
