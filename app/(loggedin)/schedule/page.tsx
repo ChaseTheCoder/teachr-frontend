@@ -86,6 +86,7 @@ export default function Calendar() {
   function RenderDay({ date }: { date: string }): JSX.Element {
     const dayData = schoolDaysData?.find((day: any) => day.date === date) || null;
     console.log(dayData);
+      
     return (
       <Box flex={1} display='flex' flexDirection='column' key={date}>
         <Box display='flex' flexDirection='column' sx={{ paddingY: '1rem' }}>
