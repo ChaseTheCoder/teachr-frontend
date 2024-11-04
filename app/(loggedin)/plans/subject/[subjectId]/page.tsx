@@ -2,11 +2,11 @@
 
 import React, { useEffect, useState } from 'react';
 import Surface from '../../../../../components/surface/Surface';
-import { Box, Skeleton, Stack, TextField, Typography } from '@mui/material';
+import { Box, Chip, FormControl, InputLabel, MenuItem, OutlinedInput, Select, SelectChangeEvent, Skeleton, Stack, TextField, Typography } from '@mui/material';
 import { deleteData, getData, postOrPatchData } from '../../../../../services/authenticatedApiCalls';
 import { LoadingButton } from '@mui/lab';
 import { redirect, useRouter } from 'next/navigation';
-import { useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 export default function Subject({
   params,
@@ -21,42 +21,59 @@ export default function Subject({
   const [subject, setSubject] = useState('');
   const [subjectGrade, setSubjectGrade] = useState('');
   const [disableUpdate, setDisableUpdate] = useState(true);
-  console.log('PARAMS: ', params)
-  console.log('URL: ', `${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/subject/${params.subjectId}/`)
+  const [gradeLevelsSelected, setGradeLevelsSelected] = useState<string[]>([]);
   const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/subject/${params.subjectId}/`;
 
+  const { data: gradeLevels, isFetching, isLoading: isLoadinGrades, isError: isErrorGrades } = useQuery({
+    queryKey: ['grade_levels'],
+    queryFn: () => getData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/grade_levels/`),
+    staleTime: 1000 * 60 * 60 * 24 * 7 // 1 week
+  });
+
+  console.log('GRADE LEVELS: ', gradeLevels);
+
   async function getSubject() {
-    setLoading(true)
+    setLoading(true);
     try {
-      getData(url)
-      .then((response) => setData(response))
+      const response = await getData(url);
+      setData(response);
+      setSubject(response.subject);
+      setSubjectGrade(response.grade);
+      setGradeLevelsSelected(response.grade_levels);
     } catch (err) {
-      setError(true)
+      setError(true);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
 
   useEffect(() => {
     getSubject();
   }, []);
-  
+
+  const handleChange = (event: SelectChangeEvent<string[]>) => {
+    const { value } = event.target;
+    const selectedIds = typeof value === 'string' ? value.split(',') : value;
+    setGradeLevelsSelected(selectedIds);
+    const selectedGradeLevels = gradeLevels
+      ?.filter((level) => selectedIds.includes(level.id))
+      .map((level) => level.grade_level)
+      .join(', ');
+    setSubjectGrade(selectedGradeLevels);
+  };
+
   async function updateSubject() {
-    setLoading(true)
+    setLoading(true);
     try {
-      postOrPatchData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/subject/${params.subjectId}/`, 'PATCH', {
-          subject: subject,
-          grade: subjectGrade
-        }
-      )
+      await postOrPatchData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/subject/${params.subjectId}/`, 'PATCH', {
+        subject: subject,
+        grade_levels: gradeLevelsSelected,
+      });
       queryClient.invalidateQueries({ queryKey: ['plans'] });
     } catch (err) {
-      console.log('ERROR: SUBJECT NOT PATCHED')
-      console.log(err)
-      setError(true)
+      setError(true);
     } finally {
-      getSubject()
-      setLoading(false)
+      setLoading(false);
     }
   }
 
@@ -70,6 +87,7 @@ export default function Subject({
       console.log('ERROR: SUBJECT NOT DELETED')
       console.log(err)
       setError(true)
+      setLoading(false);
     }
   }
 
@@ -82,60 +100,65 @@ export default function Subject({
 
   useEffect(() => {
     if (!isLoading && !isError && data) {
-      if (subject !== data.subject || subjectGrade !== data.grade) {
+      if (subject !== data.subject || gradeLevelsSelected !== data.grade_levels) {
         setDisableUpdate(false);
       } else {
         setDisableUpdate(true);
       }
     }
-  }, [data, isError, isLoading, subject, subjectGrade]);
-  console.log('DATA: ', data)
-  console.log('SUBJECT: ', subject)
-  console.log('GRADE: ', subjectGrade)
+  }, [data, isError, isLoading, subject, subjectGrade, gradeLevelsSelected]);
+
+  if (isLoading) return <Typography>Loading...</Typography>;
+  if (isError) return <Typography>Error loading subject data</Typography>;
 
   return (
-    <Surface>
-      <Stack spacing={2}>
-        <Typography
-          variant='h6'
-          sx={{display:'flex', justifyContent:'center', width: '100%'}}
-        >Subject</Typography>
-        {isLoading || data === null ?
-          <Skeleton variant='text' sx={{ height: '50px' }} />
-          :
-          <TextField
-            color='success'
-            fullWidth
-            id="standard-basic"
-            label="Subject"
-            variant="standard"
-            value={subject}
-            onChange={(e) => setSubject(e.target.value)}
-          />
-        }
-        {isLoading || data === null ?
-          <Skeleton variant='text' sx={{ height: '50px' }} />
-          :
-          <TextField 
-            fullWidth
-            color='success'
-            id="standard-basic"
-            label="Grade"
-            variant="standard"
-            value={subjectGrade}
-            onChange={(e) => setSubjectGrade(e.target.value)}
-          />
-        }
+    <Box style={{ minHeight: '90vh' }}>
+      <Surface>
+        <Typography variant='h1' fontSize={32} fontWeight='bold' paddingBottom={4}>
+          Edit Subject
+        </Typography>
+        <TextField
+          label='Subject'
+          color='success'
+          variant='standard'
+          value={subject}
+          onChange={(e) => setSubject(e.target.value)}
+          fullWidth
+          margin='normal'
+        />
+        <FormControl variant='standard' color='success' fullWidth margin="normal">
+          <InputLabel id="grade-levels-label">Grade Levels</InputLabel>
+          <Select
+            labelId="grade-levels-label"
+            id="grade-levels"
+            label="Grade Level(s)"
+            multiple
+            value={gradeLevelsSelected}
+            onChange={handleChange}
+            renderValue={(selected) => (
+              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                {selected.map((value) => (
+                  <Chip key={value} label={gradeLevels.find((level) => level.id === value)?.grade_level} />
+                ))}
+              </Box>
+            )}
+          >
+            {gradeLevels?.map((level) => (
+              <MenuItem key={level.id} value={level.id}>
+                {level.grade_level}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
         <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
           <LoadingButton
             color='success'
             variant='contained'
-            disabled={disableUpdate && !isLoading}
-            size='small'
-            onClick={() => updateSubject()}
+            onClick={updateSubject}
             loading={isLoading}
+            disabled={disableUpdate}
           >
-            Update
+            Update Subject
           </LoadingButton>
           <LoadingButton
             variant='outlined'
@@ -147,7 +170,7 @@ export default function Subject({
             Delete
           </LoadingButton>
         </Box>
-      </Stack>
-    </Surface>
+      </Surface>
+    </Box>
   );
-};
+}

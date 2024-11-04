@@ -7,6 +7,7 @@ import ResponsiveAppBar from '../components/TopNav';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import Footer from '../components/footer';
+import "react-day-picker/style.css";
 const queryClient = new QueryClient();
 
 export default function RootLayout({

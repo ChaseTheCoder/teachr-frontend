@@ -1,11 +1,11 @@
 'use client'
 
 import React, { useEffect, useState } from 'react';
-import { Box, Button, FormControl, IconButton, InputLabel, MenuItem, Select, SelectChangeEvent, Typography } from '@mui/material';
+import { Box, Button, Divider, FormControl, IconButton, InputLabel, MenuItem, Select, SelectChangeEvent, Typography } from '@mui/material';
 import { getData, getDataWithParams } from '../../../services/authenticatedApiCalls';
 import { useQuery } from '@tanstack/react-query';
 import { useUser } from '@auth0/nextjs-auth0/client';
-import { ChevronLeft, ChevronRight, DateRange } from '@mui/icons-material';
+import { AddCircleOutline, ChevronLeft, ChevronRight, DateRange } from '@mui/icons-material';
 import { getMonthRange, getWeekDates } from '../../../utils/schedule-helpers';
 import Surface from '../../../components/surface/Surface';
 
@@ -69,7 +69,7 @@ export default function Calendar() {
   
   const { data: schoolDaysData } = useQuery({
     queryKey: ['schoolDays', weekDatesParams, selectedSchedule],
-    queryFn: () => getDataWithParams(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/days_range/${selectedSchedule}/`, weekDatesParams),
+    queryFn: () => getDataWithParams(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/days_range_with_classes/${selectedSchedule}/`, weekDatesParams),
     staleTime: 1000 * 60 * 60,
     enabled: !!weekDatesParams && !!selectedSchedule,
   })
@@ -84,17 +84,30 @@ export default function Calendar() {
   }, [schedulesData]);
 
   function RenderDay({ date }: { date: string }): JSX.Element {
-    console.log('date: ' + date);
-    console.log('schoolDaysData: ' + schoolDaysData);
+    const dayData = schoolDaysData?.find((day: any) => day.date === date) || null;
+    console.log(dayData);
+      
     return (
       <Box flex={1} display='flex' flexDirection='column' key={date}>
         <Box display='flex' flexDirection='column' sx={{ paddingY: '1rem' }}>
           <Typography fontSize={24}>{new Date(date).toLocaleDateString('en-US', { weekday: 'long', timeZone: 'UTC' })}</Typography>
           <Typography>{new Date(date).toLocaleDateString('en-US', { day: 'numeric', timeZone: 'UTC' })}</Typography>
         </Box>
-        {schoolDaysData?.find((day: any) => day.date === date) ? (
+        {dayData ? (
           <Box sx={{ padding: 1.5, borderRadius: 4, bgcolor: '#ffffff' }}>
-            <Typography fontSize={14}>{schoolDaysData.find((day: any) => day.date === date).date}</Typography>
+            {dayData.classes.map((schoolClass: any, index: number) =>
+              <Box key={schoolClass.id} sx={{ paddingBottom: '10px'}}>
+                {index > 0 && <Divider sx={{ paddingTop: '10px' }}/>}
+                <Typography
+                  key={schoolClass.id}
+                  fontSize={16}
+                  fontWeight='bold'
+                  sx={{ paddingTop: index > 0 ? '10px' : '0px' }}
+                >
+                    {schoolClass.school_class_title}
+                  </Typography>
+              </Box>
+            )}
           </Box>
         ) : (
           <Box sx={{ padding: 1.5, borderRadius: 4, bgcolor: '#e0e0e0', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
@@ -130,34 +143,54 @@ export default function Calendar() {
           >
             <ChevronRight fontSize="inherit" />
           </IconButton>
-          <Typography>{month}</Typography>
+          <Typography
+            variant='h1'
+            fontSize={42}
+          >
+            {month}
+          </Typography>
         </Box>
-        <Box display='flex' flexDirection='column'>
-            <Typography variant='overline'>School Year</Typography>
-            <FormControl variant="standard" sx={{ minWidth: 'auto' }}>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={schoolTitle ?? 'Select School Year'}
-                onChange={(event) => {
-                  handleChange(event);
-                  const selected = schedulesData?.find((schedule: any) => schedule.title === event.target.value);
-                  setSelectedSchedule(selected?.id);
-                }}
-              >
-                {schedulesData?.map((schedule: any) => (
-                <MenuItem value={schedule.title} key={schedule.id}>{schedule.title}</MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+        <Box display='flex' flexDirection='row' gap={2}>
+          <Button
+            size='small'
+            color='success'
+            onClick={() => window.location.href = '/schedule/add'}
+            endIcon={<AddCircleOutline />}
+          >
+            Add New School Year
+          </Button>
+          <Box display='flex' flexDirection='column'>
+              <Typography variant='overline'>School Year</Typography>
+              <FormControl variant="standard" sx={{ minWidth: 'auto' }}>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={schoolTitle ?? 'Select School Year'}
+                  onChange={(event) => {
+                    handleChange(event);
+                    const selected = schedulesData?.find((schedule: any) => schedule.title === event.target.value);
+                    setSelectedSchedule(selected?.id);
+                  }}
+                >
+                  {schedulesData?.map((schedule: any) => (
+                  <MenuItem value={schedule.title} key={schedule.id}>{schedule.title}</MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+          </Box>
         </Box>
       </Box>
-      <Box display="flex" flexDirection='row' width='100%' gap={1}>
-        <RenderDay date={weekDates.monday}/>
-        <RenderDay date={weekDates.tuesday}/>
-        <RenderDay date={weekDates.wednesday}/>
-        <RenderDay date={weekDates.thursday}/>
-        <RenderDay date={weekDates.friday}/>
+      <Box
+        display="flex"
+        flexDirection={{ xs: 'column', sm: 'column', md: 'row' }}
+        width="100%"
+        gap={1}
+      >
+        <RenderDay date={weekDates.monday} />
+        <RenderDay date={weekDates.tuesday} />
+        <RenderDay date={weekDates.wednesday} />
+        <RenderDay date={weekDates.thursday} />
+        <RenderDay date={weekDates.friday} />
       </Box>
     </Box>
   )

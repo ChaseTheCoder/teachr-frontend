@@ -251,7 +251,7 @@ export default function PlansMenu() {
                 href={`/plans/subject/${subject.id}`}
               >
                 <ListItemText
-                  primary={`${subject.grade}, ${subject.subject}`}
+                  primary={subject.subject}
                   primaryTypographyProps={{
                     fontSize: 16,
                     fontWeight: 'bold'
