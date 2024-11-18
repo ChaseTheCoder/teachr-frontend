@@ -17,6 +17,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import TeachrLogo from '../public/TeachrLogo.svg';
 import { Button } from '@mui/material';
+import { useQuery } from '@tanstack/react-query';
+import { getData } from '../services/authenticatedApiCalls';
 
 const pages = [
   {
@@ -33,20 +35,30 @@ const pages = [
   }
 ];
 const settings = [
-  // {
-  //   title: 'Profile',
-  //   link: '/'
-  // },{
-  //   title: 'Account',
-  //   link: '/'
-  // },
+  {
+    title: 'Profile',
+    link: '/profile'
+  },
   {
     title: 'Logout',
     link: '/api/auth/logout/'
   }];
 
 function ResponsiveAppBar() {
-  const { user } = useUser();
+  const [profile, setProfile] = React.useState(true);
+  const { user, error, isLoading: userLoading } = useUser();
+  const auth0Id = user?.sub;
+  const { data: profileData, isFetching, isLoading, isError } = useQuery({
+    queryKey: ['profile'],
+    queryFn: () => getData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/profile_auth0/${auth0Id}`),
+    staleTime: 1000 * 60 * 60,
+    enabled: !!auth0Id,
+  })
+  React.useEffect(() => {
+    if (!isFetching && !isLoading && user) {
+      setProfile(profileData ? true : false)
+    }
+  }, [isFetching, isLoading, profileData, user])
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
 
@@ -135,42 +147,46 @@ function ResponsiveAppBar() {
 
           <Box sx={{ flexGrow: 0 }}>
             { user ?
-              <>
-                <Tooltip title="Open settings">
-                  <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                    <Avatar alt="Remy Sharp" />
-                  </IconButton>
-                </Tooltip>
-                <Menu
-                  sx={{ mt: '45px' }}
-                  id="menu-appbar"
-                  anchorEl={anchorElUser}
-                  anchorOrigin={{
+                <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }} gap={2}>
+                  {
+                    profileData?.teacher_name &&
+                    <Typography color='textPrimary' fontWeight='bold'>{profileData.teacher_name}</Typography>
+                  }
+                  <Tooltip title="Open settings">
+                    <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                    <Avatar alt='Profile Icon' />
+                    </IconButton>
+                  </Tooltip>
+                  <Menu
+                    sx={{ mt: '45px' }}
+                    id="menu-appbar"
+                    anchorEl={anchorElUser}
+                    anchorOrigin={{
                     vertical: 'top',
                     horizontal: 'right',
-                  }}
-                  keepMounted
-                  transformOrigin={{
+                    }}
+                    keepMounted
+                    transformOrigin={{
                     vertical: 'top',
                     horizontal: 'right',
-                  }}
-                  open={Boolean(anchorElUser)}
-                  onClose={handleCloseUserMenu}
-                >
-                  {settings.map((setting) => (
+                    }}
+                    open={Boolean(anchorElUser)}
+                    onClose={handleCloseUserMenu}
+                  >
+                    {settings.map((setting) => (
                     <a
                       key={setting.title}
                       href={setting.link}
                     >
                       <MenuItem
-                        onClick={handleCloseUserMenu}
+                      onClick={handleCloseUserMenu}
                       >
-                        <Typography textAlign="center">{setting.title}</Typography>
+                      <Typography textAlign="center">{setting.title}</Typography>
                       </MenuItem>
                     </a>
-                  ))}
-                </Menu>
-              </>  :
+                    ))}
+                  </Menu>
+                </Box>  :
               <Button
                 color='success'
               >
