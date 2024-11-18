@@ -3,7 +3,7 @@ import { Badge, Box, IconButton, Stack, Typography } from '@mui/material';
 import { CalendarMonth, House, Note, Person } from '@mui/icons-material';
 import { usePathname } from 'next/navigation';
 
-export default function SideNav({ profile }: { profile: boolean }) {
+export default function SideNav() {
   const pathname = usePathname()
 
   return (
@@ -52,31 +52,6 @@ export default function SideNav({ profile }: { profile: boolean }) {
           </Typography>
         </Box>
       </Stack>
-      <Box
-        sx={{
-          position: 'absolute',
-          bottom: 0,
-          width: '100%',
-          padding: '16px',
-          boxSizing: 'border-box',
-        }}
-      >
-        <IconButton
-          href='/profile'
-          color={pathname === '/profile' ? 'success' : 'default'}
-        >
-          <Badge
-            color="error"
-            invisible={profile}
-            badgeContent="!"
-          >
-            <Person />
-          </Badge>
-        </IconButton>
-        <Typography variant='body2'>
-          Profile
-        </Typography>
-      </Box>
     </aside>
   )
 }

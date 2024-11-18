@@ -46,12 +46,12 @@ export default function Home() {
               <Box display="flex" justifyContent="center">
                 <LoadingButton
                   color='success'
-                  href={ user ? '/dashboard' : '/api/auth/login' }
+                  href={ user ? '/dashboard' : '/api/auth/signup' }
                   variant='contained'
                   size='large'
                   loading={isLoading}
                 >
-                  { user ? 'Go To Your Dashboard' : 'Register & Try for Free'}
+                  { user ? 'Go To Your Dashboard' : 'Signup, it\'s Free!'}
                 </LoadingButton>
               </Box>
               <Box display="flex" justifyContent="center">
