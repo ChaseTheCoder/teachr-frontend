@@ -5,6 +5,9 @@ const nextConfig = {
   experimental: {
     serverActions: true,
   },
+  images: {
+    domains: ['teachr-backend.onrender.com'],
+  },
 }
 
 module.exports = nextConfig
