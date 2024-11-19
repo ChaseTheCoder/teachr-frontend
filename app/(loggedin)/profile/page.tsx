@@ -1,8 +1,7 @@
 'use client'
 
 import React, { useEffect, useState } from 'react';
-import Surface from '../../../components/surface/Surface';
-import { Avatar, Box, Button, Skeleton, Typography } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import { useUser } from '@auth0/nextjs-auth0/client';
 import { useQuery } from '@tanstack/react-query';
 import { getData } from '../../../services/authenticatedApiCalls';
@@ -25,10 +24,12 @@ export default function Profile() {
   })
 
   useEffect(() => {
-    if (!isLoadingUser && !profileData) {
+    if(profileData) {
+      setSectionSelected('activity');
+    } else if (user && !isFetching && !isLoadingUser && !profileData) {
       setSectionSelected('profile');
     }
-  }, [isLoadingUser, profileData])
+  }, [isFetching, isLoadingUser, profileData, user])
 
   return (
     <Box style={{ minHeight: '90vh' }}>
@@ -40,12 +41,14 @@ export default function Profile() {
       />
       <Box sx={{ display: 'flex', flexDirection: 'row' }} gap={2}>
         <Button
+          color='success'
           startIcon={<DynamicFeedIcon />}
           onClick={() => setSectionSelected('activity')}
         >
           Activity
         </Button>
         <Button
+          color='success'
           startIcon={<EditIcon />}
           onClick={() => setSectionSelected('edit')}
         >

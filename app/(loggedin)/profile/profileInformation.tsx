@@ -21,27 +21,54 @@ export default function ProfileInformation({ isLoadingUser, isLoadingProfile, pr
       <Box sx={{ display: 'flex', flexDirection: 'row' }}>
       <Box sx={{ display: 'flex', justifyContent: 'center' }}>
         <Avatar
-        alt="Profile Image"
-        sx={{ width: 150, height: 150 }}
+          alt="Profile Image"
+          sx={{ width: {xs: 100, md:150}, height: {xs: 100, md:150} }}
         />
       </Box>
-      <Box sx={{ display: 'flex', flexDirection: 'column', paddingX: '3rem', width: '100%' }} gap={1}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', paddingLeft: { xs: '1rem', sm: '3rem' }, width: '100%' }} gap={1}>
         {isLoadingUser || isLoadingProfile ? (
-        <>
-          <Skeleton variant='text' sx={{ height: '50px' }} />
-          <Skeleton variant='text' sx={{ height: '50px' }} />
-          <Skeleton variant='text' sx={{ height: '50px' }} />
-        </>
-        ) : !user ? (
-        <Typography variant='h1' fontWeight='bold' fontSize={44}>Error loading profile</Typography>
-        ) : !profileData ? (
-        <Typography variant='h1' fontWeight='bold' fontSize={44}>Welcome, create your profile</Typography>
-        ) : (
-        <>
-          <Typography variant='h1' fontWeight='bold' fontSize={44}>{profileData.teacher_name}</Typography>
-          <Typography fontSize={18}>{profileData.first_name} {profileData.last_name}</Typography>
-          <Typography fontSize={18}>{profileData.title}</Typography>
-        </>
+          <>
+            <Skeleton variant='text' sx={{ height: '50px' }} />
+            <Skeleton variant='text' sx={{ height: '50px' }} />
+            <Skeleton variant='text' sx={{ height: '50px' }} />
+          </>
+          ) : !user ? (
+            <Typography
+              variant='h1'
+              fontWeight='bold'
+              sx={{ fontSize: { xs: 22, sm: 32, md: 44 } }}
+            >
+              Error loading profile
+            </Typography>
+            ) : !profileData ? (
+              <Typography
+                variant='h1'
+                fontWeight='bold'
+                sx={{ fontSize: { xs: 22, sm: 32, md: 44 } }}
+              >
+                Welcome, create your profile
+              </Typography>
+              ) : (
+              <>
+                <Typography
+                  variant='h1'
+                  fontWeight='bold'
+                  sx={{ fontSize: { xs: 32, sm: 44 } }}
+                >
+                  {profileData.teacher_name}
+                </Typography>
+                <Typography
+                  sx={{ fontSize: { xs: 16, sm: 18 } }}
+                >
+                  {profileData.first_name} {profileData.last_name}
+                </Typography>
+                <Typography
+                  sx={{ fontSize: { xs: 16, sm: 18 } }}
+                  color='textSecondary'
+                >
+                  {profileData.title}
+                </Typography>
+          </>
         )}
       </Box>
       </Box>

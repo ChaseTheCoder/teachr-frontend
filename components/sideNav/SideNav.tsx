@@ -1,10 +1,12 @@
+'use client'
+
 import React from 'react';
 import { Badge, Box, IconButton, Stack, Typography } from '@mui/material';
 import { CalendarMonth, House, Note, Person } from '@mui/icons-material';
 import { usePathname } from 'next/navigation';
 
 export default function SideNav() {
-  const pathname = usePathname()
+  let pathname = usePathname()
 
   return (
     <aside>
