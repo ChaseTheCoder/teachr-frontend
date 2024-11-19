@@ -6,7 +6,6 @@ import Surface from '../components/surface/Surface';
 import { Box, Button, Grid, Link, Stack, Typography } from '@mui/material';
 import { useUser } from '@auth0/nextjs-auth0/client';
 import { LoadingButton } from '@mui/lab';
-import { Email } from '@mui/icons-material';
 
 export default function Home() {
   const { user, isLoading } = useUser();
