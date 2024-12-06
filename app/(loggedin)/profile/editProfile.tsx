@@ -19,8 +19,7 @@ export default function EditProfile({ auth0Id }: props) {
   const [title, setTitle] = useState(null);
   const [disableUpdate, setDisableUpdate] = useState(true);
   const [newProfile, setNewProfile] = useState(null);
-  console.log('AUTH0ID: ', auth0Id)
-  console.log('USER: ', user)
+
   const { data: profileData, isFetching, isLoading: isLoadingProfile, isError } = useQuery({
     queryKey: ['profile'],
     queryFn: () => getData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/profile_auth0/${auth0Id}`),
