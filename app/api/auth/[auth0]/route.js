@@ -17,7 +17,7 @@ export const GET = handleAuth({
       // Add the `offline_access` scope to also get a Refresh Token
       scope: 'openid profile email read:plan delete:plans	update:plans read:messages'
     },
-    returnTo: `${process.env.AUTH0_BASE_URL}/dashboard`,
+    returnTo: `${process.env.AUTH0_BASE_URL}/feed`,
   }),
   logout: handleLogout({
     returnTo: process.env.AUTH0_BASE_URL,

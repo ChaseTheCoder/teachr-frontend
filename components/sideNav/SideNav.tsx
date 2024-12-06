@@ -1,8 +1,8 @@
 'use client'
 
 import React from 'react';
-import { Badge, Box, IconButton, Stack, Typography } from '@mui/material';
-import { CalendarMonth, House, Note, Person } from '@mui/icons-material';
+import { Box, Button, IconButton, Stack, Typography } from '@mui/material';
+import { Add, CalendarMonth, House, Note, Person } from '@mui/icons-material';
 import { usePathname } from 'next/navigation';
 
 export default function SideNav() {
@@ -10,50 +10,40 @@ export default function SideNav() {
 
   return (
     <aside>
-      <Stack 
-        style={{textAlign: "center", paddingTop: 12 }}
-        gap={2}
+      <Box
+        sx={{ padding: 2, height: '100vh' }}
       >
-        <Box>
-          <IconButton
-            href='/dashboard'
-            color={pathname === '/dashboard' ? 'success' : 'default'}
+        <Stack 
+          style={{textAlign: "center"}}
+          gap={2}
+        >
+          <Button
+            variant='contained'
+            startIcon={<Add />}
+            href='/new-post'
+            color='success'
+            sx={{ marginBottom: 3 }}
           >
-            <House/>
-          </IconButton>
-          <Typography
-            variant='body2'
+            Post
+          </Button>
+          <Button
+            variant={pathname === '/feed' ? 'outlined' : 'text'}
+            startIcon={<House />}
+            href='/feed'
+            color='success'
           >
-            Dashboard
-          </Typography>
-        </Box>
-        <Box>
-          <IconButton
-            href='/plans'
-            color={pathname === '/plans' ? 'success' : 'default'}
+            Home
+          </Button>
+          <Button
+            variant={pathname === '/profile' ? 'outlined' : 'text'}
+            startIcon={<Person />}
+            href='/profile'
+            color='success'
           >
-            <Note/>
-          </IconButton>
-          <Typography
-            variant='body2'
-          >
-            Plans
-          </Typography>
-        </Box>
-        <Box>
-          <IconButton
-            href='/schedule'
-            color={pathname === '/schedule' ? 'success' : 'default'}
-          >
-            <CalendarMonth/>
-          </IconButton>
-          <Typography
-            variant='body2'
-          >
-            Schedule
-          </Typography>
-        </Box>
-      </Stack>
+            Profile
+          </Button>
+        </Stack>
+      </Box>
     </aside>
   )
 }
