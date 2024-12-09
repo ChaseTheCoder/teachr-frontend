@@ -1,14 +1,28 @@
-import { Avatar, Box, Typography } from '@mui/material';
+import { Avatar, Box, Skeleton, Typography } from '@mui/material';
 import React from 'react';
 import CommentIcon from '@mui/icons-material/Comment';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import { IPost } from '../../../../types/types';
+import { getData } from '../../../../services/authenticatedApiCalls';
+import { useQuery } from '@tanstack/react-query';
 
 type Props = {
-  post: IPost
+  postId: String
 }
 
-export default function UserPost({ post }: Props) {
+export default function UserPost({ postId }: Props) {
+  const { data: post, isFetching, isLoading, isError } = useQuery({
+    queryKey: ['post', postId],
+    queryFn: () => getData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/post/${postId}/`),
+    staleTime: 1000 * 60 * 60,
+  })
+
+  if (isLoading) return (
+    <Box sx={{ display: 'flex', flexDirection: 'column' }} gap={1}>
+      <Skeleton variant='rectangular' height={80} />
+    </Box>
+  )
+
 
   return (
     <Box

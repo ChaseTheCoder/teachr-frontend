@@ -22,16 +22,12 @@ import { getData } from '../services/authenticatedApiCalls';
 
 const pages = [
   {
-    title: 'Dashboard',
-    link: '/dashboard'
+    title: 'Feed',
+    link: '/feed'
   },
   {
     title: 'Plans',
     link: '/plans'
-  }, 
-  {
-    title: 'Schedule',
-    link: '/schedule'
   }
 ];
 const settings = [
