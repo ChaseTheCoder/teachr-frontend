@@ -20,10 +20,10 @@ export async function getData(apiUrl) {
   return result;
 }
 
-export async function getDataWithParams(apiUrl, params) {
+export async function getDataWithParams(apiUrl, key, params) {
   const accessToken = await getAccessToken();
   let urlWithParams = new URL(apiUrl);
-  await params.forEach(date => urlWithParams.searchParams.append('dates', date));
+  await params.forEach(date => urlWithParams.searchParams.append(key, date));
 
   const response = await fetch(urlWithParams, {
     method: 'GET',

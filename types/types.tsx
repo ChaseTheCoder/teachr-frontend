@@ -5,3 +5,9 @@ export interface IPost {
   timestamp: string;
   user: string;
 }
+
+export interface IProfileBatch {
+  id: string;
+  teacher_name: string;
+  title: string;
+}

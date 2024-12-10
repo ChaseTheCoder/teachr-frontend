@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Box, Button, IconButton, Stack, Typography } from '@mui/material';
-import { Add, CalendarMonth, House, Note, Person } from '@mui/icons-material';
+import { Add, CalendarMonth, Edit, House, Note, Person, QuestionAnswer } from '@mui/icons-material';
 import { usePathname } from 'next/navigation';
 
 export default function SideNav() {
@@ -28,11 +28,11 @@ export default function SideNav() {
           </Button>
           <Button
             variant={pathname === '/feed' ? 'outlined' : 'text'}
-            startIcon={<House />}
+            startIcon={<QuestionAnswer />}
             href='/feed'
             color='success'
           >
-            Home
+            Feed
           </Button>
           <Button
             variant={pathname === '/profile' ? 'outlined' : 'text'}
@@ -41,6 +41,14 @@ export default function SideNav() {
             color='success'
           >
             Profile
+          </Button>
+          <Button
+            variant={pathname === '/plans' ? 'outlined' : 'text'}
+            startIcon={<Edit />}
+            href='/plans'
+            color='success'
+          >
+            Plans
           </Button>
         </Stack>
       </Box>
