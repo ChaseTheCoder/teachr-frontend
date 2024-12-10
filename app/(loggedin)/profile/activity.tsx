@@ -51,7 +51,7 @@ const Activity: React.FC = () => {
         </Box> :
         posts ? 
           posts.map((post) => (
-            <Post post={post} profile={profileData} />
+            <Post key={post.id} post={post} profile={profileData} />
           )) :
           <NoActivity />
       }
