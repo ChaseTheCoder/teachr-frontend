@@ -1,14 +1,36 @@
-import { Avatar, Box, Typography } from '@mui/material';
-import React from 'react';
+import { Avatar, Box, Skeleton, Typography } from '@mui/material';
+import React, { useEffect, useState } from 'react';
 import CommentIcon from '@mui/icons-material/Comment';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import { IPost } from '../../../../types/types';
+import { getData } from '../../../../services/authenticatedApiCalls';
+import { useQuery } from '@tanstack/react-query';
 
 type Props = {
-  post: IPost
+  postId: String
 }
 
-export default function UserPost({ post }: Props) {
+export default function UserPost({ postId }: Props) {
+  const { data: post, isFetching, isLoading, isError } = useQuery({
+    queryKey: ['post', postId],
+    queryFn: () => getData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/post/${postId}/`),
+    staleTime: 1000 * 60 * 60,
+  })
+  
+  const { data: profile, isFetching: isFetchingProfile, isLoading: isLoadingProfile, isError: isErrorProfile } = useQuery({
+    queryKey: ['profile'],
+    queryFn: () => getData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/profile_auth0/${post.user}`),
+    staleTime: 1000 * 60 * 60,
+    enabled: !!post,
+  })
+
+
+  if (isLoading || isLoadingProfile || !profile) return (
+    <Box sx={{ display: 'flex', flexDirection: 'column' }} gap={1}>
+      <Skeleton variant='rectangular' height={80} />
+    </Box>
+  )
+
 
   return (
     <Box
@@ -29,8 +51,8 @@ export default function UserPost({ post }: Props) {
           alt="Profile Image"
           sx={{ width: { xs: 30, md: 35 }, height: { xs: 30, md: 35 }, marginRight: '1rem' }}
         />
-        <Typography sx={{ fontSize: { xs: 16, sm: 18 } }}>User Name, </Typography>
-        <Typography sx={{ fontSize: { xs: 16, sm: 18 } }} color='textSecondary'> 4th Grade Teacher</Typography>
+        <Typography sx={{ fontSize: { xs: 16, sm: 18 } }}>{profile.teacher_name}</Typography>
+        <Typography sx={{ fontSize: { xs: 16, sm: 18 }, paddingLeft: 1 }} color='textSecondary'>{profile.title}</Typography>
       </Box>
       <Typography variant='h2' sx={{ fontSize: { xs: 22, sm: 26 } }} fontWeight='bold'>{post.title}</Typography>
       {post.body && <Typography sx={{ fontSize: { xs: 14, sm: 16 } }}>{post.body}</Typography>}

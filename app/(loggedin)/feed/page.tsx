@@ -12,9 +12,9 @@ export default function Home() {
       <Grid item xs={12} md={9}>
         <Feed/>
       </Grid>
-      <Grid item xs={12} md={3}>
+      {/* <Grid item xs={12} md={3}>
         <Popular/>
-      </Grid>
+      </Grid> */}
     </Grid>
   );
 }
