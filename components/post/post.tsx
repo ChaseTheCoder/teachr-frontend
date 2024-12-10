@@ -1,16 +1,16 @@
 import { Avatar, Box, Typography } from '@mui/material';
 import React from 'react';
-import { IPost } from '../../types/types';
+import { IPost, IProfileBatch } from '../../types/types';
 import CommentIcon from '@mui/icons-material/Comment';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import Link from 'next/link';
 
 type Props = {
   post: IPost
-  key: string
+  profile: IProfileBatch
 }
 
-export default function Post({ post, key }: Props) {
+export default function Post({ post, profile }: Props) {
 
   return (
     <Link key={post.id} href={`/post/${post.id}`} passHref>
@@ -24,7 +24,6 @@ export default function Post({ post, key }: Props) {
           display: 'flex',
           flexDirection: 'column'
         }}
-        key={key}
         gap={1}
       >
         <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
@@ -32,8 +31,8 @@ export default function Post({ post, key }: Props) {
             alt="Profile Image"
             sx={{ width: { xs: 20, md: 25 }, height: { xs: 20, md: 25 }, marginRight: '1rem' }}
           />
-          <Typography sx={{ fontSize: { xs: 12, sm: 14 } }}>User Name, </Typography>
-          <Typography sx={{ fontSize: { xs: 12, sm: 14 } }} color='textSecondary'> 4th Grade Teacher</Typography>
+          <Typography sx={{ fontSize: { xs: 12, sm: 14 } }}>{profile.teacher_name}</Typography>
+          <Typography sx={{ fontSize: { xs: 12, sm: 14 }, paddingLeft: 1 }} color='textSecondary'>{profile.title}</Typography>
         </Box>
         <Typography variant='h2' sx={{ fontSize: { xs: 16, sm: 18 } }} fontWeight='bold'>{post.title}</Typography>
         {post.body && <Typography sx={{ fontSize: { xs: 12, sm: 14 } }}>{post.body}</Typography>}

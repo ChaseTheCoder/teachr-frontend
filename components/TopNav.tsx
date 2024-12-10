@@ -28,7 +28,7 @@ const pages = [
   {
     title: 'Plans',
     link: '/plans'
-  }
+  }, 
 ];
 const settings = [
   {

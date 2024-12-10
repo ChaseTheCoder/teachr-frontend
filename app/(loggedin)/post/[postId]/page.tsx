@@ -1,10 +1,9 @@
 'use client'
 
-import { useQuery } from "@tanstack/react-query";
-import { getData } from "../../../../services/authenticatedApiCalls";
 import UserPost from "./userPost";
-import { Stack } from "@mui/material";
+import { Grid, Stack } from "@mui/material";
 import Comments from "./comments";
+import PostComment from "./postComment";
 
 export default function QuestionId({
   params,
@@ -13,11 +12,14 @@ export default function QuestionId({
 }) {
   
   return (
-    <Stack spacing={2}>
-      <UserPost
-        postId={params.postId}
-      />
-      <Comments postId={params.postId} />
-    </Stack>
+    <Grid container spacing={1}>
+      <Grid item xs={12} md={10}>
+        <UserPost
+          postId={params.postId}
+        />
+        <PostComment postId={params.postId} />
+        <Comments postId={params.postId} />
+      </Grid>
+    </Grid>
   );
 }

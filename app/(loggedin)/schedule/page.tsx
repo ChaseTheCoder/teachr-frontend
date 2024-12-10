@@ -69,7 +69,7 @@ export default function Calendar() {
   
   const { data: schoolDaysData } = useQuery({
     queryKey: ['schoolDays', weekDatesParams, selectedSchedule],
-    queryFn: () => getDataWithParams(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/days_range_with_classes/${selectedSchedule}/`, weekDatesParams),
+    queryFn: () => getDataWithParams(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/days_range_with_classes/${selectedSchedule}/`, 'dates', weekDatesParams),
     staleTime: 1000 * 60 * 60,
     enabled: !!weekDatesParams && !!selectedSchedule,
   })
