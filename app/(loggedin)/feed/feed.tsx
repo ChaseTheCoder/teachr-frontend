@@ -48,6 +48,7 @@ export default function Feed() {
           const userProfile = batchProfiles?.find(profile => profile.id === post.user);
           return (
           <Post
+            key={post.id}
             post={post}
             profile={userProfile}
           />
