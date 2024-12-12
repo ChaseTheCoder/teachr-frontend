@@ -78,7 +78,7 @@ function ResponsiveAppBar() {
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Box sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }}>
-            <Link href={user ? '/dashboard' : '/'}>
+            <Link href={user ? '/feed' : '/'}>
               <Image
                 priority
                 src={TeachrLogo}
@@ -95,7 +95,6 @@ function ResponsiveAppBar() {
               aria-controls="menu-appbar"
               aria-haspopup="true"
               onClick={handleOpenNavMenu}
-              // color="inherit"
             >
               <MenuIcon />
             </IconButton>

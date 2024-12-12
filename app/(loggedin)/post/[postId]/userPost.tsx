@@ -18,8 +18,8 @@ export default function UserPost({ postId }: Props) {
   })
   
   const { data: profile, isFetching: isFetchingProfile, isLoading: isLoadingProfile, isError: isErrorProfile } = useQuery({
-    queryKey: ['profile'],
-    queryFn: () => getData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/profile_auth0/${post.user}`),
+    queryKey: ['posterProfile'],
+    queryFn: () => getData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/profile/${post.user}`),
     staleTime: 1000 * 60 * 60,
     enabled: !!post,
   })
@@ -56,16 +56,6 @@ export default function UserPost({ postId }: Props) {
       </Box>
       <Typography variant='h2' sx={{ fontSize: { xs: 22, sm: 26 } }} fontWeight='bold'>{post.title}</Typography>
       {post.body && <Typography sx={{ fontSize: { xs: 14, sm: 16 } }}>{post.body}</Typography>}
-      <Box sx={{ display: 'flex', flexDirection: 'row' }} gap={3}>
-        <Box sx={{ display: 'flex', flexDirection: 'row' }} gap={1}>
-          <StarBorderIcon fontSize='small' color='disabled'/>
-          <Typography sx={{ fontSize: { xs: 12, sm: 14 } }} color='textSecondary'>Like</Typography>
-        </Box>
-        <Box sx={{ display: 'flex', flexDirection: 'row' }} gap={1}>
-          <CommentIcon fontSize='small' color='disabled'/>
-          <Typography sx={{ fontSize: { xs: 12, sm: 14 } }} color='textSecondary'>Comment</Typography>
-        </Box>
-      </Box>
     </Box>
   )
 }
