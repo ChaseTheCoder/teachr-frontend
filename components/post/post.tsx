@@ -36,16 +36,6 @@ export default function Post({ post, profile }: Props) {
         </Box>
         <Typography variant='h2' sx={{ fontSize: { xs: 16, sm: 18 } }} fontWeight='bold'>{post.title}</Typography>
         {post.body && <Typography sx={{ fontSize: { xs: 12, sm: 14 } }}>{post.body}</Typography>}
-        <Box sx={{ display: 'flex', flexDirection: 'row' }} gap={3}>
-          <Box sx={{ display: 'flex', flexDirection: 'row' }} gap={1}>
-            <StarBorderIcon fontSize='small' color='disabled'/>
-            <Typography sx={{ fontSize: { xs: 12, sm: 14 } }} color='textSecondary'>Like</Typography>
-          </Box>
-          <Box sx={{ display: 'flex', flexDirection: 'row' }} gap={1}>
-            <CommentIcon fontSize='small' color='disabled'/>
-            <Typography sx={{ fontSize: { xs: 12, sm: 14 } }} color='textSecondary'>Comment</Typography>
-          </Box>
-        </Box>
       </Box>
     </Link>
   )

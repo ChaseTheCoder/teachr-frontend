@@ -8,9 +8,10 @@ import { useUser } from '@auth0/nextjs-auth0/client';
 
 interface props {
   auth0Id: string;
+  signUp?: boolean;
 }
 
-export default function EditProfile({ auth0Id }: props) {
+export default function EditProfile({ auth0Id, signUp }: props) {
   const queryClient = useQueryClient();
   const { user, error, isLoading: userLoading } = useUser();
   const [firstName, setFirstName] = useState(null);
@@ -18,7 +19,7 @@ export default function EditProfile({ auth0Id }: props) {
   const [teacherName, setTeacherName] = useState(null);
   const [title, setTitle] = useState(null);
   const [disableUpdate, setDisableUpdate] = useState(true);
-  const [newProfile, setNewProfile] = useState(null);
+  const [newProfile, setNewProfile] = useState(signUp);
 
   const { data: profileData, isFetching, isLoading: isLoadingProfile, isError } = useQuery({
     queryKey: ['profile'],
@@ -43,7 +44,6 @@ export default function EditProfile({ auth0Id }: props) {
       setTitle(profileData ? profileData.title : '')
     }
   }, [isFetching, isLoadingProfile, profileData, user])
-  console.log('profileData: ', profileData)
 
   const mutationPost = useMutation({
     mutationFn: () => {
@@ -59,6 +59,9 @@ export default function EditProfile({ auth0Id }: props) {
     onSuccess: (data) => {
       // Handle success (e.g., show a success message, update state, etc.)
       console.log('Profile added successfully:', data);
+      if (signUp) {
+        window.location.href = '/feed';
+      }
     },
     onError: (error) => {
       // Handle error (e.g., show an error message)

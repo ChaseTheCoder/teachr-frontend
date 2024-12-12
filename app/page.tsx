@@ -43,15 +43,16 @@ export default function Home() {
                 Software & AI tools to save educators time for what cannot be automated.
               </Typography>
               <Box display="flex" justifyContent="center">
-                <LoadingButton
-                  color='success'
-                  href={ user ? '/dashboard' : '/api/auth/signup' }
-                  variant='contained'
-                  size='large'
-                  loading={isLoading}
-                >
-                  { user ? 'Go To Your Dashboard' : 'Signup, it\'s Free!'}
-                </LoadingButton>
+                {!user && !isLoading &&
+                  <Button
+                    color='success'
+                    href={'/api/auth/signup' }
+                    variant='contained'
+                    size='large'
+                  >
+                    Signup, it&apos;s Free!
+                  </Button>
+                }
               </Box>
               <Box display="flex" justifyContent="center">
                 <Button
