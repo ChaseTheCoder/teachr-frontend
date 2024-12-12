@@ -45,6 +45,7 @@ export default function PostComment({ postId }: Props) {
       console.error('Error posting new data:', error);
     } finally {
       setLoading(false);
+      setTextFieldFocused(false);
     }
   };
 
