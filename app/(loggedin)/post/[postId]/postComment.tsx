@@ -2,12 +2,10 @@
 
 import React, { useState } from 'react';
 import { Box, Button, Skeleton, TextField, Typography } from '@mui/material';
-import { useRouter } from 'next/navigation';
 import { useUser } from "@auth0/nextjs-auth0/client";
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { LoadingButton } from '@mui/lab';
 import { getData, postOrPatchData } from '../../../../services/authenticatedApiCalls';
-import Surface from '../../../../components/surface/Surface';
 
 type Props = {
   postId: string
@@ -56,25 +54,36 @@ export default function PostComment({ postId }: Props) {
   )
 
   return (
-    <Surface>
-      <Typography variant='body1' component='h2' gutterBottom sx={{ fontWeight: 'bold' }}>
+    <Box
+      sx={{ 
+        paddingX: 2,
+        paddingTop: 1.5,
+        marginBottom: 1.5,
+        borderRadius: 4,
+        bgcolor: '#ffffff',
+        display: 'flex',
+        flexDirection: 'column'
+      }}
+      gap={1}
+    >
+      {/* <Typography variant='body1' component='h2' gutterBottom sx={{ fontWeight: 'bold' }}>
       Respond to Post
-      </Typography>
+      </Typography> */}
       <form onSubmit={handleSubmit}>
       <Box mb={2}>
         <TextField
         color='success'
         variant='standard'
+        placeholder='Respond to Post'
         value={isTextFieldFocused ? body : ''}
         onChange={(e) => setBody(e.target.value)}
         onFocus={() => setTextFieldFocused(true)}
         fullWidth
-        required
         multiline
         />
       </Box>
       {isTextFieldFocused && (
-        <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'flex-end' }}>
+        <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'flex-end', paddingBottom: 1 }}>
           <Button
             onClick={() => setTextFieldFocused(false)}
             color='error'
@@ -93,6 +102,6 @@ export default function PostComment({ postId }: Props) {
         </Box>
       )}
       </form>
-    </Surface>
+    </Box>
   );
 }
