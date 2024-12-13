@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react';
-import { Box, Button, TextField, Typography } from '@mui/material';
+import { Box, Button, Skeleton, TextField, Typography } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import { getData, postOrPatchData } from '../../../services/authenticatedApiCalls';
 import Surface from "../../../components/surface/Surface";
@@ -42,6 +42,12 @@ export default function NewPost() {
       setLoading(false);
     }
   };
+
+  if (isLoadingUser || isLoadingProfile) return (
+    <Box sx={{ display: 'flex', flexDirection: 'column' }} gap={1}>
+      <Skeleton variant='rectangular' height={80} />
+    </Box>
+  )
 
   return (
     <Surface>

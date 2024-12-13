@@ -1,15 +1,29 @@
-import { Avatar, Box, Divider, Skeleton, Stack, Typography } from '@mui/material';
+import { Avatar, Box, Divider, Fade, IconButton, List, ListItemButton, Paper, Popper, PopperPlacementType, Skeleton, Stack, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import CommentIcon from '@mui/icons-material/Comment';
-import StarBorderIcon from '@mui/icons-material/StarBorder';
-import { getData, getDataWithParams } from '../../../../services/authenticatedApiCalls';
-import { useQuery } from '@tanstack/react-query';
+import { deleteData, getData, getDataWithParams } from '../../../../services/authenticatedApiCalls';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { DeleteOutline, MoreVert } from '@mui/icons-material';
 
 type Props = {
   postId: string
+  currentUserId: String | undefined;
 }
 
-export default function Comments({ postId }: Props) {
+export default function Comments({ postId, currentUserId }: Props) {
+  const queryClient = useQueryClient();
+  const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
+  const [open, setOpen] = React.useState(false);
+  const [placement, setPlacement] = React.useState<PopperPlacementType>();
+  const [commentId, setCommentId] = useState<string | null>(null);
+
+    const handleClickPopper =
+      (newPlacement: PopperPlacementType) =>
+      (event: React.MouseEvent<HTMLButtonElement>) => {
+        setAnchorEl(event.currentTarget);
+        setOpen((prev) => placement !== newPlacement || !prev);
+        setPlacement(newPlacement);
+      };
+    
   const { data: comments, isFetching, isLoading, isError } = useQuery({
     queryKey: ['comments', postId],
     queryFn: () => getData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/post/${postId}/comments/`),
@@ -36,7 +50,25 @@ export default function Comments({ postId }: Props) {
     enabled: userIds.length > 0,
   })
 
-  if (isLoading && isLoadingBatchProfiles) return (
+  const mutationDelete = useMutation({
+    mutationFn: () => {
+      return deleteData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/comment/${commentId}/`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['comments', postId] });
+    },
+    onError: (error) => {
+      console.error('Error deleting post:', error);
+    },
+    onSettled: () => {
+    }
+  });
+
+  const handleDeleteComment = () => {
+    mutationDelete.mutate();
+  };
+
+  if (isLoading || isLoadingBatchProfiles || isFetchingBatchProfiles) return (
     <Box sx={{ display: 'flex', flexDirection: 'column' }} gap={1}>
       <Skeleton variant='rounded' height={80} />
       <Skeleton variant='rounded' height={80} />
@@ -70,28 +102,54 @@ export default function Comments({ postId }: Props) {
             spacing={3}
           >
               <Box sx={{ display: 'flex', flexDirection: 'column' }} gap={.5}>
-                <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                  <Avatar
-                    alt="Profile Image"
-                    sx={{ width: { xs: 20, md: 25 }, height: { xs: 20, md: 25 }, marginRight: '.5rem' }}
-                  />
-                  <Typography sx={{ fontSize: { xs: 14, sm: 16 } }}>{teacherName}</Typography>
-                  <Typography sx={{ fontSize: { xs: 14, sm: 16 }, paddingLeft: 1 }} color='textSecondary'>{ title}</Typography>
+                <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                    <Avatar
+                      alt="Profile Image"
+                      sx={{ width: { xs: 20, md: 25 }, height: { xs: 20, md: 25 }, marginRight: '.5rem' }}
+                    />
+                    <Typography sx={{ fontSize: { xs: 14, sm: 16 } }}>{teacherName}</Typography>
+                    <Typography sx={{ fontSize: { xs: 14, sm: 16 }, paddingLeft: 1 }} color='textSecondary'>{ title}</Typography>
+                  </Box>
+                  {(currentUserId !== undefined && currentUserId === comment.user) &&
+                    <IconButton onClick={handleClickPopper('bottom-end')}>
+                      <MoreVert fontSize='small' />
+                    </IconButton>
+                  }
                 </Box>
                 <Typography variant='h2' sx={{ fontSize: { xs: 22, sm: 26 } }} fontWeight='bold'>{comment.title}</Typography>
                 {comment.body && <Typography sx={{ fontSize: { xs: 14, sm: 16 } }}>{comment.body}</Typography>}
-                <Box sx={{ display: 'flex', flexDirection: 'row' }} gap={3}>
-                  <Box sx={{ display: 'flex', flexDirection: 'row' }} gap={1}>
-                    <StarBorderIcon fontSize='small' color='disabled'/>
-                    <Typography sx={{ fontSize: { xs: 12, sm: 14 } }} color='textSecondary'>Like</Typography>
-                  </Box>
-                </Box>
               </Box>
           </Stack>
+          <Popper
+            sx={{ zIndex: 1200 }}
+            open={open}
+            anchorEl={anchorEl}
+            placement={placement}
+            transition
+          >
+            {({ TransitionProps }) => (
+              <Fade {...TransitionProps} timeout={350}>
+                <Paper>
+                  <List>
+                    <ListItemButton
+                      sx={{ padding: 1, gap: 3 }}
+                      onClick={() => {
+                        setCommentId(comment.id);
+                        handleDeleteComment()
+                      }}
+                    >
+                      <DeleteOutline fontSize='small'/>   <Typography fontSize='small'>Delete Comment</Typography>
+                    </ListItemButton>
+                  </List>
+                </Paper>
+              </Fade>
+            )}
+          </Popper>
         </Box>
       )}) :
         <Typography variant='h2' sx={{ fontSize: { xs: 22, sm: 26 } }} fontWeight='bold' color='textSecondary'>No Comments Yet</Typography>
-      } 
+      }
     </>
   )
 }
