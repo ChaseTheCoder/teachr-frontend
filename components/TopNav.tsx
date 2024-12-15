@@ -19,6 +19,7 @@ import TeachrLogo from '../public/TeachrLogo.svg';
 import { Button } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { getData } from '../services/authenticatedApiCalls';
+import { Add } from '@mui/icons-material';
 
 const pages = [
   {
@@ -77,18 +78,8 @@ function ResponsiveAppBar() {
     <AppBar position="static" elevation={0} sx={{ bgcolor: 'white', borderRadius: 4 }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <Box sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }}>
-            <Link href={user ? '/feed' : '/'}>
-              <Image
-                priority
-                src={TeachrLogo}
-                alt='Teachr Lounge logo'
-                height={38}
-              />
-            </Link>
-          </Box>
 
-          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+          <Box sx={{  display: { xs: 'flex', md: 'none' } }}>
             <IconButton
               size="large"
               aria-label="account of current user"
@@ -126,70 +117,78 @@ function ResponsiveAppBar() {
             </Menu>
           </Box>
 
-          <Box sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }}>
-            <Link href='/'>
-              <Image
-                priority
-                src={TeachrLogo}
-                alt='Teachr Lounge logo'
-                height={38}
-              />
-            </Link>
-          </Box>
+          <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%' }} >
+            <Box sx={{ display: 'flex', mr: 1 }}>
+              <Link href={user ? '/feed' : '/'}>
+                <Image
+                  priority
+                  src={TeachrLogo}
+                  alt='Teachr Lounge logo'
+                  height={38}
+                />
+              </Link>
+            </Box>
 
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-          </Box>
-
-          <Box sx={{ flexGrow: 0 }}>
-            { user ?
-                <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }} gap={2}>
-                  {
-                    profileData?.teacher_name &&
-                    <Typography color='textPrimary' fontWeight='bold'>{profileData.teacher_name}</Typography>
-                  }
-                  <Tooltip title="Open settings">
-                    <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                    <Avatar alt='Profile Icon' />
-                    </IconButton>
-                  </Tooltip>
-                  <Menu
-                    sx={{ mt: '45px' }}
-                    id="menu-appbar"
-                    anchorEl={anchorElUser}
-                    anchorOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                    }}
-                    keepMounted
-                    transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                    }}
-                    open={Boolean(anchorElUser)}
-                    onClose={handleCloseUserMenu}
-                  >
-                    {settings.map((setting) => (
-                    <a
-                      key={setting.title}
-                      href={setting.link}
+            <Box sx={{ flexGrow: 0 }}>
+              { user ?
+                  <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }} gap={2}>
+                    <Button
+                      variant='contained'
+                      startIcon={<Add />}
+                      href='/new-post'
+                      color='success'
+                      sx={{  display: { xs: 'flex', md: 'none' } }}
                     >
-                      <MenuItem
-                      onClick={handleCloseUserMenu}
+                      Post
+                    </Button>
+                    {
+                      profileData?.teacher_name &&
+                      <Typography color='textPrimary' fontWeight='bold'>{profileData.teacher_name}</Typography>
+                    }
+                    <Tooltip title="Open settings">
+                      <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                      <Avatar alt='Profile Icon' />
+                      </IconButton>
+                    </Tooltip>
+                    <Menu
+                      sx={{ mt: '45px' }}
+                      id="menu-appbar"
+                      anchorEl={anchorElUser}
+                      anchorOrigin={{
+                      vertical: 'top',
+                      horizontal: 'right',
+                      }}
+                      keepMounted
+                      transformOrigin={{
+                      vertical: 'top',
+                      horizontal: 'right',
+                      }}
+                      open={Boolean(anchorElUser)}
+                      onClose={handleCloseUserMenu}
+                    >
+                      {settings.map((setting) => (
+                      <a
+                        key={setting.title}
+                        href={setting.link}
                       >
-                      <Typography textAlign="center">{setting.title}</Typography>
-                      </MenuItem>
-                    </a>
-                    ))}
-                  </Menu>
-                </Box>  :
-              <Button
-                color='success'
-              >
-                <a href='/api/auth/login'>
-                  Log In
-                </a>
-              </Button>
-            }
+                        <MenuItem
+                        onClick={handleCloseUserMenu}
+                        >
+                        <Typography textAlign="center">{setting.title}</Typography>
+                        </MenuItem>
+                      </a>
+                      ))}
+                    </Menu>
+                  </Box>  :
+                <Button
+                  color='success'
+                >
+                  <a href='/api/auth/login'>
+                    Log In
+                  </a>
+                </Button>
+              }
+            </Box>
           </Box>
         </Toolbar>
       </Container>
