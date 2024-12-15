@@ -1,7 +1,7 @@
 'use client'
 
 import UserPost from "./userPost";
-import { Grid, Stack } from "@mui/material";
+import { Grid } from "@mui/material";
 import Comments from "./comments";
 import PostComment from "./postComment";
 import { useQuery } from "@tanstack/react-query";
@@ -21,6 +21,8 @@ export default function QuestionId({
     staleTime: 1000 * 60 * 60,
     enabled: !!auth0Id,
   });
+
+  if(isLoadingUser || isLoadingProfile) return null;
   
   return (
     <Grid container spacing={1}>
