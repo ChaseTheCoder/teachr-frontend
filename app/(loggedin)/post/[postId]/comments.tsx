@@ -1,5 +1,5 @@
 import { Avatar, Box, Divider, Fade, IconButton, List, ListItemButton, Paper, Popper, PopperPlacementType, Skeleton, Stack, Typography } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { deleteData, getData, getDataWithParams } from '../../../../services/authenticatedApiCalls';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { DeleteOutline, MoreVert } from '@mui/icons-material';
@@ -10,19 +10,33 @@ type Props = {
 }
 
 export default function Comments({ postId, currentUserId }: Props) {
+  const popperRef = useRef<HTMLDivElement | null>(null);
   const queryClient = useQueryClient();
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
   const [open, setOpen] = React.useState(false);
   const [placement, setPlacement] = React.useState<PopperPlacementType>();
   const [commentId, setCommentId] = useState<string | null>(null);
 
-    const handleClickPopper =
-      (newPlacement: PopperPlacementType) =>
-      (event: React.MouseEvent<HTMLButtonElement>) => {
-        setAnchorEl(event.currentTarget);
-        setOpen((prev) => placement !== newPlacement || !prev);
-        setPlacement(newPlacement);
-      };
+  const handleClickPopper =
+    (newPlacement: PopperPlacementType) =>
+    (event: React.MouseEvent<HTMLButtonElement>) => {
+      setAnchorEl(event.currentTarget);
+      setOpen((prev) => placement !== newPlacement || !prev);
+      setPlacement(newPlacement);
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (popperRef.current && !popperRef.current.contains(event.target as Node)) {
+        setOpen(false);
+      }
+    };
+  
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [popperRef]);
     
   const { data: comments, isFetching, isLoading, isError } = useQuery({
     queryKey: ['comments', postId],
@@ -56,6 +70,7 @@ export default function Comments({ postId, currentUserId }: Props) {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['comments', postId] });
+      setOpen(false);
     },
     onError: (error) => {
       console.error('Error deleting post:', error);
@@ -70,6 +85,9 @@ export default function Comments({ postId, currentUserId }: Props) {
 
   if (isLoading || isLoadingBatchProfiles || isFetchingBatchProfiles) return (
     <Box sx={{ display: 'flex', flexDirection: 'column' }} gap={1}>
+      <Skeleton variant='rounded' height={80} />
+      <Skeleton variant='rounded' height={80} />
+      <Skeleton variant='rounded' height={80} />
       <Skeleton variant='rounded' height={80} />
       <Skeleton variant='rounded' height={80} />
       <Skeleton variant='rounded' height={80} />
@@ -127,6 +145,7 @@ export default function Comments({ postId, currentUserId }: Props) {
             anchorEl={anchorEl}
             placement={placement}
             transition
+            ref={popperRef}
           >
             {({ TransitionProps }) => (
               <Fade {...TransitionProps} timeout={350}>
@@ -136,7 +155,7 @@ export default function Comments({ postId, currentUserId }: Props) {
                       sx={{ padding: 1, gap: 3 }}
                       onClick={() => {
                         setCommentId(comment.id);
-                        handleDeleteComment()
+                        handleDeleteComment();
                       }}
                     >
                       <DeleteOutline fontSize='small'/>   <Typography fontSize='small'>Delete Comment</Typography>

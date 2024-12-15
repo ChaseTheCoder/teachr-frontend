@@ -17,7 +17,7 @@ const NoActivity: React.FC = () => {
     <Surface>
       <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '100%', padding: '3rem' }} gap={2} >
         <HistoryEduIcon fontSize='large' />
-        <Typography>No Posts or Comments Yet</Typography>
+        <Typography color='textSecondary'>No Posts or Comments Yet</Typography>
       </Box>
     </Surface>
   )
@@ -41,20 +41,22 @@ const Activity: React.FC = () => {
     enabled: !!profileData,
   })
 
+  if (isLoadingProfile || isLoading || isLoadingUser || isFetchingProfile || isFetching) return (
+    <Box sx={{ display: 'flex', flexDirection: 'column' }} gap={1}>
+      <Skeleton variant='rounded' height={80} />
+      <Skeleton variant='rounded' height={80} />
+      <Skeleton variant='rounded' height={80} />
+    </Box>
+  );
+
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column' }} gap={.5}>
-      {isLoadingProfile || isLoading || isLoadingUser || isFetchingProfile || isFetching ? 
-        <Box sx={{ display: 'flex', flexDirection: 'column' }} gap={1}>
-          <Skeleton variant='rounded' height={80} />
-          <Skeleton variant='rounded' height={80} />
-          <Skeleton variant='rounded' height={80} />
-        </Box> :
-        posts ? 
+        { (posts && posts.length > 0) ? 
           posts.map((post) => (
             <Post key={post.id} post={post} profile={profileData} />
           )) :
           <NoActivity />
-      }
+        }
     </Box>
   );
 };

@@ -1,8 +1,8 @@
 'use client'
 
 import React from 'react';
-import { Box, Button, IconButton, Stack, Typography } from '@mui/material';
-import { Add, CalendarMonth, Edit, House, Note, Person, QuestionAnswer } from '@mui/icons-material';
+import { Box, Button, Stack } from '@mui/material';
+import { Add, Edit, Person, QuestionAnswer } from '@mui/icons-material';
 import { usePathname } from 'next/navigation';
 
 export default function SideNav() {
