@@ -17,15 +17,35 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        <style>{`
+          html, body {
+            height: 100%;
+            margin: 0;
+          }
+          #__next {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+          }
+          main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+          }
+        `}</style>
+      </head>
       <body>
             <QueryClientProvider client={queryClient}>
         <UserProvider>
-          <main>
-              <ResponsiveAppBar/>
-              {children}
-              <Footer/>
-              <ReactQueryDevtools />
-          </main>
+          <div id="__next">
+            <main>
+                <ResponsiveAppBar/>
+                {children}
+            </main>
+          </div>
+          <Footer/>
+          <ReactQueryDevtools />
         </UserProvider>
             </QueryClientProvider>
       </body> 

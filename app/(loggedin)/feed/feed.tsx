@@ -37,7 +37,7 @@ export default function Feed() {
   const posts = feedPosts?.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '90vh' }} gap={.5}>
+    <Box sx={{ display: 'flex', flexDirection: 'column' }} gap={.5}>
       {isLoading || isFetching || !posts || isLoadingBatchProfiles || !batchProfiles ? 
         <Box sx={{ display: 'flex', flexDirection: 'column' }} gap={1}>
           <Skeleton variant='rounded' height={80} />

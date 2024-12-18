@@ -14,7 +14,7 @@ export default function SignUp() {
         <Typography variant='h4' component='h1' gutterBottom>One last step, fill out your profile.</Typography>
         <EditProfile
           auth0Id={auth0Id}
-          signUp
+          signUpPage
         />
       </Box>
     </Box>
