@@ -8,6 +8,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import Footer from '../components/footer';
 import "react-day-picker/style.css";
+import { Box } from '@mui/material';
 const queryClient = new QueryClient();
 
 export default function RootLayout({
@@ -17,33 +18,15 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <head>
-        <style>{`
-          html, body {
-            height: 100%;
-            margin: 0;
-          }
-          #__next {
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-          }
-          main {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-          }
-        `}</style>
-      </head>
       <body>
             <QueryClientProvider client={queryClient}>
         <UserProvider>
-          <div id="__next">
+          <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
             <main>
                 <ResponsiveAppBar/>
                 {children}
             </main>
-          </div>
+          </Box>
           <Footer/>
           <ReactQueryDevtools />
         </UserProvider>

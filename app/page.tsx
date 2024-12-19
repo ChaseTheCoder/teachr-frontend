@@ -4,46 +4,88 @@ import React from 'react';
 import Image from 'next/image'
 import Surface from '../components/surface/Surface';
 import { Box, Button, Grid, Link, Stack, Typography } from '@mui/material';
-import { useUser } from '@auth0/nextjs-auth0/client';
-import { LoadingButton } from '@mui/lab';
+import Post from '../components/post/post';
+
+const postExamples = [
+  {
+    profile: {
+      "id": "2d770e04-bd9d-4def-9b5d-feec263cb570",
+      "auth0_id": "google-oauth2|107960761193972798603",
+      "first_name": "Chase",
+      "last_name": "Sheaff",
+      "teacher_name": "Ms. B",
+      "title": "2nd Grade Teacher",
+      "profile_pic": "/media/profile_pics/Screenshot_2024-11-14_at_8.45.15PM.png"
+    },
+    post: {
+      "id": "6c7222c5-567a-44cd-960c-6ce12af0e163",
+      "title": "Am I supposed to be running small groups anymore?",
+      "body": "I've been reading and hearing from a few teacher friends that small groups are not the best way to teach. I'm a 3rd grade teacher and I've been doing small groups for years. I'm not sure what to do now. What is the research saying?",
+      "timestamp": "2024-11-19T21:33:06.648096Z",
+      "user": "2d770e04-bd9d-4def-9b5d-feec263cb570"
+    }
+  },
+  {
+    profile: {
+      "id": "2d770e04-bd9d-4def-9b5d-feec263cb570",
+      "auth0_id": "google-oauth2|107960761193972798603",
+      "first_name": "Chase",
+      "last_name": "Sheaff",
+      "teacher_name": "Mr. Sheaff",
+      "title": "6th Grade Science",
+      "profile_pic": "/media/profile_pics/Screenshot_2024-11-14_at_8.45.15PM.png"
+    },
+    post: {
+      "id": "6c7222c5-567a-44cd-960c-6ce12af0e163",
+      "title": "Cell Phones in the Classroom",
+      "body": "My school doesn't have a policy on cell phones. I'm a 6th grade teacher and engagement has declined because of cell phone usage. What do you all do?",
+      "timestamp": "2024-11-19T21:33:06.648096Z",
+      "user": "2d770e04-bd9d-4def-9b5d-feec263cb570"
+    }
+  },
+  {
+    profile: {
+      "id": "2d770e04-bd9d-4def-9b5d-feec263cb570",
+      "auth0_id": "google-oauth2|107960761193972798603",
+      "first_name": "Chase",
+      "last_name": "Sheaff",
+      "teacher_name": "Mrs. Alvera",
+      "title": "2nd Grade Teacher",
+      "profile_pic": "/media/profile_pics/Screenshot_2024-11-14_at_8.45.15PM.png"
+    },
+    post: {
+      "id": "6c7222c5-567a-44cd-960c-6ce12af0e163",
+      "title": "Resources for differentiating worksheets",
+      "body": "I'm a 2nd year teacher and definitly overwhelmed. I have a few students who are really struggling and I'm not sure how to help them. I've been trying to find resources online but I'm not sure what to look for. What are resources that are very simple to implement?",
+      "timestamp": "2024-11-19T21:33:06.648096Z",
+      "user": "2d770e04-bd9d-4def-9b5d-feec263cb570"
+    }
+  }
+]
 
 export default function Home() {
-  const { user, isLoading } = useUser();
 
   return (
-    <Box sx={{ padding: '20px', textAlign: 'center', display: 'flex', flexDirection: 'column' }} gap={4}>
-      <Surface>
-        <Grid container spacing={2} alignItems="center" sx={{ paddingY: { md: '3rem', xs: 0 } }}>
-          <Grid item xs={12} md={5}>
-            <Image
-              src="/Main.png"
-              alt="Educational Illustration"
-              width={0}
-              height={0}
-              sizes="60vw"
-              style={{ width: '60%', height: 'auto' }}
-            />
-          </Grid>
-          <Grid item xs={12} md={7} gap={5}>
-            <Stack
-              gap={2}
-            >
-              <Typography 
-              variant='h1' 
-              fontSize={{ xs: 48, md: 68 }} 
-              fontWeight='bold' 
-              align='center'
-              >
-                Teachr Lounge
-              </Typography>
-              <Typography variant='h2' fontSize={{ xs: 18, md: 22 }} align='center'>
-                A digital lounge to create, share, and collaborate on unit & lesson plans.
-              </Typography>
-              <Typography variant='h2' fontSize={{ xs: 18, md: 22 }} align='center'>
-                Software & AI tools to save educators time for what cannot be automated.
-              </Typography>
-              <Box display="flex" justifyContent="center">
-                {!user && !isLoading &&
+    <Box sx={{ paddingX: '10px', display: 'flex' }}>
+      <Grid container spacing={2} sx={{ paddingY: { md: '1rem', xs: 0 } }}>
+          <Grid item xs={12} md={5} gap={5}>
+            <Surface>
+              <Box sx={{ textAlign: 'center', alignItems: 'center', display: 'flex', flexDirection: 'column', height: '75vh' }} gap={3}>
+                <Image
+                  src="/Main.png"
+                  alt="Educational Illustration"
+                  width={0}
+                  height={0}
+                  sizes="60vw"
+                  style={{ width: '60%', height: 'auto' }}
+                />
+                <Typography variant='h1' fontWeight='bold' fontSize={{ xs: 24, md: 34 }} align='center'>
+                  Connect with teachers nationwide.
+                </Typography>
+                <Typography variant='h2' fontSize={{ xs: 14, md: 18 }} align='center'>
+                  Tune in to what teachers are thinking, get feedback, and get support from real teachers. Get support and real answers from teachers who are still actually in the classroom...
+                </Typography>
+                <Box display="flex" justifyContent="center">
                   <Button
                     color='success'
                     href={'/api/auth/signup' }
@@ -52,172 +94,20 @@ export default function Home() {
                   >
                     Signup, it&apos;s Free!
                   </Button>
-                }
               </Box>
-              <Box display="flex" justifyContent="center">
-                <Button
-                  variant='outlined'
-                  color='success'
-                  href="#what-is"
-                >
-                  Learn more about Teachr Lounge
-                </Button>
-              </Box>
-            </Stack>
+            </Box>
+          </Surface>
+          </Grid>
+          <Grid item xs={12} md={7}>
+            {
+              postExamples.map((post) => {
+                return (
+                  <Post key={post.post.id} post={post.post} profile={post.profile} homePage />
+                )
+              })
+            }
           </Grid>
         </Grid>
-      </Surface>
-      <Grid container spacing={{ xs: 2, md: 6 }} sx={{ paddingY: { md: '3rem', xs: 0 }, paddingX: { md: '3rem', xs: 0 } }}>
-        <Grid item xs={12} md={6}>
-          <Typography variant='h2' align='justify' fontSize={{ xs: 18, md: 22 }} lineHeight={2}>
-            We are an emerging lesson planning app by teachers, for teachers. We want to solve all your lesson planning needs. We are currently in beta and would love your feedback.
-          </Typography>
-        </Grid>
-        <Grid item xs={12} md={6} gap={2} display="flex" flexDirection="column" alignItems="center" justifyContent="center">
-          <Button color='success' size='large' variant='outlined' component='a' href="mailto:teachrloungeai@google.com">
-            Send us your feedback, ask for new features, or tell us what you love!
-          </Button>
-        </Grid>
-      </Grid>
-      <Grid container spacing={4} sx={{ paddingY: { md: '3rem', xs: 0 }, paddingX: { md: '3rem', xs: '1rem' } }}>
-        <Grid item xs={12} id='what-is'>
-          <Typography variant='h1' align='center' fontSize={42} fontWeight='bold'>
-            What is Teachr Lounge?
-          </Typography>
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <Surface>
-            <Stack
-              gap={2}
-              alignItems='center'
-            >
-              <Image
-              src="/Plan.png"
-              alt="Educational Illustration"
-              width={0}
-              height={0}
-              sizes="60vw"
-              style={{ width: 'auto', height: '200px' }}
-              />
-              <Box>
-                <Typography
-                  variant='h4'
-                  fontWeight='bold'
-                  align='center'
-                >
-                  Write & save your plans.
-                </Typography> 
-                <Typography
-                  variant='body1'
-                  align='center'
-                  fontSize={20}
-                >
-                  Write your plans and save them under units and subjects. Have them to use year after year.
-                </Typography>
-              </Box>
-            </Stack>
-          </Surface>
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <Surface>
-            <Stack
-              gap={3}
-              alignItems='center'
-            >
-              <Image
-                src="/Automate.png"
-                alt="Educational Illustration"
-                width={0}
-                height={0}
-                sizes="60vw"
-                style={{ width: 'auto', height: '200px' }}
-              />
-              <Box>
-              <Typography
-                  variant='h4'
-                  fontWeight='bold'
-                  align='center'
-                >
-                  Automate planning.
-                </Typography> 
-                <Typography
-                  variant='body1'
-                  align='center'
-                  fontSize={20}
-                >
-                  AI tools to create content. Create a school year calendar and automate with your saved plans.
-                </Typography>
-              </Box>
-            </Stack>
-          </Surface>
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <Surface>
-            <Stack
-              gap={2}
-              alignItems='center'
-            >
-              <Image
-                src="/Collaborate.png"
-                alt="Educational Illustration"
-                width={0}
-                height={0}
-                sizes="60vw"
-                style={{ width: 'auto', height: '200px' }}
-              />
-              <Box>
-                <Typography
-                  variant='h4'
-                  fontWeight='bold'
-                  align='center'
-                >
-                  Collaborate with Educators.
-                </Typography> 
-                <Typography
-                  variant='body1'
-                  align='center'
-                  fontSize={20}
-                >
-                  Connect with fellow educators, mentors, and more. Request and recieve feedback alongside your plans.
-                </Typography>
-              </Box>
-            </Stack>
-          </Surface>
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <Surface>
-            <Stack
-              gap={2}
-              alignItems='center'
-            >
-              <Image
-                src="/Main.png"
-                alt="Educational Illustration"
-                width={0}
-                height={0}
-                sizes="60vw"
-                style={{ width: 'auto', height: '200px' }}
-              />
-              <Box>
-                <Typography
-                  variant='h4'
-                  fontWeight='bold'
-                  align='center'
-                >
-                  Share or find plans.
-                </Typography> 
-                <Typography
-                  variant='body1'
-                  align='center'
-                  fontSize={20}
-                >
-                  Share or find edcuator created plans in a public library. Add shared plans to your calendar in seconds.
-                </Typography>
-              </Box>
-            </Stack>
-          </Surface>
-        </Grid>
-      </Grid>
     </Box>
   )
 }
