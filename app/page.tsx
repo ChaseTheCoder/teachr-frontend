@@ -3,8 +3,10 @@
 import React from 'react';
 import Image from 'next/image'
 import Surface from '../components/surface/Surface';
-import { Box, Button, Grid, Link, Stack, Typography } from '@mui/material';
+import { Box, Button, Divider, Grid, Link, Stack, Typography } from '@mui/material';
 import Post from '../components/post/post';
+import UserPost from './(loggedin)/post/[postId]/userPost';
+import Comments from './(loggedin)/post/[postId]/comments';
 
 const postExamples = [
   {
@@ -66,48 +68,94 @@ const postExamples = [
 export default function Home() {
 
   return (
-    <Box sx={{ paddingX: '10px', display: 'flex' }}>
-      <Grid container spacing={2} sx={{ paddingY: { md: '1rem', xs: 0 } }}>
-          <Grid item xs={12} md={5} gap={5}>
-            <Surface>
-              <Box sx={{ textAlign: 'center', alignItems: 'center', display: 'flex', flexDirection: 'column', height: '75vh' }} gap={3}>
-                <Image
-                  src="/Main.png"
-                  alt="Educational Illustration"
-                  width={0}
-                  height={0}
-                  sizes="60vw"
-                  style={{ width: '60%', height: 'auto' }}
-                />
-                <Typography variant='h1' fontWeight='bold' fontSize={{ xs: 24, md: 34 }} align='center'>
-                  Connect with teachers nationwide.
+    <Box sx={{ marginY: '1rem', display: 'flex', flexDirection: 'column', gap: 2 }}>
+      <Surface>
+        <Grid container spacing={2} sx={{ paddingY: { md: '4rem', xs: '.25rem' } }}>
+            <Grid item xs={12} md={5}>
+                <Box sx={{ textAlign: 'center', alignItems: 'center', display: 'flex', flexDirection: 'column' }} gap={{xs: 1, md: 7}}>
+                  <Image
+                    src="/Main.png"
+                    alt="Educational Illustration"
+                    width={0}
+                    height={0}
+                    sizes="60vw"
+                    style={{ width: '60%', height: 'auto' }}
+                  />
+                </Box>
+            </Grid>
+            <Grid item xs={12} md={7}>
+              <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'center', textAlign: 'center', alignItems: 'center' }} gap={{xs: 1, md: 2}}>
+                <Typography variant='h1' fontWeight='bold' fontSize={{ xs: 26, sm: 32, md: 44 }} align='center'>
+                  Connect with Teachers Nationwide
                 </Typography>
-                <Typography variant='h2' fontSize={{ xs: 14, md: 18 }} align='center'>
-                  Tune in to what teachers are thinking, get feedback, and get support from real teachers. Get support and real answers from teachers who are still actually in the classroom...
+                <Typography variant='h2' fontSize={{ xs: 14, sm: 16, md: 18 }} color='textSecondary'>
+                  Post questions, share resources, and connect in a digital teachers&apos; lounge.
                 </Typography>
-                <Box display="flex" justifyContent="center">
+                <Box display="flex" justifyContent="center" sx={{ marginTop: '2rem' }}>
                   <Button
                     color='success'
-                    href={'/api/auth/signup' }
+                    href={'/api/auth/signup'}
                     variant='contained'
                     size='large'
                   >
                     Signup, it&apos;s Free!
                   </Button>
+                </Box>
               </Box>
-            </Box>
-          </Surface>
-          </Grid>
-          <Grid item xs={12} md={7}>
-            {
-              postExamples.map((post) => {
-                return (
-                  <Post key={post.post.id} post={post.post} profile={post.profile} homePage />
-                )
-              })
-            }
-          </Grid>
+            </Grid>
         </Grid>
+      </Surface>
+      <Grid container spacing={2} sx={{ paddingX: { xs: 1, md: 4 } }}>
+        <Grid item xs={12} md={6}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', paddingX: { xs: 1, md: 4 } }} gap={3}>
+            <Typography variant='h3' fontWeight='bold' fontSize={{ xs: 24, sm: 28, md: 34 }}>See a Feed of Teacher Posts</Typography>
+            <Typography variant='h2' fontSize={{ xs: 14, sm: 16, md: 20 }} color='textSecondary' sx={{ paddingBottom: 3 }}>
+              Stay up to date to what teachers are discussing, needing support on, and resources they love. Or create your own post to get feedback or share your own resources and wisdom.
+            </Typography>
+          </Box>
+        </Grid>
+        <Grid item xs={12} md={6}>
+          {
+            postExamples.map((post) => {
+              return (
+                <Post key={post.post.id} post={post.post} profile={post.profile} homePage />
+            )})
+          }
+        </Grid>
+      </Grid>
+      <Grid container spacing={2} sx={{ marginY: 8, paddingX: { xs: 1, md: 4 } }}>
+        <Grid item xs={12} md={6} order={{ xs: 2, md: 1 }}>
+          <UserPost postId='32cf23de-a4d5-4651-ac67-b2e292dfcc51' currentUserId={undefined} />
+          <Divider sx={{ marginY: 3}} />
+          <Comments postId='32cf23de-a4d5-4651-ac67-b2e292dfcc51' currentUserId={undefined} />
+        </Grid>
+        <Grid item xs={12} md={6} order={{ xs: 1, md: 2 }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', paddingX: { xs: 1, md: 4 } }} gap={3}>
+            <Typography variant='h3' fontWeight='bold' fontSize={{ xs: 24, sm: 28, md: 34 }}>Read Discussion</Typography>
+            <Typography variant='h2' fontSize={{ xs: 14, sm: 16, md: 20 }} color='textSecondary'>
+              Read through comments of posts from teachers nationwide. Get inspired, learn new strategies, and connect with other educators. Get real feedback and support from teachers who understand your struggles. Not just from that one professional development you went to last year led by someone that has been out of the classroom for 10 years.
+            </Typography>
+          </Box>
+        </Grid>
+      </Grid>
+      <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'center', textAlign: 'center', alignItems: 'center' }} gap={{xs: 1, md: 2}}>
+        <Surface>
+          <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'center', textAlign: 'center', alignItems: 'center', padding: 4, width: { xs: '90vw', md: '60vw' } }} gap={3}>
+            <Image
+              src="/Collaborate.png"
+              alt="Educational Illustration"
+              width={0}
+              height={0}
+              sizes="30vw"
+              style={{ width: '30%', height: 'auto' }}
+            />
+            <Typography variant='h3' fontWeight='bold' fontSize={{ xs: 28, sm: 38, md: 42 }} color='success'>Our Mission</Typography>
+            <Typography fontSize={{ xs: 14, sm: 16, md: 20 }} align='justify'>
+              Our mission is to unite teachers on one platform through shared knowledge and resources. We believe that teachers are the best resource for other teachers. And our app will support them and provide features to elevate their profession and their professional growth.
+            </Typography>
+          </Box>
+        </Surface>
+      </Box>
     </Box>
   )
 }
