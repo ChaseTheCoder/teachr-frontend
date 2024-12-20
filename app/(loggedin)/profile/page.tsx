@@ -32,7 +32,7 @@ export default function Profile() {
   }, [isFetching, isLoadingUser, profileData, user])
 
   return (
-    <Box style={{ minHeight: '90vh' }}>
+    <Box>
       <ProfileInformation
         profileData={profileData}
         isLoadingUser={isLoadingUser}

@@ -8,12 +8,13 @@ import Link from 'next/link';
 type Props = {
   post: IPost
   profile: IProfileBatch
+  homePage?: boolean
 }
 
-export default function Post({ post, profile }: Props) {
+export default function Post({ post, profile, homePage }: Props) {
 
   return (
-    <Link key={post.id} href={`/post/${post.id}`} passHref>
+    <Link key={post.id} href={homePage ? '' : `/post/${post.id}`} passHref>
       <Box
         sx={{ 
           paddingX: 2,
@@ -22,7 +23,8 @@ export default function Post({ post, profile }: Props) {
           borderRadius: 4,
           bgcolor: '#ffffff',
           display: 'flex',
-          flexDirection: 'column'
+          flexDirection: 'column',
+          alignItems: 'flex-start',
         }}
         gap={1}
       >
@@ -31,8 +33,8 @@ export default function Post({ post, profile }: Props) {
             alt="Profile Image"
             sx={{ width: { xs: 20, md: 25 }, height: { xs: 20, md: 25 }, marginRight: '1rem' }}
           />
-          <Typography sx={{ fontSize: { xs: 12, sm: 14 } }}>{profile.teacher_name}</Typography>
-          <Typography sx={{ fontSize: { xs: 12, sm: 14 }, paddingLeft: 1 }} color='textSecondary'>{profile.title}</Typography>
+          <Typography sx={{ fontSize: { xs: 12, sm: 14 } }}>{profile.teacher_name ?? 'User not found'}</Typography>
+          <Typography sx={{ fontSize: { xs: 12, sm: 14 }, paddingLeft: 1 }} color='textSecondary'>{profile.title ?? ''}</Typography>
         </Box>
         <Typography variant='h2' sx={{ fontSize: { xs: 16, sm: 18 } }} fontWeight='bold'>{post.title}</Typography>
         {post.body && <Typography sx={{ fontSize: { xs: 12, sm: 14 } }}>{post.body}</Typography>}
