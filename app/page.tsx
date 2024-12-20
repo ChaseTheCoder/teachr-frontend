@@ -123,21 +123,6 @@ export default function Home() {
           }
         </Grid>
       </Grid>
-      <Grid container spacing={2} sx={{ marginY: 8, paddingX: { xs: 1, md: 4 } }}>
-        <Grid item xs={12} md={6} order={{ xs: 2, md: 1 }}>
-          <UserPost postId='32cf23de-a4d5-4651-ac67-b2e292dfcc51' currentUserId={undefined} />
-          <Divider sx={{ marginY: 3}} />
-          <Comments postId='32cf23de-a4d5-4651-ac67-b2e292dfcc51' currentUserId={undefined} />
-        </Grid>
-        <Grid item xs={12} md={6} order={{ xs: 1, md: 2 }}>
-          <Box sx={{ display: 'flex', flexDirection: 'column', paddingX: { xs: 1, md: 4 } }} gap={3}>
-            <Typography variant='h3' fontWeight='bold' fontSize={{ xs: 24, sm: 28, md: 34 }}>Read Discussion</Typography>
-            <Typography variant='h2' fontSize={{ xs: 14, sm: 16, md: 20 }} color='textSecondary'>
-              Read through comments of posts from teachers nationwide. Get inspired, learn new strategies, and connect with other educators. Get real feedback and support from teachers who understand your struggles. Not just from that one professional development you went to last year led by someone that has been out of the classroom for 10 years.
-            </Typography>
-          </Box>
-        </Grid>
-      </Grid>
       <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'center', textAlign: 'center', alignItems: 'center' }} gap={{xs: 1, md: 2}}>
         <Surface>
           <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'center', textAlign: 'center', alignItems: 'center', padding: 4, width: { xs: '90vw', md: '60vw' } }} gap={3}>
