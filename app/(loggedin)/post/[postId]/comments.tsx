@@ -88,9 +88,6 @@ export default function Comments({ postId, currentUserId }: Props) {
       <Skeleton variant='rounded' height={80} />
       <Skeleton variant='rounded' height={80} />
       <Skeleton variant='rounded' height={80} />
-      <Skeleton variant='rounded' height={80} />
-      <Skeleton variant='rounded' height={80} />
-      <Skeleton variant='rounded' height={80} />
     </Box>
   )
 

@@ -5,13 +5,14 @@ import { Box, Skeleton, TextField } from '@mui/material';
 import { getData, postOrPatchData } from '../../../services/authenticatedApiCalls';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useUser } from '@auth0/nextjs-auth0/client';
+import { useRouter } from 'next/navigation';
 
 interface props {
   auth0Id: string;
-  signUp?: boolean;
+  signUpPage?: boolean;
 }
 
-export default function EditProfile({ auth0Id, signUp }: props) {
+export default function EditProfile({ auth0Id, signUpPage }: props) {
   const queryClient = useQueryClient();
   const { user, error, isLoading: userLoading } = useUser();
   const [firstName, setFirstName] = useState(null);
@@ -19,7 +20,9 @@ export default function EditProfile({ auth0Id, signUp }: props) {
   const [teacherName, setTeacherName] = useState(null);
   const [title, setTitle] = useState(null);
   const [disableUpdate, setDisableUpdate] = useState(true);
-  const [newProfile, setNewProfile] = useState(signUp);
+  const [newProfile, setNewProfile] = useState(signUpPage);
+  const [pageLoading, setPageLoading] = useState(true);
+  const router = useRouter();
 
   const { data: profileData, isFetching, isLoading: isLoadingProfile, isError } = useQuery({
     queryKey: ['profile'],
@@ -27,6 +30,12 @@ export default function EditProfile({ auth0Id, signUp }: props) {
     staleTime: 1000 * 60 * 60,
     enabled: !!auth0Id,
   })
+
+  useEffect(() => {
+    if (!isLoadingProfile && profileData && !isError && signUpPage) {
+      router.push('/feed');
+    }
+  }, [isLoadingProfile, profileData, router, isError, signUpPage]);
 
   useEffect(() => {
     if (!isLoadingProfile && !profileData) {
@@ -59,7 +68,7 @@ export default function EditProfile({ auth0Id, signUp }: props) {
     onSuccess: (data) => {
       // Handle success (e.g., show a success message, update state, etc.)
       console.log('Profile added successfully:', data);
-      if (signUp) {
+      if (signUpPage) {
         window.location.href = '/feed';
       }
     },
@@ -115,65 +124,63 @@ export default function EditProfile({ auth0Id, signUp }: props) {
       }
     }
   }, [firstName, lastName, teacherName, user, profileData, title])
+
+  useEffect(() => {
+    setPageLoading(!user || isLoadingProfile || isFetching || (profileData !== undefined && signUpPage));
+  },[user, isLoadingProfile, isFetching, profileData, signUpPage]);
   
   return (
     <Surface>
       <Box sx={{ display: 'flex', flexDirection: 'column' }} gap={3}>
-        {isLoadingProfile || firstName === null ?
-        <Skeleton variant='text' sx={{ height: '50px' }} />
-        :
-        <TextField 
-          fullWidth
-          required
-          color='success'
-          id='standard-basic'
-          label='First Name'
-          variant='standard'
-          value={firstName}
-          onChange={(e) => setFirstName(e.target.value)}
-        />
-      }
-      {isLoadingProfile || lastName === null ?
-        <Skeleton variant='text' sx={{ height: '50px' }} />
-        :
-        <TextField 
-          fullWidth
-          required
-          color='success'
-          id='standard-basic'
-          label='Last Name'
-          variant='standard'
-          value={lastName}
-          onChange={(e) => setLastName(e.target.value)}
-        />
-      }
-      {isLoadingProfile || teacherName === null ?
-        <Skeleton variant='text' sx={{ height: '50px' }} />
-        :
-        <TextField 
-          fullWidth
-          required
-          color='success'
-          id="standard-basic"
-          label='Display / Teacher Name'
-          variant='standard'
-          value={teacherName}
-          onChange={(e) => setTeacherName(e.target.value)}
-        />
-      }
-      {isLoadingProfile || title === null ?
-        <Skeleton variant='text' sx={{ height: '50px' }} />
-        :
-        <TextField 
-          fullWidth
-          required
-          color='success'
-          id='standard-basic'
-          label='Role / Title'
-          variant='standard'
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-        />
+        {pageLoading ?
+          <>
+            <Skeleton variant='text' sx={{ height: '50px' }} />
+            <Skeleton variant='text' sx={{ height: '50px' }} />
+            <Skeleton variant='text' sx={{ height: '50px' }} />
+            <Skeleton variant='text' sx={{ height: '50px' }} />
+          </> :
+          <>
+            <TextField 
+              fullWidth
+              required
+              color='success'
+              id='standard-basic'
+              label='First Name'
+              variant='standard'
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+            />
+            <TextField 
+              fullWidth
+              required
+              color='success'
+              id='standard-basic'
+              label='Last Name'
+              variant='standard'
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+            />
+            <TextField 
+              fullWidth
+              required
+              color='success'
+              id="standard-basic"
+              label='Display / Teacher Name'
+              variant='standard'
+              value={teacherName}
+              onChange={(e) => setTeacherName(e.target.value)}
+            />
+            <TextField 
+              fullWidth
+              required
+              color='success'
+              id='standard-basic'
+              label='Role / Title'
+              variant='standard'
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+            />
+          </>
       }
       <LoadingButton
         color='success'
@@ -181,7 +188,7 @@ export default function EditProfile({ auth0Id, signUp }: props) {
         disabled={disableUpdate && !isLoadingProfile}
         size='small'
         onClick={() => handlePostProfile()}
-        loading={isLoadingProfile}
+        loading={pageLoading}
         >
         { newProfile ? 'Create Profile' : 'Update Profile' }
       </LoadingButton>

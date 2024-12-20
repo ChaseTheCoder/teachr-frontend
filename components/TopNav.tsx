@@ -143,7 +143,7 @@ function ResponsiveAppBar() {
                     </Button>
                     {
                       profileData?.teacher_name &&
-                      <Typography color='textPrimary' fontWeight='bold'>{profileData.teacher_name}</Typography>
+                      <Typography color='textPrimary' fontWeight='bold' sx={{  display: { xs: 'none', md: 'flex' } }}>{profileData.teacher_name}</Typography>
                     }
                     <Tooltip title="Open settings">
                       <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
