@@ -3,7 +3,7 @@
 import { UserProvider } from '@auth0/nextjs-auth0/client';
 import React from 'react'
 import './globals.css'
-import ResponsiveAppBar from '../components/TopNav';
+import ResponsiveAppBar from '../components/ResponsiveAppBar/ResponsiveAppBar';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import Footer from '../components/footer';
