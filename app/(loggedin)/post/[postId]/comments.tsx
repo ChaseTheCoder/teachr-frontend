@@ -39,7 +39,7 @@ export default function Comments({ postId, currentUserId }: Props) {
     };
   }, [popperRef]);
     
-  const { data: comments, isFetching, isLoading, isError } = useQuery({
+  const { data: comments, isFetching: isFetchingComments, isLoading: isLoadingComments, isError } = useQuery({
     queryKey: ['comments', postId],
     queryFn: () => getData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/post/${postId}/comments/`),
     staleTime: 1000 * 60 * 60,
@@ -84,7 +84,7 @@ export default function Comments({ postId, currentUserId }: Props) {
     mutationDelete.mutate();
   };
 
-  if (isLoading || isLoadingBatchProfiles || isFetchingBatchProfiles) return (
+  if (isLoadingBatchProfiles || isFetchingBatchProfiles || isLoadingComments || isFetchingComments) return (
     <Box sx={{ display: 'flex', flexDirection: 'column' }} gap={1}>
       <Skeleton variant='rounded' height={80} />
       <Skeleton variant='rounded' height={80} />
