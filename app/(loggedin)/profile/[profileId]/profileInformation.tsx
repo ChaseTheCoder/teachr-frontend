@@ -1,5 +1,5 @@
 import { Box, Avatar, Skeleton, Typography } from "@mui/material";
-import Surface from "../../../components/surface/Surface";
+import Surface from "../../../../components/surface/Surface";
 
 interface IProfileData {
   teacher_name: string;
@@ -12,10 +12,10 @@ interface IProps {
   isLoadingUser: boolean;
   isLoadingProfile: boolean;
   profileData: IProfileData | undefined;
-  user: any;
+  error: boolean;
 }
 
-export default function ProfileInformation({ isLoadingUser, isLoadingProfile, profileData, user }: IProps) {
+export default function ProfileInformation({ isLoadingUser, isLoadingProfile, profileData, error }: IProps) {
   return (
     <Surface>
       <Box sx={{ display: 'flex', flexDirection: 'row' }}>
@@ -32,7 +32,7 @@ export default function ProfileInformation({ isLoadingUser, isLoadingProfile, pr
             <Skeleton variant='text' sx={{ height: '50px' }} />
             <Skeleton variant='text' sx={{ height: '50px' }} />
           </>
-          ) : !user ? (
+          ) : error ? (
             <Typography
               variant='h1'
               fontWeight='bold'
