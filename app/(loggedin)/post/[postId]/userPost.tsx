@@ -4,6 +4,7 @@ import MoreVert from '@mui/icons-material/MoreVert';
 import { deleteData, getData } from '../../../../services/authenticatedApiCalls';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { DeleteOutline } from '@mui/icons-material';
+import Link from 'next/link';
 
 type Props = {
   postId: String
@@ -75,21 +76,36 @@ export default function UserPost({ postId, currentUserId }: Props) {
       key={post.id}
       gap={1}
     >
-      <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-        <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-          <Avatar
-            alt="Profile Image"
-            sx={{ width: { xs: 30, md: 35 }, height: { xs: 30, md: 35 }, marginRight: '1rem' }}
-          />
-          <Typography sx={{ fontSize: { xs: 16, sm: 18 } }}>{profile.teacher_name}</Typography>
-          <Typography sx={{ fontSize: { xs: 16, sm: 18 }, paddingLeft: 1 }} color='textSecondary'>{profile.title}</Typography>
+      <Link href={`/profile/${profile.id}`} passHref>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            width: 'fit-content',
+            paddingRight: 1,
+            '&:hover': {
+              cursor: 'pointer',
+              bgcolor: '#f0f0f0',
+              borderRadius: '50px',
+              }
+          }}>
+          <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+            <Avatar
+              alt="Profile Image"
+              sx={{ width: { xs: 30, md: 35 }, height: { xs: 30, md: 35 }, marginRight: '.5rem' }}
+            />
+            <Typography sx={{ fontSize: { xs: 16, sm: 18 } }}>{profile.teacher_name}</Typography>
+            <Typography sx={{ fontSize: { xs: 16, sm: 18 }, paddingLeft: 1 }} color='textSecondary'>{profile.title}</Typography>
+          </Box>
+          {(currentUserId !== undefined && currentUserId === post.user) &&
+            <IconButton onClick={handleClickPopper('bottom-start')}>
+              <MoreVert fontSize='small' />
+            </IconButton>
+          }
         </Box>
-        {(currentUserId !== undefined && currentUserId === post.user) &&
-          <IconButton onClick={handleClickPopper('bottom-start')}>
-            <MoreVert fontSize='small' />
-          </IconButton>
-        }
-      </Box>
+      </Link>
       <Typography variant='h2' sx={{ fontSize: { xs: 22, sm: 26 } }} fontWeight='bold'>{post.title}</Typography>
       {post.body && <Typography sx={{ fontSize: { xs: 14, sm: 16 } }}>{post.body}</Typography>}
       <Popper

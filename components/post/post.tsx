@@ -28,14 +28,29 @@ export default function Post({ post, profile, homePage }: Props) {
         }}
         gap={1}
       >
-        <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-          <Avatar
-            alt="Profile Image"
-            sx={{ width: { xs: 20, md: 25 }, height: { xs: 20, md: 25 }, marginRight: '1rem' }}
-          />
-          <Typography sx={{ fontSize: { xs: 12, sm: 14 } }}>{profile.teacher_name ?? 'User not found'}</Typography>
-          <Typography sx={{ fontSize: { xs: 12, sm: 14 }, paddingLeft: 1 }} color='textSecondary'>{profile.title ?? ''}</Typography>
-        </Box>
+        <Link key={post.id} href={homePage ? '' : `/profile/${profile.id}`} passHref>
+          <Box 
+            sx={{ 
+              display: 'flex', 
+              flexDirection: 'row', 
+              alignItems: 'center',
+              borderRadius: '50px',
+              paddingRight: 1,
+              '&:hover': {
+              cursor: 'pointer',
+              bgcolor: '#f0f0f0',
+              borderRadius: '50px',
+              }
+            }}
+          >
+            <Avatar
+              alt="Profile Image"
+              sx={{ width: { xs: 20, md: 25 }, height: { xs: 20, md: 25 }, marginRight: '.5rem' }}
+            />
+            <Typography sx={{ fontSize: { xs: 12, sm: 14 } }}>{profile.teacher_name ?? 'User not found'}</Typography>
+            <Typography sx={{ fontSize: { xs: 12, sm: 14 }, paddingLeft: 1 }} color='textSecondary'>{profile.title ?? ''}</Typography>
+          </Box>
+        </Link>
         <Typography variant='h2' sx={{ fontSize: { xs: 16, sm: 18 } }} fontWeight='bold'>{post.title}</Typography>
         {post.body && <Typography sx={{ fontSize: { xs: 12, sm: 14 } }}>{post.body}</Typography>}
       </Box>
