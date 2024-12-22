@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import Surface from '../../../components/surface/Surface';
+import Surface from '../../../../components/surface/Surface';
 import { LoadingButton } from '@mui/lab';
 import { Box, Skeleton, TextField } from '@mui/material';
-import { getData, postOrPatchData } from '../../../services/authenticatedApiCalls';
+import { getData, postOrPatchData } from '../../../../services/authenticatedApiCalls';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useUser } from '@auth0/nextjs-auth0/client';
 import { useRouter } from 'next/navigation';

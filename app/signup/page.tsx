@@ -1,7 +1,7 @@
 'use client'
 
 import { useUser } from '@auth0/nextjs-auth0/client';
-import EditProfile from '../(loggedin)/profile/editProfile';
+import EditProfile from '../(loggedin)/profile/[profileId]/editProfile';
 import { Box, Typography } from '@mui/material';
 
 export default function SignUp() {

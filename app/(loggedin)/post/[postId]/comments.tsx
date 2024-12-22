@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { deleteData, getData, getDataWithParams } from '../../../../services/authenticatedApiCalls';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { DeleteOutline, MoreVert } from '@mui/icons-material';
+import Link from 'next/link';
 
 type Props = {
   postId: string
@@ -95,8 +96,9 @@ export default function Comments({ postId, currentUserId }: Props) {
     <>
       {(comments && comments.length > 0) ? comments.map((comment) => {
         const userProfile = batchProfiles?.find(profile => profile.id === comment.user);
-        const teacherName = userProfile ? userProfile.teacher_name : 'Unknown Teacher';
-        const title = userProfile ? userProfile.title : 'Unknown User';
+        const teacherName = userProfile.teacher_name ?? 'Unknown Teacher';
+        const title = userProfile.title ?? 'Unknown User';
+        const userId = userProfile.id ?? '';
 
         return (
         <Box
@@ -118,14 +120,28 @@ export default function Comments({ postId, currentUserId }: Props) {
           >
               <Box sx={{ display: 'flex', flexDirection: 'column' }} gap={.5}>
                 <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                    <Avatar
-                      alt="Profile Image"
-                      sx={{ width: { xs: 20, md: 25 }, height: { xs: 20, md: 25 }, marginRight: '.5rem' }}
-                    />
-                    <Typography sx={{ fontSize: { xs: 14, sm: 16 } }}>{teacherName}</Typography>
-                    <Typography sx={{ fontSize: { xs: 14, sm: 16 }, paddingLeft: 1 }} color='textSecondary'>{ title}</Typography>
-                  </Box>
+                  <Link href={`/profile/${userId}`} passHref>
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        paddingRight: 1,
+                        '&:hover': {
+                          cursor: 'pointer',
+                          bgcolor: '#f0f0f0',
+                          borderRadius: '50px',
+                        }
+                      }}
+                    >
+                      <Avatar
+                        alt="Profile Image"
+                        sx={{ width: { xs: 20, md: 25 }, height: { xs: 20, md: 25 }, marginRight: '.5rem' }}
+                      />
+                      <Typography sx={{ fontSize: { xs: 14, sm: 16 } }}>{teacherName}</Typography>
+                      <Typography sx={{ fontSize: { xs: 14, sm: 16 }, paddingLeft: 1 }} color='textSecondary'>{title}</Typography>
+                    </Box>
+                  </Link>
                   {(currentUserId !== undefined && currentUserId === comment.user) &&
                     <IconButton onClick={handleClickPopper('bottom-end')}>
                       <MoreVert fontSize='small' />
