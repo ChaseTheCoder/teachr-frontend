@@ -96,9 +96,9 @@ export default function Comments({ postId, currentUserId }: Props) {
     <>
       {(comments && comments.length > 0) ? comments.map((comment) => {
         const userProfile = batchProfiles?.find(profile => profile.id === comment.user);
-        const teacherName = userProfile.teacher_name ?? 'Unknown Teacher';
-        const title = userProfile.title ?? 'Unknown User';
-        const userId = userProfile.id ?? '';
+        const teacherName = userProfile?.teacher_name ?? 'Unknown Teacher';
+        const title = userProfile?.title ?? 'Unknown User';
+        const userId = userProfile?.id ?? '';
 
         return (
         <Box
