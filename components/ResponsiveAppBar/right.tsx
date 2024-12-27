@@ -9,11 +9,12 @@ import Menu from '@mui/material/Menu';
 import Avatar from '@mui/material/Avatar';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import { Button } from '@mui/material';
+import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';import { Badge, Button, List, ListItem, ListItemButton, ListItemText, Popover } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { getData } from '../../services/authenticatedApiCalls';
 import { Add, ArrowForwardIos } from '@mui/icons-material';
 import { usePathname } from 'next/navigation';
+import { useEffect } from 'react';
 
 const settings = [
   {
@@ -26,23 +27,29 @@ const settings = [
   }];
 
 export default function Right({ auth0Id }: { auth0Id: string }) {
-  let pathname = usePathname()
+  let pathname = usePathname();
   const [menuList, setMenuList] = React.useState(settings);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
-  
+
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
   };
-  
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
-
+  
   const { data: profileData, isFetching, isLoading, isError } = useQuery({
     queryKey: ['profile'],
     queryFn: () => getData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/profile_auth0/${auth0Id}`),
     staleTime: 1000 * 60 * 60,
     enabled: !!auth0Id,
+  })
+
+  const { data: notifications, isFetching: isFetchingNotifications, isLoading: isLoadingNotifications, isError: isErrorNotifications } = useQuery({
+    queryKey: ['unreadnotifications'],
+    queryFn: () => getData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/unread_notifications/user/${profileData.id}/`),
+    staleTime: 1000 * 60 * 60,
+    enabled: !!profileData,
   })
 
   React.useEffect(() => {
@@ -73,15 +80,27 @@ export default function Right({ auth0Id }: { auth0Id: string }) {
             Go to App
           </Button>) :
           (<>
-            <Button
-              variant='contained'
-              startIcon={<Add />}
-              href='/new-post'
+            <IconButton
               color='success'
-              sx={{  display: { xs: 'flex', md: 'none' } }}
+              href='/new-post'
+              sx={{ 
+              display: { xs: 'flex', md: 'none' },
+              backgroundColor: 'green',
+              color: 'white',
+              '&:hover': {
+                backgroundColor: 'darkgreen'
+              }
+              }}
             >
-              Post
-            </Button>
+              <Add />
+            </IconButton>
+            <IconButton
+              href='/notifications'
+            >
+              <Badge badgeContent={notifications?.count ?? 0} color='error'>
+                <NotificationsNoneIcon color='action' />
+              </Badge>
+            </IconButton>
             {
               profileData?.teacher_name &&
               <Typography color='textPrimary' fontWeight='bold' sx={{  display: { xs: 'none', md: 'flex' } }}>{profileData.teacher_name}</Typography>
