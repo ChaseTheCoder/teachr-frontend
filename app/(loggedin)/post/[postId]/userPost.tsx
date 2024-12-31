@@ -5,6 +5,7 @@ import { deleteData, getData } from '../../../../services/authenticatedApiCalls'
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { DeleteOutline } from '@mui/icons-material';
 import Link from 'next/link';
+import Post404 from './not-found';
 
 type Props = {
   postId: String
@@ -61,6 +62,8 @@ export default function UserPost({ postId, currentUserId }: Props) {
       <Skeleton variant='rectangular' height={80} />
     </Box>
   )
+
+  if (isError || !post) return <Post404 />;
 
   return (
     <Box

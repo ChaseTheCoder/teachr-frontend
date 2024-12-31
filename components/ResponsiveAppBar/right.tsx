@@ -2,19 +2,17 @@
 
 import * as React from 'react';
 import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import Menu from '@mui/material/Menu';
 import Avatar from '@mui/material/Avatar';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';import { Badge, Button, List, ListItem, ListItemButton, ListItemText, Popover } from '@mui/material';
+import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';import { Badge, Button } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { getData } from '../../services/authenticatedApiCalls';
 import { Add, ArrowForwardIos } from '@mui/icons-material';
 import { usePathname } from 'next/navigation';
-import { useEffect } from 'react';
 
 const settings = [
   {
@@ -47,7 +45,7 @@ export default function Right({ auth0Id }: { auth0Id: string }) {
 
   const { data: notifications, isFetching: isFetchingNotifications, isLoading: isLoadingNotifications, isError: isErrorNotifications } = useQuery({
     queryKey: ['unreadnotifications'],
-    queryFn: () => getData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/unread_notifications/user/${profileData.id}/`),
+    queryFn: () => getData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/unread_notification_count/user/${profileData.id}/`),
     staleTime: 1000 * 60 * 60,
     enabled: !!profileData,
   })

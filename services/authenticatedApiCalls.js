@@ -74,6 +74,23 @@ export async function postOrPatchData(apiUrl, method, body) {
   return result;
 }
 
+export async function patchData(apiUrl) {
+  const accessToken = await getAccessToken();
+
+  const response = await fetch(apiUrl, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${accessToken.accessToken}`,
+    }
+  });
+  if (!response.ok) {
+    throw new Error(`HTTP error! Status: ${response.status}`);
+}
+  const result = await NextResponse.json(response);
+  return result;
+}
+
 export async function deleteData(apiUrl) {
   const accessToken = await getAccessToken();
 

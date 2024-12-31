@@ -102,7 +102,8 @@ export default function Comments({ postId, currentUserId }: Props) {
 
         return (
         <Box
-          sx={{ 
+          id={`comment-${comment.id}`}
+          sx={{
             paddingX: 2,
             paddingY: 1.5,
             marginBottom: 1.5,
