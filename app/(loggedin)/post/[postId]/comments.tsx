@@ -4,6 +4,7 @@ import { deleteData, getData, getDataWithParams } from '../../../../services/aut
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { DeleteOutline, MoreVert } from '@mui/icons-material';
 import Link from 'next/link';
+import { timeAgo } from '../../../../utils/time';
 
 type Props = {
   postId: string
@@ -135,12 +136,19 @@ export default function Comments({ postId, currentUserId }: Props) {
                         }
                       }}
                     >
-                      <Avatar
-                        alt="Profile Image"
-                        sx={{ width: { xs: 20, md: 25 }, height: { xs: 20, md: 25 }, marginRight: '.5rem' }}
-                      />
-                      <Typography sx={{ fontSize: { xs: 14, sm: 16 } }}>{teacherName}</Typography>
-                      <Typography sx={{ fontSize: { xs: 14, sm: 16 }, paddingLeft: 1 }} color='textSecondary'>{title}</Typography>
+                      <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                        <Avatar
+                          alt="Profile Image"
+                          sx={{ width: { xs: 30, md: 35 }, height: { xs: 30, md: 35 }, marginRight: '.5rem' }}
+                        />
+                        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                          <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                            <Typography sx={{ fontSize: { xs: 12, sm: 14 } }} fontWeight='bold'>{teacherName ?? 'User not found'}</Typography>
+                            <Typography sx={{ fontSize: { xs: 12, sm: 14 }, paddingLeft: 1 }} color='textSecondary'>{title ?? ''}</Typography>
+                          </Box>
+                          <Typography sx={{ fontSize: { xs: 10, sm: 12 } }} color='textSecondary'>{timeAgo(comment.timestamp)}</Typography>
+                        </Box>
+                      </Box>
                     </Box>
                   </Link>
                   {(currentUserId !== undefined && currentUserId === comment.user) &&
