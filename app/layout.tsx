@@ -9,6 +9,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import Footer from '../components/footer';
 import "react-day-picker/style.css";
 import { Box } from '@mui/material';
+import Script from 'next/script';
 const queryClient = new QueryClient();
 
 export default function RootLayout({
@@ -18,6 +19,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <Script
+        async
+        src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_GOOGLE_ADS_CLIENT_ID}`}
+        strategy="lazyOnload"
+        crossOrigin="anonymous"
+      ></Script>
       <body>
             <QueryClientProvider client={queryClient}>
         <UserProvider>

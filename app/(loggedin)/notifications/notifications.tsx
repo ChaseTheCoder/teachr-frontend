@@ -6,6 +6,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getData, getDataWithParams, patchData } from '../../../services/authenticatedApiCalls';
 import { useUser } from '@auth0/nextjs-auth0/client';
 import Surface from '../../../components/surface/Surface';
+import { timeAgo } from '../../../utils/time';
 
 export default function Notifications() {
   const queryClient = useQueryClient();
@@ -141,7 +142,7 @@ export default function Notifications() {
                     <ListItemText
                     primary={
                       <Typography variant="body1" color={read ? 'textSecondary' : 'textPrimary'}>
-                        <strong>{userProfile?.teacher_name ?? 'User not found'}</strong> {message}
+                        <strong>{userProfile?.teacher_name ?? 'User not found'}</strong> {message} {timeAgo(notification.timestamp)}
                       </Typography>
                     }
                     />

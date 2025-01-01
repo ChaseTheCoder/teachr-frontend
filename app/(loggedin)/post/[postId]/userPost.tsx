@@ -1,11 +1,12 @@
 import { Avatar, Box, Fade, IconButton, List, ListItemButton, Paper, Popper, PopperPlacementType, Skeleton, Typography } from '@mui/material';
-import React, {  } from 'react';
+import React, { useEffect } from 'react';
 import MoreVert from '@mui/icons-material/MoreVert';
 import { deleteData, getData } from '../../../../services/authenticatedApiCalls';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { DeleteOutline } from '@mui/icons-material';
 import Link from 'next/link';
 import Post404 from './not-found';
+import { timeAgo } from '../../../../utils/time';
 
 type Props = {
   postId: String
@@ -56,7 +57,6 @@ export default function UserPost({ postId, currentUserId }: Props) {
     mutationDelete.mutate();
   };
 
-
   if (isLoading || isLoadingProfile || !profile) return (
     <Box sx={{ display: 'flex', flexDirection: 'column' }} gap={1}>
       <Skeleton variant='rectangular' height={80} />
@@ -99,8 +99,13 @@ export default function UserPost({ postId, currentUserId }: Props) {
               alt="Profile Image"
               sx={{ width: { xs: 30, md: 35 }, height: { xs: 30, md: 35 }, marginRight: '.5rem' }}
             />
-            <Typography sx={{ fontSize: { xs: 16, sm: 18 } }}>{profile.teacher_name}</Typography>
-            <Typography sx={{ fontSize: { xs: 16, sm: 18 }, paddingLeft: 1 }} color='textSecondary'>{profile.title}</Typography>
+            <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+              <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                <Typography sx={{ fontSize: { xs: 12, sm: 14 } }} fontWeight='bold'>{profile.teacher_name ?? 'User not found'}</Typography>
+                <Typography sx={{ fontSize: { xs: 12, sm: 14 }, paddingLeft: 1 }} color='textSecondary'>{profile.title ?? ''}</Typography>
+              </Box>
+              <Typography sx={{ fontSize: { xs: 10, sm: 12 } }} color='textSecondary'>{timeAgo(post.timestamp)}</Typography>
+            </Box>
           </Box>
           {(currentUserId !== undefined && currentUserId === post.user) &&
             <IconButton onClick={handleClickPopper('bottom-start')}>
