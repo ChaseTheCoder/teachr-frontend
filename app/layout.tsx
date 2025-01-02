@@ -10,7 +10,15 @@ import Footer from '../components/footer';
 import "react-day-picker/style.css";
 import { Box } from '@mui/material';
 import Script from 'next/script';
-const queryClient = new QueryClient();
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 60, // 1 hour in ms
+      refetchOnWindowFocus: false, // Disables automatic refetching when browser window is <focused className=""></focused>
+    },
+  },
+});
 
 export default function RootLayout({
   children,
@@ -33,18 +41,22 @@ export default function RootLayout({
         </script>
       </head>
       <body>
-            <QueryClientProvider client={queryClient}>
-        <UserProvider>
-          <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-            <main>
-                <ResponsiveAppBar/>
-                {children}
-            </main>
-          </Box>
-          <Footer/>
-          <ReactQueryDevtools />
-        </UserProvider>
-            </QueryClientProvider>
+        <QueryClientProvider client={queryClient}>
+          <UserProvider>
+              <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+                <main>
+                  <ResponsiveAppBar/>
+                  <Box sx={{ display: 'flex', flexDirection: 'column', width: '100vw', alignItems: 'center' }}>
+                    <Box sx={{ maxWidth: '1550px', width: '100%' }} >
+                    {children}
+                    </Box>
+                  </Box>
+                </main>
+              </Box>
+              <Footer/>
+              <ReactQueryDevtools />
+          </UserProvider>
+        </QueryClientProvider>
       </body> 
     </html>
   )

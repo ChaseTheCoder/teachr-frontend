@@ -8,12 +8,12 @@ import Menu from '@mui/material/Menu';
 import Avatar from '@mui/material/Avatar';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';import { Badge, Button } from '@mui/material';
+import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';import { Badge } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { getData } from '../../services/authenticatedApiCalls';
-import { Add, ArrowForwardIos } from '@mui/icons-material';
+import { Add } from '@mui/icons-material';
 import { usePathname } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const settings = [
   {
@@ -26,10 +26,10 @@ const settings = [
   }];
 
 export default function Right({ auth0Id }: { auth0Id: string }) {
-  let pathname = usePathname();
   const [menuList, setMenuList] = useState(settings);
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
   const [teacherName, setTeacherName] = useState('')
+  const [profileData, setProfileData] = useState<any>(null);
 
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
@@ -38,12 +38,18 @@ export default function Right({ auth0Id }: { auth0Id: string }) {
     setAnchorElUser(null);
   };
   
-  const { data: profileData, isFetching, isLoading, isError } = useQuery({
+  const { data, isFetching, isLoading, isError } = useQuery({
     queryKey: ['profile'],
     queryFn: () => getData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/profile_auth0/${auth0Id}`),
     staleTime: 1000 * 60 * 60,
-    enabled: !!auth0Id,
+    enabled: !!auth0Id && !profileData,
   })
+
+  useEffect(() => {
+    if (data) {
+      setProfileData(data);
+    }
+  }, [data]);
 
   const { data: notifications, isFetching: isFetchingNotifications, isLoading: isLoadingNotifications, isError: isErrorNotifications } = useQuery({
     queryKey: ['unreadnotifications'],
@@ -73,74 +79,62 @@ export default function Right({ auth0Id }: { auth0Id: string }) {
   return (
     <Box sx={{ flexGrow: 0 }}>
       <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }} gap={2}>
-        { pathname === '/' ?
-          (<Button
-            variant='outlined'
-            href='/feed'
-            color='success'
-            endIcon={<ArrowForwardIos />}
+        <IconButton
+          color='success'
+          href='/new-post'
+          sx={{ 
+          display: { xs: 'flex', md: 'none' },
+          backgroundColor: 'green',
+          color: 'white',
+          '&:hover': {
+            backgroundColor: 'darkgreen'
+          }
+          }}
+        >
+          <Add />
+        </IconButton>
+        <IconButton
+          href='/notifications'
+        >
+          <Badge badgeContent={notifications?.count ?? 0} color='error'>
+            <NotificationsNoneIcon color='action' />
+          </Badge>
+        </IconButton>
+          <Typography color='textPrimary' fontWeight='bold' sx={{  display: { xs: 'none', md: 'flex' } }}>{teacherName}</Typography>
+        <Tooltip title="Open settings">
+          <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+          <Avatar alt='Profile Icon' />
+          </IconButton>
+        </Tooltip>
+        <Menu
+          sx={{ mt: '45px' }}
+          id="menu-appbar"
+          anchorEl={anchorElUser}
+          anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+          }}
+          keepMounted
+          transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+          }}
+          open={Boolean(anchorElUser)}
+          onClose={handleCloseUserMenu}
+        >
+          {menuList.map((menuItem) => (
+          <a
+            key={menuItem.title}
+            href={menuItem.link}
           >
-            Go to App
-          </Button>) :
-          (<>
-            <IconButton
-              color='success'
-              href='/new-post'
-              sx={{ 
-              display: { xs: 'flex', md: 'none' },
-              backgroundColor: 'green',
-              color: 'white',
-              '&:hover': {
-                backgroundColor: 'darkgreen'
-              }
-              }}
+            <MenuItem
+              onClick={handleCloseUserMenu}
             >
-              <Add />
-            </IconButton>
-            <IconButton
-              href='/notifications'
-            >
-              <Badge badgeContent={notifications?.count ?? 0} color='error'>
-                <NotificationsNoneIcon color='action' />
-              </Badge>
-            </IconButton>
-              <Typography color='textPrimary' fontWeight='bold' sx={{  display: { xs: 'none', md: 'flex' } }}>{teacherName}</Typography>
-            <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-              <Avatar alt='Profile Icon' />
-              </IconButton>
-            </Tooltip>
-            <Menu
-              sx={{ mt: '45px' }}
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-              vertical: 'top',
-              horizontal: 'right',
-              }}
-              keepMounted
-              transformOrigin={{
-              vertical: 'top',
-              horizontal: 'right',
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
-            >
-              {menuList.map((menuItem) => (
-              <a
-                key={menuItem.title}
-                href={menuItem.link}
-              >
-                <MenuItem
-                  onClick={handleCloseUserMenu}
-                >
-                  <Typography textAlign="center">{menuItem.title}</Typography>
-                </MenuItem>
-              </a>
-              ))}
-            </Menu>
-          </>)
-        }
+              <Typography textAlign="center">{menuItem.title}</Typography>
+            </MenuItem>
+          </a>
+          ))}
+        </Menu>
       </Box>
     </Box>
   )
