@@ -5,6 +5,7 @@ import { Box, Skeleton } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import Post from '../../../components/post/post';
 import { getData, getDataWithParams } from '../../../services/authenticatedApiCalls';
+import FeedAd from '../../../components/googleAdsense/feed-ad';
 
 export default function Feed() {
   const [userIds, setUserIds] = useState<string[]>([]);
@@ -44,15 +45,18 @@ export default function Feed() {
           <Skeleton variant='rounded' height={80} />
           <Skeleton variant='rounded' height={80} />
         </Box> :
-        posts.map((post) => {
-          const userProfile = batchProfiles?.find(profile => profile.id === post.user);
-          return (
-          <Post
-            key={post.id}
-            post={post}
-            profile={userProfile}
-          />
-        )})
+        <>
+          {posts.map((post) => {
+            const userProfile = batchProfiles?.find(profile => profile.id === post.user);
+            return (
+            <Post
+              key={post.id}
+              post={post}
+              profile={userProfile}
+            />
+          )})}
+        <FeedAd />
+        </>
       }
     </Box>
   );

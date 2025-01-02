@@ -5,13 +5,11 @@ import Image from 'next/image'
 import Surface from '../components/surface/Surface';
 import { Box, Button, Divider, Grid, Link, Stack, Typography } from '@mui/material';
 import Post from '../components/post/post';
-import UserPost from './(loggedin)/post/[postId]/userPost';
-import Comments from './(loggedin)/post/[postId]/comments';
 
 const postExamples = [
   {
     profile: {
-      "id": "2d770e04-bd9d-4def-9b5d-feec263cb570",
+      "id": "2d770e04-bd9d-4def-9b5d-feec263cb571",
       "auth0_id": "google-oauth2|107960761193972798603",
       "first_name": "Chase",
       "last_name": "Sheaff",
@@ -20,16 +18,16 @@ const postExamples = [
       "profile_pic": "/media/profile_pics/Screenshot_2024-11-14_at_8.45.15PM.png"
     },
     post: {
-      "id": "6c7222c5-567a-44cd-960c-6ce12af0e163",
+      "id": "6c7222c5-567a-44cd-960c-6ce12af0e164",
       "title": "Am I supposed to be running small groups anymore?",
       "body": "I've been reading and hearing from a few teacher friends that small groups are not the best way to teach. I'm a 3rd grade teacher and I've been doing small groups for years. I'm not sure what to do now. What is the research saying?",
       "timestamp": "2024-11-19T21:33:06.648096Z",
-      "user": "2d770e04-bd9d-4def-9b5d-feec263cb570"
+      "user": "2d770e04-bd9d-4def-9b5d-feec263cb571"
     }
   },
   {
     profile: {
-      "id": "2d770e04-bd9d-4def-9b5d-feec263cb570",
+      "id": "2d770e04-bd9d-4def-9b5d-feec263cb572",
       "auth0_id": "google-oauth2|107960761193972798603",
       "first_name": "Chase",
       "last_name": "Sheaff",
@@ -38,16 +36,16 @@ const postExamples = [
       "profile_pic": "/media/profile_pics/Screenshot_2024-11-14_at_8.45.15PM.png"
     },
     post: {
-      "id": "6c7222c5-567a-44cd-960c-6ce12af0e163",
+      "id": "6c7222c5-567a-44cd-960c-6ce12af0e165",
       "title": "Cell Phones in the Classroom",
       "body": "My school doesn't have a policy on cell phones. I'm a 6th grade teacher and engagement has declined because of cell phone usage. What do you all do?",
       "timestamp": "2024-11-19T21:33:06.648096Z",
-      "user": "2d770e04-bd9d-4def-9b5d-feec263cb570"
+      "user": "2d770e04-bd9d-4def-9b5d-feec263cb572"
     }
   },
   {
     profile: {
-      "id": "2d770e04-bd9d-4def-9b5d-feec263cb570",
+      "id": "2d770e04-bd9d-4def-9b5d-feec263cb573",
       "auth0_id": "google-oauth2|107960761193972798603",
       "first_name": "Chase",
       "last_name": "Sheaff",
@@ -56,11 +54,11 @@ const postExamples = [
       "profile_pic": "/media/profile_pics/Screenshot_2024-11-14_at_8.45.15PM.png"
     },
     post: {
-      "id": "6c7222c5-567a-44cd-960c-6ce12af0e163",
+      "id": "6c7222c5-567a-44cd-960c-6ce12af0e166",
       "title": "Resources for differentiating worksheets",
       "body": "I'm a 2nd year teacher and definitly overwhelmed. I have a few students who are really struggling and I'm not sure how to help them. I've been trying to find resources online but I'm not sure what to look for. What are resources that are very simple to implement?",
       "timestamp": "2024-11-19T21:33:06.648096Z",
-      "user": "2d770e04-bd9d-4def-9b5d-feec263cb570"
+      "user": "2d770e04-bd9d-4def-9b5d-feec263cb573"
     }
   }
 ]
