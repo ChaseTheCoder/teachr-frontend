@@ -51,6 +51,7 @@ export default function Notifications() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['notifications'] });
       queryClient.invalidateQueries({ queryKey: ['unreadnotifications'] });
+      window.location.href = `/post/${notificationId}`;
     },
     onError: (error) => {
       console.error('Error deleting post:', error);
@@ -85,9 +86,10 @@ export default function Notifications() {
     }
   }, [batchProfiles]);
 
-  const handleNotificationClick = (notificationUrl: string) => {
-    mutationNotificationRead.mutate();
-    window.location.href = notificationUrl;
+  const handleNotificationClick = (notificationUrl: string, notificationRead: boolean) => {
+    notificationRead ?
+      mutationNotificationRead.mutate() :
+      window.location.href = notificationUrl;
   }
 
   const createNotificationMessage = (notificationType: string) => {
@@ -126,14 +128,13 @@ export default function Notifications() {
                 const userProfile = currentProfiles?.find(batchProfile => batchProfile.id === notification.initiator);
                 const message = createNotificationMessage(notification.notification_type);
                 const notificationUrl = createNotificationUrl(notification.notification_type, notification.url_id);
-                const read = notification.read;
                 return (
                   <ListItemButton
                     alignItems="center"
                     key={notification.id}
                     onClick={() => {
                       setNotificationId(notification.id);
-                      handleNotificationClick(notificationUrl)
+                      handleNotificationClick(notificationUrl, notification.read);
                     }}
                   >
                     <ListItemAvatar>
@@ -141,7 +142,7 @@ export default function Notifications() {
                     </ListItemAvatar>
                     <ListItemText
                     primary={
-                      <Typography variant="body1" color={read ? 'textSecondary' : 'textPrimary'}>
+                      <Typography variant="body1" color={notification.read ? 'textSecondary' : 'textPrimary'}>
                         <strong>{userProfile?.teacher_name ?? 'User not found'}</strong> {message} {timeAgo(notification.timestamp)}
                       </Typography>
                     }

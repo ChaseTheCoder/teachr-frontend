@@ -13,6 +13,7 @@ import { useQuery } from '@tanstack/react-query';
 import { getData } from '../../services/authenticatedApiCalls';
 import { Add, ArrowForwardIos } from '@mui/icons-material';
 import { usePathname } from 'next/navigation';
+import { useState } from 'react';
 
 const settings = [
   {
@@ -26,8 +27,9 @@ const settings = [
 
 export default function Right({ auth0Id }: { auth0Id: string }) {
   let pathname = usePathname();
-  const [menuList, setMenuList] = React.useState(settings);
-  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+  const [menuList, setMenuList] = useState(settings);
+  const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
+  const [teacherName, setTeacherName] = useState('')
 
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
@@ -62,6 +64,9 @@ export default function Right({ auth0Id }: { auth0Id: string }) {
           link: '/api/auth/logout/'
         }
       ])
+    }
+    if(profileData?.teacher_name){
+      setTeacherName(profileData.teacher_name)
     }
   }, [profileData])
 
@@ -99,10 +104,7 @@ export default function Right({ auth0Id }: { auth0Id: string }) {
                 <NotificationsNoneIcon color='action' />
               </Badge>
             </IconButton>
-            {
-              profileData?.teacher_name &&
-              <Typography color='textPrimary' fontWeight='bold' sx={{  display: { xs: 'none', md: 'flex' } }}>{profileData.teacher_name}</Typography>
-            }
+              <Typography color='textPrimary' fontWeight='bold' sx={{  display: { xs: 'none', md: 'flex' } }}>{teacherName}</Typography>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
               <Avatar alt='Profile Icon' />
