@@ -16,6 +16,8 @@ import Link from 'next/link';
 import TeachrLogo from '../../public/TeachrLogo.svg';
 import { Button } from '@mui/material';
 import Right from './right';
+import { ArrowForwardIos } from '@mui/icons-material';
+import { usePathname } from 'next/navigation';
 
 const pages = [
   {
@@ -29,10 +31,11 @@ const pages = [
 ];
 
 function ResponsiveAppBar() {
+  let pathname = usePathname();
   const { user, error, isLoading: userLoading } = useUser();
   const auth0Id = user?.sub;
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
-  const [initialLoadingDone, setInitialLoadingDone] = useState(false);
+  const [userData, setUserData] = useState(null);
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -44,7 +47,7 @@ function ResponsiveAppBar() {
 
   useEffect(() => {
     if(user && !userLoading){
-      setInitialLoadingDone(true);
+      setUserData(user);
     }
   }, [user, userLoading]);
 
@@ -93,7 +96,7 @@ function ResponsiveAppBar() {
 
           <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%' }} >
             <Box sx={{ display: 'flex', mr: 1 }}>
-              <Link href={user ? '/feed' : '/'}>
+              <Link href={userData ? '/feed' : '/'}>
                 <Image
                   priority
                   src={TeachrLogo}
@@ -103,10 +106,16 @@ function ResponsiveAppBar() {
               </Link>
             </Box>
             <Box sx={{ flexGrow: 0 }}>
-                { initialLoadingDone ?
-                  <Right
-                    auth0Id={auth0Id}
-                  /> :
+              { pathname === '/' ?
+                userData ? 
+                  <Button
+                    variant='outlined'
+                    href='/feed'
+                    color='success'
+                    endIcon={<ArrowForwardIos />}
+                  >
+                    Go to App
+                  </Button> :
                   <Button
                     color='success'
                   >
@@ -114,6 +123,10 @@ function ResponsiveAppBar() {
                       Log In
                     </a>
                   </Button>
+                :
+                <Right
+                  auth0Id={userData?.sub}
+                /> 
                 }
             </Box>
           </Box>
