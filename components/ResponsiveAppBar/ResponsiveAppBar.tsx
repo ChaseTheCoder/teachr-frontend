@@ -1,6 +1,6 @@
 'use client'
 
-import * as React from 'react';
+import { useEffect, useState } from 'react';
 import { useUser } from '@auth0/nextjs-auth0/client';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -31,7 +31,8 @@ const pages = [
 function ResponsiveAppBar() {
   const { user, error, isLoading: userLoading } = useUser();
   const auth0Id = user?.sub;
-  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
+  const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
+  const [initialLoadingDone, setInitialLoadingDone] = useState(false);
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -40,6 +41,12 @@ function ResponsiveAppBar() {
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
   };
+
+  useEffect(() => {
+    if(user && !userLoading){
+      setInitialLoadingDone(true);
+    }
+  }, [user, userLoading]);
 
   return (
     <AppBar position="static" elevation={0} sx={{ bgcolor: 'white', borderRadius: 4 }}>
@@ -96,7 +103,7 @@ function ResponsiveAppBar() {
               </Link>
             </Box>
             <Box sx={{ flexGrow: 0 }}>
-                { user ?
+                { initialLoadingDone ?
                   <Right
                     auth0Id={auth0Id}
                   /> :

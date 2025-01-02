@@ -15,7 +15,7 @@ type Props = {
 export default function Post({ post, profile, homePage }: Props) {
 
   return (
-    <Link key={post.id} href={homePage ? '' : `/post/${post.id}`} passHref>
+    <Link key={post.id} href={homePage ? '/#' : `/post/${post.id}`} passHref>
       <Box
         sx={{ 
           paddingX: 2,
@@ -29,7 +29,7 @@ export default function Post({ post, profile, homePage }: Props) {
         }}
         gap={1}
       >
-        <Link key={post.id} href={homePage ? '' : `/profile/${profile.id}`} passHref>
+        <Link key={post.id} href={homePage ? '/#' : `/profile/${profile.id}`} passHref>
           <Box 
             sx={{ 
               display: 'flex', 
