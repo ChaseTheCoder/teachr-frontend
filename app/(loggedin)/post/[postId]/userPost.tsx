@@ -79,41 +79,47 @@ export default function UserPost({ postId, currentUserId }: Props) {
       key={post.id}
       gap={1}
     >
-      <Link href={`/profile/${profile.id}`} passHref>
         <Box
           sx={{
             display: 'flex',
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'space-between',
-            width: 'fit-content',
-            paddingRight: 1,
-            '&:hover': {
-              cursor: 'pointer',
-              bgcolor: '#f0f0f0',
-              borderRadius: '50px',
-              }
-          }}>
-          <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-            <Avatar
-              alt="Profile Image"
-              sx={{ width: { xs: 30, md: 35 }, height: { xs: 30, md: 35 }, marginRight: '.5rem' }}
-            />
-            <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-              <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                <Typography sx={{ fontSize: { xs: 12, sm: 14 } }} fontWeight='bold'>{profile.teacher_name ?? 'User not found'}</Typography>
-                <Typography sx={{ fontSize: { xs: 12, sm: 14 }, paddingLeft: 1 }} color='textSecondary'>{profile.title ?? ''}</Typography>
+            width: '100%',
+          }}
+        >
+          <Link href={`/profile/${profile.id}`} passHref>
+            <Box
+              sx={{ 
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+                paddingRight: 2,
+                '&:hover': {
+                  cursor: 'pointer',
+                  bgcolor: '#f0f0f0',
+                  borderRadius: '50px',
+              }}}
+            >
+              <Avatar
+                alt="Profile Image"
+                sx={{ width: { xs: 30, md: 35 }, height: { xs: 30, md: 35 }, marginRight: '.5rem' }}
+              />
+              <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                  <Typography sx={{ fontSize: { xs: 12, sm: 14 } }} fontWeight='bold'>{profile.teacher_name ?? 'User not found'}</Typography>
+                  <Typography sx={{ fontSize: { xs: 12, sm: 14 }, paddingLeft: 1 }} color='textSecondary'>{profile.title ?? ''}</Typography>
+                </Box>
+                <Typography sx={{ fontSize: { xs: 10, sm: 12 } }} color='textSecondary'>{timeAgo(post.timestamp)}</Typography>
               </Box>
-              <Typography sx={{ fontSize: { xs: 10, sm: 12 } }} color='textSecondary'>{timeAgo(post.timestamp)}</Typography>
             </Box>
-          </Box>
+          </Link>
           {(currentUserId !== undefined && currentUserId === post.user) &&
             <IconButton onClick={handleClickPopper('bottom-start')}>
               <MoreVert fontSize='small' />
             </IconButton>
           }
         </Box>
-      </Link>
       <Typography variant='h2' sx={{ fontSize: { xs: 22, sm: 26 } }} fontWeight='bold'>{post.title}</Typography>
       {post.body && <Typography sx={{ fontSize: { xs: 14, sm: 16 } }}>{post.body}</Typography>}
       <Popper

@@ -6,6 +6,7 @@ import { getData, postOrPatchData } from '../../../../services/authenticatedApiC
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useUser } from '@auth0/nextjs-auth0/client';
 import { useRouter } from 'next/navigation';
+import { IProfile } from '../../../../types/types';
 
 interface props {
   auth0Id: string;
@@ -24,11 +25,17 @@ export default function EditProfile({ auth0Id, signUpPage }: props) {
   const [pageLoading, setPageLoading] = useState(true);
   const router = useRouter();
 
-  const { data: profileData, isFetching, isLoading: isLoadingProfile, isError } = useQuery({
-    queryKey: ['profile'],
+  const { data: profileData, isFetching, isLoading: isLoadingProfile, isError } = useQuery<IProfile>({
+    queryKey: ['profile', auth0Id],
     queryFn: () => getData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/profile_auth0/${auth0Id}`),
     staleTime: 1000 * 60 * 60,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    refetchOnMount: false,
     enabled: !!auth0Id,
+    initialData: () => {
+      return queryClient.getQueryData(['profile', auth0Id]);
+    },
   })
 
   useEffect(() => {

@@ -6,8 +6,9 @@ import { useRouter } from 'next/navigation';
 import { getData, postOrPatchData } from '../../../services/authenticatedApiCalls';
 import Surface from "../../../components/surface/Surface";
 import { useUser } from "@auth0/nextjs-auth0/client";
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, QueryClient } from '@tanstack/react-query';
 import { LoadingButton } from '@mui/lab';
+import { IProfile } from '../../../types/types';
 
 export default function NewPost() {
   const { user, error, isLoading: isLoadingUser } = useUser();
@@ -17,11 +18,18 @@ export default function NewPost() {
   const [isLoading, setLoading] = useState(false);
   const router = useRouter();
 
-  const { data: profileData, isLoading: isLoadingProfile, isError } = useQuery({
-    queryKey: ['profile'],
+  const queryClient = new QueryClient();
+  
+  const { data: profileData, isLoading: isLoadingProfile, isError } = useQuery<IProfile>({
+    queryKey: ['profile', auth0Id],
     queryFn: () => getData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/profile_auth0/${auth0Id}`),
     staleTime: 1000 * 60 * 60,
-    enabled: !!auth0Id,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    refetchOnMount: false,
+    initialData: () => {
+      return queryClient.getQueryData(['profile', auth0Id]);
+    },
   });
 
   const handleSubmit = async (event: React.FormEvent) => {

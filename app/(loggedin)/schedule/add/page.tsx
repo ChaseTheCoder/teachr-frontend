@@ -5,13 +5,14 @@ import { Box, TextField, Typography } from "@mui/material";
 import Surface from "../../../../components/surface/Surface";
 import DatePicker, { DateObject } from 'react-multi-date-picker';
 import { getData, postSchedule } from "../../../../services/authenticatedApiCalls";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, QueryClient } from "@tanstack/react-query";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import { LoadingButton } from "@mui/lab";
 import { useRouter } from 'next/navigation';
+import { IProfile } from "../../../../types/types";
 
 export default function AddCalendar() {
-  const { user, error, isLoading: userLoading } = useUser();
+  const { user, error, isLoading: isLoadingUser } = useUser();
   const [schoolYearTitle, setSchoolYearTitle] = useState('');
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
@@ -20,7 +21,13 @@ export default function AddCalendar() {
   const [loadingSchedule, setLoadingSchedule] = useState(false);
   const [scheduleData, setScheduleData] = useState(null);
   const router = useRouter();
-  const auth0Id = user?.sub;
+  const [auth0Id, setAuth0Id] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (user && !isLoadingUser && !auth0Id) {
+      setAuth0Id(user.sub);
+    }
+  }, [user, isLoadingUser, auth0Id]);
 
   function handleChangeStartDate(value){
     setStartDate(value)
@@ -42,11 +49,17 @@ export default function AddCalendar() {
     }
   }, [endDate]);
 
-  const { data: profileData, isFetching, isLoading, isError } = useQuery({
-    queryKey: ['profile'],
+  const queryClient = new QueryClient();
+  const { data: profileData, isFetching, isLoading, isError } = useQuery<IProfile>({
+    queryKey: ['profile', auth0Id],
     queryFn: () => getData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/profile_auth0/${auth0Id}`),
     staleTime: 1000 * 60 * 60,
-    enabled: !!auth0Id,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    refetchOnMount: false,
+    initialData: () => {
+      return queryClient.getQueryData(['profile', auth0Id]);
+    },
   })
   
   function handleClickPostSchedule(){
