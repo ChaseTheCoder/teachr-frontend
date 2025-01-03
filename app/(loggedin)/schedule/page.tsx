@@ -3,11 +3,12 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Button, Divider, FormControl, IconButton, InputLabel, MenuItem, Select, SelectChangeEvent, Typography } from '@mui/material';
 import { getData, getDataWithParams } from '../../../services/authenticatedApiCalls';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, QueryClient } from '@tanstack/react-query';
 import { useUser } from '@auth0/nextjs-auth0/client';
 import { AddCircleOutline, ChevronLeft, ChevronRight, DateRange } from '@mui/icons-material';
 import { getMonthRange, getWeekDates } from '../../../utils/schedule-helpers';
 import Surface from '../../../components/surface/Surface';
+import { IProfile } from '../../../types/types';
 
 export default function Calendar() {
   const [schoolTitle, setSchoolTitle] = React.useState(null);
@@ -53,11 +54,18 @@ export default function Calendar() {
 
   const { user, error, isLoading: userLoading } = useUser();
   const auth0Id = user?.sub;
-  const { data: profileData } = useQuery({
-    queryKey: ['profile'],
+  const queryClient = new QueryClient();
+  
+  const { data: profileData } = useQuery<IProfile>({
+    queryKey: ['profile', auth0Id],
     queryFn: () => getData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/profile_auth0/${auth0Id}`),
     staleTime: 1000 * 60 * 60,
-    enabled: !!auth0Id,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    refetchOnMount: false,
+    initialData: () => {
+      return queryClient.getQueryData(['profile', auth0Id]);
+    },
   })
   
   const { data: schedulesData, isFetching, isLoading, isError } = useQuery({

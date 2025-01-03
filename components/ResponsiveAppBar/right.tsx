@@ -9,11 +9,12 @@ import Avatar from '@mui/material/Avatar';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';import { Badge } from '@mui/material';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, QueryClient } from '@tanstack/react-query';
 import { getData } from '../../services/authenticatedApiCalls';
 import { Add } from '@mui/icons-material';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { IProfile } from '../../types/types';
 
 const settings = [
   {
@@ -29,7 +30,6 @@ export default function Right({ auth0Id }: { auth0Id: string }) {
   const [menuList, setMenuList] = useState(settings);
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
   const [teacherName, setTeacherName] = useState('')
-  const [profileData, setProfileData] = useState<any>(null);
 
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
@@ -38,24 +38,29 @@ export default function Right({ auth0Id }: { auth0Id: string }) {
     setAnchorElUser(null);
   };
   
-  const { data, isFetching, isLoading, isError } = useQuery({
-    queryKey: ['profile'],
+  const queryClient = new QueryClient();
+  
+  const { data: profileData, isFetching: isFetchingProfileData, isLoading: isLoadingProfileData, isError: isErrorProfileData } = useQuery<IProfile>({
+    queryKey: ['profile', auth0Id],
     queryFn: () => getData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/profile_auth0/${auth0Id}`),
     staleTime: 1000 * 60 * 60,
-    enabled: !!auth0Id && !profileData,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    refetchOnMount: false,
+    enabled: !!auth0Id,
+    initialData: () => {
+      return queryClient.getQueryData(['profile', auth0Id]);
+    },
   })
-
-  useEffect(() => {
-    if (data) {
-      setProfileData(data);
-    }
-  }, [data]);
 
   const { data: notifications, isFetching: isFetchingNotifications, isLoading: isLoadingNotifications, isError: isErrorNotifications } = useQuery({
     queryKey: ['unreadnotifications'],
     queryFn: () => getData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/unread_notification_count/user/${profileData.id}/`),
     staleTime: 1000 * 60 * 60,
     enabled: !!profileData,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    refetchOnMount: false,
   })
 
   React.useEffect(() => {
@@ -100,10 +105,10 @@ export default function Right({ auth0Id }: { auth0Id: string }) {
             <NotificationsNoneIcon color='action' />
           </Badge>
         </IconButton>
-          <Typography color='textPrimary' fontWeight='bold' sx={{  display: { xs: 'none', md: 'flex' } }}>{teacherName}</Typography>
+        {/* <Typography color='textPrimary' fontWeight='bold' sx={{  display: { xs: 'none', md: 'flex' } }}>{teacherName}</Typography> */}
         <Tooltip title="Open settings">
           <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-          <Avatar alt='Profile Icon' />
+            <Avatar alt='Profile Icon' />
           </IconButton>
         </Tooltip>
         <Menu
@@ -123,16 +128,16 @@ export default function Right({ auth0Id }: { auth0Id: string }) {
           onClose={handleCloseUserMenu}
         >
           {menuList.map((menuItem) => (
-          <a
-            key={menuItem.title}
-            href={menuItem.link}
-          >
-            <MenuItem
-              onClick={handleCloseUserMenu}
+            <a
+              key={menuItem.title}
+              href={menuItem.link}
             >
-              <Typography textAlign="center">{menuItem.title}</Typography>
-            </MenuItem>
-          </a>
+              <MenuItem
+                onClick={handleCloseUserMenu}
+              >
+                <Typography textAlign="center">{menuItem.title}</Typography>
+              </MenuItem>
+            </a>
           ))}
         </Menu>
       </Box>

@@ -7,26 +7,40 @@ import { getData, getDataWithParams, patchData } from '../../../services/authent
 import { useUser } from '@auth0/nextjs-auth0/client';
 import Surface from '../../../components/surface/Surface';
 import { timeAgo } from '../../../utils/time';
+import { IProfile } from '../../../types/types';
 
 export default function Notifications() {
   const queryClient = useQueryClient();
   const { user, error, isLoading: isLoadingUser } = useUser();
-  const auth0Id = user?.sub;
   const [userIds, setUserIds] = useState<string[]>([]);
   const [notificationId, setNotificationId] = useState<string | null>(null);
   const [page, setPage] = useState(1);
   const [currentProfiles, setCurrentProfiles] = useState([]);
   const [notificationsDisplayed, setNotificationsDisplayed] = useState([]); 
   const [disableSeeMore, setDisableSeeMore] = useState(false);
+  const [auth0Id, setAuth0Id] = useState<string | null>(null);
+  
+  useEffect(() => {
+    if (user && !isLoadingUser && !auth0Id) {
+      setAuth0Id(user.sub);
+    }
+  }, [user, isLoadingUser, auth0Id]);
+
   const handleSeeMore = () => {
     setPage((prevPage) => prevPage + 1);
   };
   
-  const { data: profileData, isFetching: isFetchingProfileData, isLoading: isLoadingProfileData, isError: isErrorProfileData } = useQuery({
-    queryKey: ['profile'],
+  const { data: profileData, isFetching: isFetchingProfileData, isLoading: isLoadingProfileData, isError: isErrorProfileData } = useQuery<IProfile>({
+    queryKey: ['profile', auth0Id],
     queryFn: () => getData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/profile_auth0/${auth0Id}`),
     staleTime: 1000 * 60 * 60,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    refetchOnMount: false,
     enabled: !!auth0Id,
+    initialData: () => {
+      return queryClient.getQueryData(['profile', auth0Id]);
+    },
   });
 
   const { data: notificationData, isFetching: isFetchingNotificationData, isLoading: isLoadingNotificationData, isError: isErrorNotificationData } = useQuery({
@@ -88,8 +102,8 @@ export default function Notifications() {
 
   const handleNotificationClick = (notificationUrl: string, notificationRead: boolean) => {
     notificationRead ?
-      mutationNotificationRead.mutate() :
-      window.location.href = notificationUrl;
+    window.location.href = notificationUrl :
+      mutationNotificationRead.mutate();
   }
 
   const createNotificationMessage = (notificationType: string) => {

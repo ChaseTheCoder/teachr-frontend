@@ -3,13 +3,14 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Button } from '@mui/material';
 import { useUser } from '@auth0/nextjs-auth0/client';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, QueryClient } from '@tanstack/react-query';
 import { getData } from '../../../../services/authenticatedApiCalls';
 import DynamicFeedIcon from '@mui/icons-material/DynamicFeed';
 import EditIcon from '@mui/icons-material/Edit';
 import Activity, { ActivityLoading } from './activity';
 import EditProfile from './editProfile';
 import ProfileInformation from './profileInformation';
+import { IProfile } from '../../../../types/types';
 
 export default function Profile({
   params,
@@ -19,13 +20,24 @@ export default function Profile({
   const [sectionSelected, setSectionSelected] = useState('activity');
   const [currentUser, setCurrentUser] = useState(null);
   const { user, error, isLoading: isLoadingUser } = useUser();
+  const [auth0Id, setAuth0Id] = useState<string | null>(null);
 
-  const auth0Id = user?.sub;
-  const { data: profileData, isFetching, isLoading: isLoadingProfile, isError } = useQuery({
-    queryKey: ['profile'],
+  useEffect(() => {
+    if (user && !isLoadingUser && !auth0Id) {
+      setAuth0Id(user.sub);
+    }
+  }, [user, isLoadingUser, auth0Id]);
+  const queryClient = new QueryClient();
+  const { data: profileData, isFetching, isLoading: isLoadingProfile, isError } = useQuery<IProfile>({
+    queryKey: ['profile', auth0Id],
     queryFn: () => getData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/profile_auth0/${auth0Id}`),
     staleTime: 1000 * 60 * 60,
-    enabled: !!auth0Id,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    refetchOnMount: false,
+    initialData: () => {
+      return queryClient.getQueryData(['profile', auth0Id]);
+    },
   })
 
   useEffect(() => {
