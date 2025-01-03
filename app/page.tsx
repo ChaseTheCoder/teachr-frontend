@@ -112,7 +112,7 @@ export default function Home() {
             </Typography>
           </Box>
         </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} md={6} sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
           {
             postExamples.map((post) => {
               return (

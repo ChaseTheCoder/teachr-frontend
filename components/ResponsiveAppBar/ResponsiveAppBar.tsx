@@ -33,7 +33,13 @@ const pages = [
 function ResponsiveAppBar() {
   let pathname = usePathname();
   const { user, error, isLoading: userLoading } = useUser();
-  const auth0Id = user?.sub;
+  const [auth0Id, setAuth0Id] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (user && !userLoading && !auth0Id) {
+      setAuth0Id(user.sub);
+    }
+  }, [user, userLoading, auth0Id]);
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
   const [userData, setUserData] = useState(null);
 
@@ -107,7 +113,7 @@ function ResponsiveAppBar() {
             </Box>
             <Box sx={{ flexGrow: 0 }}>
               { pathname === '/' ?
-                userData ? 
+                auth0Id ? 
                   <Button
                     variant='outlined'
                     href='/feed'
@@ -125,7 +131,7 @@ function ResponsiveAppBar() {
                   </Button>
                 :
                 <Right
-                  auth0Id={userData?.sub}
+                  auth0Id={auth0Id}
                 /> 
                 }
             </Box>

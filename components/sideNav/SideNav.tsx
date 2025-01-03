@@ -34,14 +34,6 @@ export default function SideNav() {
           >
             Feed
           </Button>
-          <Button
-            variant={pathname === '/plans' ? 'outlined' : 'text'}
-            startIcon={<Edit />}
-            href='/plans'
-            color='success'
-          >
-            Plans
-          </Button>
         </Stack>
       </Box>
     </aside>

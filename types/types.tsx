@@ -11,3 +11,13 @@ export interface IProfileBatch {
   teacher_name: string;
   title: string;
 }
+
+export interface IProfile {
+  id: string;
+  auth0_id: string;
+  first_name: string;
+  last_name: string;
+  teacher_name: string;
+  title: string;
+  profile_pic: string;
+}
