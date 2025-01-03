@@ -44,12 +44,12 @@ export default function QuestionId({
       <Grid item xs={12} md={10}>
         <UserPost
           postId={params.postId}
-          currentUserId={profileData.id}
+          currentUserId={profileData?.id}
         />
         <PostComment postId={params.postId} />
         <Comments
           postId={params.postId}
-          currentUserId={profileData.id}
+          currentUserId={profileData?.id}
         />
       </Grid>
     </Grid>
