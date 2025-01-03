@@ -1,6 +1,6 @@
 import { handleAuth, handleLogin, handleLogout } from '@auth0/nextjs-auth0';
 
-export const logoutUrl = [
+const logoutUrl = [
   `${process.env.AUTH0_ISSUER_BASE_URL}/v2/logout?`,
   `client_id=${process.env.AUTH0_CLIENT_ID}`,
   `&returnTo=${process.env.AUTH0_BASE_URL}`,
@@ -25,7 +25,7 @@ export const GET = handleAuth({
   onError: (error, req, res) => {
     console.error('Auth0 error:', error);
     res.writeHead(302, {
-      Location: logoutUrl,
+      Location: '/api/auth/logout/',
     });
     res.end();
   },
