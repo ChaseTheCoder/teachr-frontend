@@ -11,6 +11,7 @@ import Activity, { ActivityLoading } from './activity';
 import EditProfile from './editProfile';
 import ProfileInformation from './profileInformation';
 import { IProfile } from '../../../../types/types';
+import { getDataNoToken } from '../../../../services/unauthenticatedApiCalls';
 
 export default function Profile({
   params,
@@ -30,19 +31,20 @@ export default function Profile({
   const queryClient = new QueryClient();
   const { data: profileData, isFetching, isLoading: isLoadingProfile, isError } = useQuery<IProfile>({
     queryKey: ['profile', auth0Id],
-    queryFn: () => getData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/profile_auth0/${auth0Id}`),
+    queryFn: () => getDataNoToken(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/profile_auth0/${auth0Id}`),
     staleTime: 1000 * 60 * 60,
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
     refetchOnMount: false,
+    enabled: auth0Id !== null,
     initialData: () => {
       return queryClient.getQueryData(['profile', auth0Id]);
     },
   })
 
   useEffect(() => {
-    if(profileData && auth0Id && !isFetching && !isLoadingUser) {
-      if(profileData.id === params.profileId) {
+    if(!isFetching && !isLoadingUser) {
+      if(auth0Id !== null || profileData?.id === params.profileId) {
         setCurrentUser(true);
       } else {
         setCurrentUser(false);
@@ -52,7 +54,7 @@ export default function Profile({
 
   const { data: otherProfileData, isFetching: isFetchingOtherProfile, isLoading: isLoadingOtherProfile, isError: isErrorOtherProfile } = useQuery({
     queryKey: ['otherProfile'],
-    queryFn: () => getData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/profile/${params.profileId}`),
+    queryFn: () => getDataNoToken(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/profile/${params.profileId}`),
     staleTime: 1000 * 60 * 60,
     enabled: currentUser === false,
   })

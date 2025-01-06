@@ -7,6 +7,7 @@ import { DeleteOutline } from '@mui/icons-material';
 import Link from 'next/link';
 import Post404 from './not-found';
 import { timeAgo } from '../../../../utils/time';
+import { getDataNoToken } from '../../../../services/unauthenticatedApiCalls';
 
 type Props = {
   postId: String
@@ -27,13 +28,13 @@ export default function UserPost({ postId, currentUserId }: Props) {
     };
   const { data: post, isFetching, isLoading, isError } = useQuery({
     queryKey: ['post', postId],
-    queryFn: () => getData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/post/${postId}/`),
+    queryFn: () => getDataNoToken(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/post/${postId}/`),
     staleTime: 1000 * 60 * 60,
   })
   
   const { data: profile, isFetching: isFetchingProfile, isLoading: isLoadingProfile, isError: isErrorProfile } = useQuery({
     queryKey: ['posterProfile'],
-    queryFn: () => getData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/profile/${post.user}`),
+    queryFn: () => getDataNoToken(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/profile/${post.user}`),
     staleTime: 1000 * 60 * 60,
     enabled: !!post,
   })

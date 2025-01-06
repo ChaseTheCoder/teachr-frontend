@@ -24,10 +24,10 @@ const pages = [
     title: 'Feed',
     link: '/feed'
   },
-  {
-    title: 'Plans',
-    link: '/plans'
-  }, 
+  // {
+  //   title: 'Plans',
+  //   link: '/plans'
+  // }, 
 ];
 
 function ResponsiveAppBar() {
@@ -113,15 +113,30 @@ function ResponsiveAppBar() {
             </Box>
             <Box sx={{ flexGrow: 0 }}>
               { pathname === '/' ?
-                auth0Id ? 
-                  <Button
+                  <>
+                    {auth0Id && 
+                    <Button
+                      color='success'
+                    >
+                      <a href='/api/auth/login'>
+                        Log In
+                      </a>
+                    </Button>}
+                    <Button
                     variant='outlined'
                     href='/feed'
                     color='success'
                     endIcon={<ArrowForwardIos />}
-                  >
-                    Go to App
-                  </Button> :
+                    >
+                      Go to App
+                    </Button>
+                  </>
+                :
+                auth0Id ? 
+                  <Right
+                    auth0Id={auth0Id}
+                  /> 
+                  :
                   <Button
                     color='success'
                   >
@@ -129,10 +144,6 @@ function ResponsiveAppBar() {
                       Log In
                     </a>
                   </Button>
-                :
-                <Right
-                  auth0Id={auth0Id}
-                /> 
                 }
             </Box>
           </Box>

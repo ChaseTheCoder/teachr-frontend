@@ -46,7 +46,8 @@ export default function QuestionId({
           postId={params.postId}
           currentUserId={profileData?.id}
         />
-        <PostComment postId={params.postId} />
+        {user && <PostComment postId={params.postId} />}
+        {/* <PostComment postId={params.postId} /> */}
         <Comments
           postId={params.postId}
           currentUserId={profileData?.id}

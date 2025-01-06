@@ -7,6 +7,7 @@ import Post from '../../../../components/post/post';
 import { useQuery } from '@tanstack/react-query';
 import { useUser } from '@auth0/nextjs-auth0/client';
 import { getData } from '../../../../services/authenticatedApiCalls';
+import { getDataNoToken } from '../../../../services/unauthenticatedApiCalls';
 
 type ActivityProps = {
   profileData: any;
@@ -39,7 +40,7 @@ export const Activity: React.FC<ActivityProps> = ({ profileId, profileData }: { 
 
   const { data: posts, isFetching, isLoading, isError } = useQuery({
     queryKey: ['posts'],
-    queryFn: () => getData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/posts/user/${profileId}`),
+    queryFn: () => getDataNoToken(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/posts/user/${profileId}`),
     staleTime: 1000 * 60 * 60,
     enabled: !!profileId,
   })

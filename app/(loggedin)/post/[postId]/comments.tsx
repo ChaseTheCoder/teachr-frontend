@@ -5,6 +5,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { DeleteOutline, MoreVert } from '@mui/icons-material';
 import Link from 'next/link';
 import { timeAgo } from '../../../../utils/time';
+import { getDataNoToken, getDataWithParamsNoToken } from '../../../../services/unauthenticatedApiCalls';
 
 type Props = {
   postId: string
@@ -42,7 +43,7 @@ export default function Comments({ postId, currentUserId }: Props) {
     
   const { data: comments, isFetching: isFetchingComments, isLoading: isLoadingComments, isError } = useQuery({
     queryKey: ['comments', postId],
-    queryFn: () => getData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/post/${postId}/comments/`),
+    queryFn: () => getDataNoToken(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/post/${postId}/comments/`),
     staleTime: 1000 * 60 * 60,
   })
   
@@ -61,7 +62,7 @@ export default function Comments({ postId, currentUserId }: Props) {
 
   const { data: batchProfiles, isFetching: isFetchingBatchProfiles, isLoading: isLoadingBatchProfiles, isError: isErrorBatchProfiles } = useQuery({
     queryKey: ['batchProfilesPost', postId],
-    queryFn: () => userIds.length > 0 ? getDataWithParams(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/profile_batch/`, 'user_id', userIds) : Promise.resolve([]),
+    queryFn: () => userIds.length > 0 ? getDataWithParamsNoToken(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/profile_batch/`, 'user_id', userIds) : Promise.resolve([]),
     staleTime: 1000 * 60 * 60,
     enabled: userIds.length > 0,
   })
