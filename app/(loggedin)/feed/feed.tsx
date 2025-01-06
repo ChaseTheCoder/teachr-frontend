@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { Box, Skeleton } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import Post from '../../../components/post/post';
-import { getData, getDataWithParams } from '../../../services/authenticatedApiCalls';
+import { getDataNoToken, getDataWithParamsNoToken } from '../../../services/unauthenticatedApiCalls';
 import FeedAd from '../../../components/googleAdsense/feed-ad';
 
 export default function Feed() {
@@ -12,13 +12,13 @@ export default function Feed() {
 
   const { data: feedPosts, isFetching, isLoading, isError } = useQuery({
     queryKey: ['postsFeed'],
-    queryFn: () => getData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/posts/feed/`),
+    queryFn: () => getDataNoToken(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/posts/feed/`),
     staleTime: 1000 * 60 * 60,
   })
   
   const { data: batchProfiles, isFetching: isFetchingBatchProfiles, isLoading: isLoadingBatchProfiles, isError: isErrorBatchProfiles } = useQuery({
     queryKey: ['batchProfilesFeed'],
-    queryFn: () => userIds.length > 0 ? getDataWithParams(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/profile_batch/`, 'user_id', userIds) : Promise.resolve([]),
+    queryFn: () => userIds.length > 0 ? getDataWithParamsNoToken(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/profile_batch/`, 'user_id', userIds) : Promise.resolve([]),
     staleTime: 1000 * 60 * 60,
     enabled: userIds.length > 0,
   });

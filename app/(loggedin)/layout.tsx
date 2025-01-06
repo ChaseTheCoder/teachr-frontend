@@ -11,26 +11,26 @@ export default function AuthenticatedLayout({
 }: {
   children: React.ReactNode
 }) {
-  const router = useRouter()
-  const { user, error, isLoading } = useUser();
-  const auth0Id = user?.sub;
+  // const router = useRouter()
+  // const { user, error, isLoading } = useUser();
+  // const auth0Id = user?.sub;
 
-  if(error) {
-    return <div>{error.message}</div>
-  }
+  // if(error) {
+  //   return <div>{error.message}</div>
+  // }
   
   
   return (
     <>
       <Stack direction='row'>
-        { !user && !isLoading ?
+        {/* { !user && !isLoading ?
           <Button
             color='success'
           >
             <a href='/api/auth/login'>
               Log In
             </a>
-          </Button> :
+          </Button> : */}
           <>
             <Box sx={{ display: { xs: 'none', md: 'block' } }}>
               <SideNav/>
@@ -39,7 +39,7 @@ export default function AuthenticatedLayout({
               {children}
             </Box>
           </>
-        }
+        {/* } */}
       </Stack>
     </>
   )
