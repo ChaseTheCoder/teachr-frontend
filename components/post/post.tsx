@@ -27,34 +27,36 @@ export default function Post({ post, profile, homePage }: Props) {
       }}
       gap={1}
     >
-      <Link key={post.id} href={homePage ? '/#' : `/profile/${profile.id}`} passHref>
-        <Box 
-          sx={{ 
-            display: 'flex', 
-            flexDirection: 'row', 
-            alignItems: 'center',
-            borderRadius: '50px',
-            paddingRight: 1,
-            '&:hover': {
-              cursor: 'pointer',
-              bgcolor: '#f0f0f0',
+      {profile &&
+        <Link key={`feed-profile-${profile.id}`} href={homePage ? '/#' : `/profile/${profile.id}`} passHref>
+          <Box 
+            sx={{ 
+              display: 'flex', 
+              flexDirection: 'row', 
+              alignItems: 'center',
               borderRadius: '50px',
-            }
-          }}
-        >
-          <Avatar
-            alt="Profile Image"
-            sx={{ width: { xs: 30, md: 35 }, height: { xs: 30, md: 35 }, marginRight: '.5rem' }}
-          />
-            <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-              <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                <Typography sx={{ fontSize: { xs: 12, sm: 14 } }} fontWeight='bold'>{profile.teacher_name ?? 'User not found'}</Typography>
-                <Typography sx={{ fontSize: { xs: 12, sm: 14 }, paddingLeft: 1 }} color='textSecondary'>{profile.title ?? ''}</Typography>
+              paddingRight: 1,
+              '&:hover': {
+                cursor: 'pointer',
+                bgcolor: '#f0f0f0',
+                borderRadius: '50px',
+              }
+            }}
+          >
+            <Avatar
+              alt="Profile Image"
+              sx={{ width: { xs: 30, md: 35 }, height: { xs: 30, md: 35 }, marginRight: '.5rem' }}
+            />
+              <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                  <Typography sx={{ fontSize: { xs: 12, sm: 14 } }} fontWeight='bold'>{profile.teacher_name ?? 'User not found'}</Typography>
+                  <Typography sx={{ fontSize: { xs: 12, sm: 14 }, paddingLeft: 1 }} color='textSecondary'>{profile.title ?? ''}</Typography>
+                </Box>
+                <Typography sx={{ fontSize: { xs: 10, sm: 12 } }} color='textSecondary'>{timeAgo(post.timestamp)}</Typography>
               </Box>
-              <Typography sx={{ fontSize: { xs: 10, sm: 12 } }} color='textSecondary'>{timeAgo(post.timestamp)}</Typography>
-            </Box>
-        </Box>
-      </Link>
+          </Box>
+        </Link>
+      }
       <Link key={post.id} href={homePage ? '/#' : `/post/${post.id}`} passHref>
         <Box
           sx={{
