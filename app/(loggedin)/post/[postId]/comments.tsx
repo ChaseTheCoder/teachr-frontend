@@ -190,7 +190,10 @@ export default function Comments({ postId, currentUserId }: Props) {
           </Popper>
         </Box>
       )}) :
-        <Typography variant='h2' sx={{ fontSize: { xs: 22, sm: 26 } }} fontWeight='bold' color='textSecondary'>No Comments Yet</Typography>
+        <Box sx={{ display: 'flex', flexDirection: 'column', padding: [2,1] }}>
+          <Typography variant='h2' sx={{ fontSize: { xs: 22, sm: 26 } }} fontWeight='bold' color='textSecondary'>Help a Fellow Educator Out!</Typography>
+          <Typography variant='body1' color='textSecondary'>Be the first to answer and provide guidance.</Typography>
+        </Box>
       }
     </>
   )
