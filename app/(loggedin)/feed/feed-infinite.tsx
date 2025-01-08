@@ -26,7 +26,7 @@ export default function InfiniteFeed() {
     ...result
   } = useInfiniteQuery({
     queryKey: ['postsFeed'],
-    queryFn: ({ pageParam }) => getDataNoToken(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/posts/feed/?page=${pageParam}&page_size=2`),
+    queryFn: ({ pageParam }) => getDataNoToken(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/posts/feed/?page=${pageParam}&page_size=8`),
     initialPageParam: 1,
     getNextPageParam: (lastPage, allPages) => {
       return allPages.length + 1;
