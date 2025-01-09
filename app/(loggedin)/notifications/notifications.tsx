@@ -13,7 +13,6 @@ export default function Notifications() {
   const queryClient = useQueryClient();
   const { user, error, isLoading: isLoadingUser } = useUser();
   const [userIds, setUserIds] = useState<string[]>([]);
-  const [notificationId, setNotificationId] = useState<string | null>(null);
   const [page, setPage] = useState(1);
   const [currentProfiles, setCurrentProfiles] = useState([]);
   const [notificationsDisplayed, setNotificationsDisplayed] = useState([]); 
@@ -59,13 +58,12 @@ export default function Notifications() {
   });
   
   const mutationNotificationRead = useMutation({
-    mutationFn: () => {
+    mutationFn: (notificationId: string) => {
       return patchData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/notification/${notificationId}/`);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['notifications'] });
       queryClient.invalidateQueries({ queryKey: ['unreadnotifications'] });
-      window.location.href = `/post/${notificationId}`;
     },
     onError: (error) => {
       console.error('Error deleting post:', error);
@@ -100,10 +98,13 @@ export default function Notifications() {
     }
   }, [batchProfiles]);
 
-  const handleNotificationClick = (notificationUrl: string, notificationRead: boolean) => {
+  const handleNotificationClick = (notificationUrl: string, notificationId: string, notificationRead: boolean) => {
     notificationRead ?
     window.location.href = notificationUrl :
-      mutationNotificationRead.mutate();
+      mutationNotificationRead.mutate(notificationId, {
+        onSettled: () => { 
+          window.location.href = notificationUrl
+      }});
   }
 
   const createNotificationMessage = (notificationType: string) => {
@@ -146,10 +147,11 @@ export default function Notifications() {
                   <ListItemButton
                     alignItems="center"
                     key={notification.id}
-                    onClick={() => {
-                      setNotificationId(notification.id);
-                      handleNotificationClick(notificationUrl, notification.read);
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleNotificationClick(notificationUrl, notification.id, notification.read);
                     }}
+                    href={notificationUrl}
                   >
                     <ListItemAvatar>
                     <Avatar alt="avatar" />
