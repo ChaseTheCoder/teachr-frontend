@@ -68,7 +68,11 @@ export default function Post({ post, profile, homePage }: Props) {
           }}
         >
           <Typography variant='h2' sx={{ fontSize: { xs: 16, sm: 18 } }} fontWeight='bold'>{post.title}</Typography>
-          {post.body && <Typography sx={{ fontSize: { xs: 12, sm: 14 } }}>{post.body}</Typography>}
+            {post.body && (
+              <Typography sx={{ fontSize: { xs: 12, sm: 14 } }}>
+                {post.body.length > 600 ? `${post.body.substring(0, 600)}...` : post.body}
+              </Typography>
+            )}
         </Box>
       </Link>
     </Box>

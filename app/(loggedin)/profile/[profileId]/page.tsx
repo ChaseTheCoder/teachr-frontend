@@ -12,6 +12,7 @@ import EditProfile from './editProfile';
 import ProfileInformation from './profileInformation';
 import { IProfile } from '../../../../types/types';
 import { getDataNoToken } from '../../../../services/unauthenticatedApiCalls';
+import { useUserContext } from '../../../../context/UserContext';
 
 export default function Profile({
   params,
@@ -20,37 +21,31 @@ export default function Profile({
 }) {
   const [sectionSelected, setSectionSelected] = useState('activity');
   const [currentUser, setCurrentUser] = useState(null);
-  const { user, error, isLoading: isLoadingUser } = useUser();
-  const [auth0Id, setAuth0Id] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (user && !isLoadingUser && !auth0Id) {
-      setAuth0Id(user.sub);
-    }
-  }, [user, isLoadingUser, auth0Id]);
+  const { user, auth0Id, isLoadingUser } = useUserContext();
   const queryClient = new QueryClient();
-  const { data: profileData, isFetching, isLoading: isLoadingProfile, isError } = useQuery<IProfile>({
-    queryKey: ['profile', auth0Id],
-    queryFn: () => getDataNoToken(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/profile_auth0/${auth0Id}`),
+  
+  const { data: profileData, isFetching: isFetchingProfileData, isLoading: isLoadingProfileData, isError: isErrorProfileData } = useQuery<IProfile>({
+    queryKey: ['profile'],
+    queryFn: () => getData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/profile_auth0/${auth0Id}`),
     staleTime: 1000 * 60 * 60,
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
     refetchOnMount: false,
-    enabled: auth0Id !== null,
+    enabled: !!auth0Id,
     initialData: () => {
-      return queryClient.getQueryData(['profile', auth0Id]);
+      return queryClient.getQueryData(['profile']);
     },
-  })
+  });
 
   useEffect(() => {
-    if(!isFetching && !isLoadingUser) {
+    if(!isFetchingProfileData && !isLoadingUser) {
       if(auth0Id !== null || profileData?.id === params.profileId) {
         setCurrentUser(true);
       } else {
         setCurrentUser(false);
       }
     }
-  }, [profileData, auth0Id, isFetching, isLoadingUser, params.profileId]);
+  }, [profileData, auth0Id, isFetchingProfileData, isLoadingUser, params.profileId]);
 
   const { data: otherProfileData, isFetching: isFetchingOtherProfile, isLoading: isLoadingOtherProfile, isError: isErrorOtherProfile } = useQuery({
     queryKey: ['otherProfile'],
@@ -62,10 +57,10 @@ export default function Profile({
   useEffect(() => {
     if(profileData) {
       setSectionSelected('activity');
-    } else if (user && !isFetching && !isLoadingUser && !profileData) {
+    } else if (user && !isFetchingProfileData && !isLoadingUser && !profileData) {
       setSectionSelected('profile');
     }
-  }, [isFetching, isLoadingUser, profileData, user])
+  }, [isFetchingProfileData, isLoadingUser, profileData, user])
 
   if(currentUser === null || (currentUser === false && isFetchingOtherProfile && isLoadingOtherProfile)) {
     return (
@@ -78,8 +73,8 @@ export default function Profile({
       <ProfileInformation
       profileData={currentUser ? profileData : otherProfileData}
       isLoadingUser={currentUser ? isLoadingUser : isLoadingOtherProfile}
-      isLoadingProfile={currentUser ? isLoadingProfile : isLoadingOtherProfile}
-      error={currentUser ? isError : isErrorOtherProfile}
+      isLoadingProfile={currentUser ? isLoadingProfileData : isLoadingOtherProfile}
+      error={currentUser ? isErrorProfileData : isErrorOtherProfile}
       />
       <Box sx={{ display: 'flex', flexDirection: 'row' }} gap={2}>
       {currentUser && (

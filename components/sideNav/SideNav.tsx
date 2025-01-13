@@ -1,15 +1,15 @@
 'use client'
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Button, Stack } from '@mui/material';
-import { Add, Edit, Person, QuestionAnswer } from '@mui/icons-material';
+import { Add, QuestionAnswer } from '@mui/icons-material';
 import { usePathname } from 'next/navigation';
 import { useUser } from '@auth0/nextjs-auth0/client';
+import { useUserContext } from '../../context/UserContext';
 
 export default function SideNav() {
   let pathname = usePathname()
-  const { user, error, isLoading } = useUser();
-  const auth0Id = user?.sub;
+  const { user } = useUserContext();
 
   return (
     <aside>

@@ -8,29 +8,23 @@ import { useUser } from '@auth0/nextjs-auth0/client';
 import Surface from '../../../components/surface/Surface';
 import { timeAgo } from '../../../utils/time';
 import { IProfile } from '../../../types/types';
+import { useUserContext } from '../../../context/UserContext';
 
 export default function Notifications() {
   const queryClient = useQueryClient();
-  const { user, error, isLoading: isLoadingUser } = useUser();
+  const { auth0Id, isLoadingUser } = useUserContext();
   const [userIds, setUserIds] = useState<string[]>([]);
   const [page, setPage] = useState(1);
   const [currentProfiles, setCurrentProfiles] = useState([]);
   const [notificationsDisplayed, setNotificationsDisplayed] = useState([]); 
   const [disableSeeMore, setDisableSeeMore] = useState(false);
-  const [auth0Id, setAuth0Id] = useState<string | null>(null);
-  
-  useEffect(() => {
-    if (user && !isLoadingUser && !auth0Id) {
-      setAuth0Id(user.sub);
-    }
-  }, [user, isLoadingUser, auth0Id]);
 
   const handleSeeMore = () => {
     setPage((prevPage) => prevPage + 1);
   };
   
   const { data: profileData, isFetching: isFetchingProfileData, isLoading: isLoadingProfileData, isError: isErrorProfileData } = useQuery<IProfile>({
-    queryKey: ['profile', auth0Id],
+    queryKey: ['profile'],
     queryFn: () => getData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/profile_auth0/${auth0Id}`),
     staleTime: 1000 * 60 * 60,
     refetchOnWindowFocus: false,
@@ -38,7 +32,7 @@ export default function Notifications() {
     refetchOnMount: false,
     enabled: !!auth0Id,
     initialData: () => {
-      return queryClient.getQueryData(['profile', auth0Id]);
+      return queryClient.getQueryData(['profile']);
     },
   });
 

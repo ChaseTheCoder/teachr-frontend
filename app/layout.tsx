@@ -1,6 +1,6 @@
 'use client'
 
-import { UserProvider } from '@auth0/nextjs-auth0/client';
+import { UserProvider as Auth0UserProvider } from '@auth0/nextjs-auth0/client';
 import React from 'react'
 import './globals.css'
 import ResponsiveAppBar from '../components/ResponsiveAppBar/ResponsiveAppBar';
@@ -10,6 +10,7 @@ import Footer from '../components/footer';
 import "react-day-picker/style.css";
 import { Box } from '@mui/material';
 import Script from 'next/script';
+import { UserProvider } from '../context/UserContext';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -42,7 +43,8 @@ export default function RootLayout({
       </head>
       <body>
         <QueryClientProvider client={queryClient}>
-          <UserProvider>
+          <Auth0UserProvider>
+            <UserProvider>
               <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
                 <main>
                   <ResponsiveAppBar/>
@@ -55,7 +57,8 @@ export default function RootLayout({
               </Box>
               <Footer/>
               <ReactQueryDevtools />
-          </UserProvider>
+            </UserProvider>
+          </Auth0UserProvider>
         </QueryClientProvider>
       </body> 
     </html>

@@ -18,6 +18,7 @@ import { Button } from '@mui/material';
 import Right from './right';
 import { ArrowForwardIos } from '@mui/icons-material';
 import { usePathname } from 'next/navigation';
+import { useUserContext } from '../../context/UserContext';
 
 const pages = [
   {
@@ -32,16 +33,9 @@ const pages = [
 
 function ResponsiveAppBar() {
   let pathname = usePathname();
-  const { user, error, isLoading: userLoading } = useUser();
-  const [auth0Id, setAuth0Id] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (user && !userLoading && !auth0Id) {
-      setAuth0Id(user.sub);
-    }
-  }, [user, userLoading, auth0Id]);
+  const { auth0Id, user } = useUserContext();
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
-  const [userData, setUserData] = useState(null);
+  console.log('auth0Id', auth0Id);
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -50,12 +44,6 @@ function ResponsiveAppBar() {
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
   };
-
-  useEffect(() => {
-    if(user && !userLoading){
-      setUserData(user);
-    }
-  }, [user, userLoading]);
 
   return (
     <AppBar position="static" elevation={0} sx={{ bgcolor: 'white', borderRadius: 4 }}>
@@ -102,7 +90,7 @@ function ResponsiveAppBar() {
 
           <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%' }} >
             <Box sx={{ display: 'flex', mr: 1 }}>
-              <Link href={userData ? '/feed' : '/'}>
+              <Link href={user ? '/feed' : '/'}>
                 <Image
                   priority
                   src={TeachrLogo}
@@ -114,9 +102,10 @@ function ResponsiveAppBar() {
             <Box sx={{ flexGrow: 0 }}>
               { pathname === '/' ?
                   <>
-                    {auth0Id && 
+                    {!auth0Id && 
                     <Button
                       color='success'
+                      sx={{ marginRight: 2 }}
                     >
                       <a href='/api/auth/login'>
                         Log In
