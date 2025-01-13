@@ -24,9 +24,9 @@ export default function EditProfile({ auth0Id, signUpPage }: props) {
   const [newProfile, setNewProfile] = useState(signUpPage);
   const [pageLoading, setPageLoading] = useState(true);
   const router = useRouter();
-
-  const { data: profileData, isFetching, isLoading: isLoadingProfile, isError } = useQuery<IProfile>({
-    queryKey: ['profile', auth0Id],
+  
+  const { data: profileData, isFetching: isFetchingProfileData, isLoading: isLoadingProfileData, isError: isErrorProfileData } = useQuery<IProfile>({
+    queryKey: ['profile'],
     queryFn: () => getData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/profile_auth0/${auth0Id}`),
     staleTime: 1000 * 60 * 60,
     refetchOnWindowFocus: false,
@@ -34,32 +34,32 @@ export default function EditProfile({ auth0Id, signUpPage }: props) {
     refetchOnMount: false,
     enabled: !!auth0Id,
     initialData: () => {
-      return queryClient.getQueryData(['profile', auth0Id]);
+      return queryClient.getQueryData(['profile']);
     },
-  })
+  });
 
   useEffect(() => {
-    if (!isLoadingProfile && profileData && !isError && signUpPage) {
+    if (!isLoadingProfileData && profileData && !isErrorProfileData && signUpPage) {
       router.push('/feed');
     }
-  }, [isLoadingProfile, profileData, router, isError, signUpPage]);
+  }, [isLoadingProfileData, profileData, router, isErrorProfileData, signUpPage]);
 
   useEffect(() => {
-    if (!isLoadingProfile && !profileData) {
+    if (!isLoadingProfileData && !profileData) {
       setNewProfile(true);
     } else {
       setNewProfile(false);
     }
-  }, [isLoadingProfile, profileData])
+  }, [isLoadingProfileData, profileData])
 
   useEffect(() => {
-    if (!isFetching && !isLoadingProfile && user) {
+    if (!isFetchingProfileData && !isLoadingProfileData && user) {
       setFirstName(profileData ? profileData.first_name : '')
       setLastName(profileData ? profileData.last_name : '')
       setTeacherName(profileData ? profileData.teacher_name : '')
       setTitle(profileData ? profileData.title : '')
     }
-  }, [isFetching, isLoadingProfile, profileData, user])
+  }, [isFetchingProfileData, isLoadingProfileData, profileData, user])
 
   const mutationPost = useMutation({
     mutationFn: () => {
@@ -133,8 +133,8 @@ export default function EditProfile({ auth0Id, signUpPage }: props) {
   }, [firstName, lastName, teacherName, user, profileData, title])
 
   useEffect(() => {
-    setPageLoading(!user || isLoadingProfile || isFetching || (profileData !== undefined && signUpPage));
-  },[user, isLoadingProfile, isFetching, profileData, signUpPage]);
+    setPageLoading(!user || isLoadingProfileData || isFetchingProfileData || (profileData !== undefined && signUpPage));
+  },[user, isLoadingProfileData, isFetchingProfileData, profileData, signUpPage]);
   
   return (
     <Surface>
@@ -192,7 +192,7 @@ export default function EditProfile({ auth0Id, signUpPage }: props) {
       <LoadingButton
         color='success'
         variant='contained'
-        disabled={disableUpdate && !isLoadingProfile}
+        disabled={disableUpdate && !isLoadingProfileData}
         size='small'
         onClick={() => handlePostProfile()}
         loading={pageLoading}

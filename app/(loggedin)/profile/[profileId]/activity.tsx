@@ -2,11 +2,8 @@ import React from 'react';
 import Surface from '../../../../components/surface/Surface';
 import HistoryEduIcon from '@mui/icons-material/HistoryEdu';
 import { Box, Skeleton, Typography } from '@mui/material';
-import { IPost } from '../../../../types/types';
 import Post from '../../../../components/post/post';
 import { useQuery } from '@tanstack/react-query';
-import { useUser } from '@auth0/nextjs-auth0/client';
-import { getData } from '../../../../services/authenticatedApiCalls';
 import { getDataNoToken } from '../../../../services/unauthenticatedApiCalls';
 
 type ActivityProps = {
