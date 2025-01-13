@@ -7,6 +7,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { LoadingButton } from '@mui/lab';
 import { getData, postOrPatchData } from '../../../../services/authenticatedApiCalls';
 import { IProfile } from '../../../../types/types';
+import { useUserContext } from '../../../../context/UserContext';
 
 type Props = {
   postId: string
@@ -14,20 +15,13 @@ type Props = {
 
 export default function PostComment({ postId }: Props) {
   const queryClient = useQueryClient();
-  const { user, error, isLoading: isLoadingUser } = useUser();
+  const { user, auth0Id, isLoadingUser } = useUserContext();
   const [body, setBody] = useState('');
   const [isLoading, setLoading] = useState(false);
   const [isTextFieldFocused, setTextFieldFocused] = useState(false);
-  const [auth0Id, setAuth0Id] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (user && !isLoadingUser && !auth0Id) {
-      setAuth0Id(user.sub);
-    }
-  }, [user, isLoadingUser, auth0Id]);
-
-  const { data: profileData, isLoading: isLoadingProfile, isError } = useQuery<IProfile>({
-    queryKey: ['profile', auth0Id],
+  
+  const { data: profileData, isFetching: isFetchingProfileData, isLoading: isLoadingProfileData, isError: isErrorProfileData } = useQuery<IProfile>({
+    queryKey: ['profile'],
     queryFn: () => getData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/profile_auth0/${auth0Id}`),
     staleTime: 1000 * 60 * 60,
     refetchOnWindowFocus: false,
@@ -35,7 +29,7 @@ export default function PostComment({ postId }: Props) {
     refetchOnMount: false,
     enabled: !!auth0Id,
     initialData: () => {
-      return queryClient.getQueryData(['profile', auth0Id]);
+      return queryClient.getQueryData(['profile']);
     },
   });
 
@@ -60,7 +54,7 @@ export default function PostComment({ postId }: Props) {
     }
   };
 
-  if (isLoadingUser || isLoadingProfile) return (
+  if (isLoadingUser || isLoadingProfileData) return (
     <Box sx={{ display: 'flex', flexDirection: 'column' }} >
       <Skeleton variant='rounded' height={80} />
     </Box>
@@ -107,7 +101,7 @@ export default function PostComment({ postId }: Props) {
             type='submit'
             variant='contained'
             color='success'
-            disabled={body === '' || isLoadingProfile || !profileData}
+            disabled={body === '' || isLoadingProfileData || !profileData}
             loading={isLoading}
           >
             Post

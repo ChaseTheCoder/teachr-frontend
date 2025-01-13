@@ -41,7 +41,7 @@ export default function Right({ auth0Id }: { auth0Id: string }) {
   const queryClient = new QueryClient();
   
   const { data: profileData, isFetching: isFetchingProfileData, isLoading: isLoadingProfileData, isError: isErrorProfileData } = useQuery<IProfile>({
-    queryKey: ['profile', auth0Id],
+    queryKey: ['profile'],
     queryFn: () => getData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/profile_auth0/${auth0Id}`),
     staleTime: 1000 * 60 * 60,
     refetchOnWindowFocus: false,
@@ -49,7 +49,7 @@ export default function Right({ auth0Id }: { auth0Id: string }) {
     refetchOnMount: false,
     enabled: !!auth0Id,
     initialData: () => {
-      return queryClient.getQueryData(['profile', auth0Id]);
+      return queryClient.getQueryData(['profile']);
     },
   })
 

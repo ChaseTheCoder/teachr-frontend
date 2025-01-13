@@ -21,14 +21,14 @@ export default function NewPost() {
   const queryClient = new QueryClient();
   
   const { data: profileData, isLoading: isLoadingProfile, isError } = useQuery<IProfile>({
-    queryKey: ['profile', auth0Id],
+    queryKey: ['profile'],
     queryFn: () => getData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/profile_auth0/${auth0Id}`),
     staleTime: 1000 * 60 * 60,
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
     refetchOnMount: false,
     initialData: () => {
-      return queryClient.getQueryData(['profile', auth0Id]);
+      return queryClient.getQueryData(['profile']);
     },
   });
 
