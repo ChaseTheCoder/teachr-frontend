@@ -73,13 +73,13 @@ const BottomMobileNav = () => {
         label="Feed"
         icon={<AodIcon />}
         href='/feed'
-        color={pathname === '/feed' && 'success'}
+        sx={{ color: pathname === '/feed' && 'success.main' }}
       />
       <BottomNavigationAction
         label="Post"
         icon={<Add />}
         href='/newpost'
-        color={pathname === '/new-post' && 'success'}
+        sx={{ color: pathname === '/newpost' && 'success.main' }}
       />
       <BottomNavigationAction
         disabled={!profileData}
@@ -90,6 +90,7 @@ const BottomMobileNav = () => {
           </Badge>
         }
         href='/notifications'
+        sx={{ color: !profileData ? '#e0e0e0' : pathname === '/notifications' && 'success.main' }}
       />
     </BottomNavigation>
   );
