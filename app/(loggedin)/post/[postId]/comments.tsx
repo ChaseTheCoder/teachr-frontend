@@ -1,4 +1,4 @@
-import { Avatar, Box, Divider, Fade, IconButton, List, ListItemButton, Paper, Popper, PopperPlacementType, Skeleton, Stack, Typography } from '@mui/material';
+import { Avatar, Box, CircularProgress, Divider, Fade, IconButton, List, ListItemButton, Paper, Popper, PopperPlacementType, Skeleton, Stack, Typography } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
 import { deleteData, getData, getDataWithParams } from '../../../../services/authenticatedApiCalls';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -17,15 +17,13 @@ export default function Comments({ postId, currentUserId }: Props) {
   const queryClient = useQueryClient();
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
   const [open, setOpen] = React.useState(false);
-  const [placement, setPlacement] = React.useState<PopperPlacementType>();
-  const [commentId, setCommentId] = useState<string | null>(null);
+  const [selectedCommentId, setSelectedCommentId] = useState<string | null>(null);
 
-  const handleClickPopper =
-    (newPlacement: PopperPlacementType) =>
-    (event: React.MouseEvent<HTMLButtonElement>) => {
-      setAnchorEl(event.currentTarget);
-      setOpen((prev) => placement !== newPlacement || !prev);
-      setPlacement(newPlacement);
+  const handleClickPopper = (event: React.MouseEvent<HTMLElement>, commentId: string) => {
+    console.log('Popper clicked for comment ID:', commentId); // Console log message
+    setOpen(open ? false : true);
+    setAnchorEl(event.currentTarget as HTMLButtonElement);
+    setSelectedCommentId(commentId);
   };
 
   useEffect(() => {
@@ -69,7 +67,7 @@ export default function Comments({ postId, currentUserId }: Props) {
 
   const mutationDelete = useMutation({
     mutationFn: () => {
-      return deleteData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/comment/${commentId}/`);
+      return deleteData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/comment/${selectedCommentId}/`);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['comments', postId] });
@@ -83,6 +81,7 @@ export default function Comments({ postId, currentUserId }: Props) {
   });
 
   const handleDeleteComment = () => {
+    console.log('handleDelete', selectedCommentId);
     mutationDelete.mutate();
   };
 
@@ -93,6 +92,8 @@ export default function Comments({ postId, currentUserId }: Props) {
       <Skeleton variant='rounded' height={80} />
     </Box>
   )
+
+  console.log('commentid', selectedCommentId);
 
   return (
     <>
@@ -153,7 +154,7 @@ export default function Comments({ postId, currentUserId }: Props) {
                     </Box>
                   </Link>
                   {(currentUserId !== undefined && currentUserId === comment.user) &&
-                    <IconButton onClick={handleClickPopper('bottom-end')}>
+                    <IconButton onClick={(event) => handleClickPopper(event, comment.id)}>
                       <MoreVert fontSize='small' />
                     </IconButton>
                   }
@@ -162,32 +163,6 @@ export default function Comments({ postId, currentUserId }: Props) {
                 {comment.body && <Typography sx={{ fontSize: { xs: 14, sm: 16 } }}>{comment.body}</Typography>}
               </Box>
           </Stack>
-          <Popper
-            sx={{ zIndex: 1200 }}
-            open={open}
-            anchorEl={anchorEl}
-            placement={placement}
-            transition
-            ref={popperRef}
-          >
-            {({ TransitionProps }) => (
-              <Fade {...TransitionProps} timeout={350}>
-                <Paper>
-                  <List>
-                    <ListItemButton
-                      sx={{ padding: 1, gap: 3 }}
-                      onClick={() => {
-                        setCommentId(comment.id);
-                        handleDeleteComment();
-                      }}
-                    >
-                      <DeleteOutline fontSize='small'/>   <Typography fontSize='small'>Delete Comment</Typography>
-                    </ListItemButton>
-                  </List>
-                </Paper>
-              </Fade>
-            )}
-          </Popper>
         </Box>
       )}) :
         <Box sx={{ display: 'flex', flexDirection: 'column', padding: [2,1] }}>
@@ -195,6 +170,30 @@ export default function Comments({ postId, currentUserId }: Props) {
           <Typography variant='body1' color='textSecondary'>Be the first to answer and provide guidance.</Typography>
         </Box>
       }
+      <Popper
+        sx={{ zIndex: 1200 }}
+        open={open}
+        anchorEl={anchorEl}
+        placement='bottom-end'
+        transition
+        ref={popperRef}
+      >
+        {({ TransitionProps }) => (
+          <Fade {...TransitionProps} timeout={350}>
+            <Paper>
+              <List>
+                <ListItemButton
+                  sx={{ padding: 1, gap: 3 }}
+                  onClick={handleDeleteComment}
+                  disabled={mutationDelete.isPending}
+                >
+                  <DeleteOutline fontSize='small'/>    <Typography fontSize='small'>Delete Comment</Typography>
+                </ListItemButton>
+              </List>
+            </Paper>
+          </Fade>
+        )}
+      </Popper>
     </>
   )
 }
