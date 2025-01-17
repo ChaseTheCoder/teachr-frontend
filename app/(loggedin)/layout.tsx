@@ -5,6 +5,7 @@ import { Box, Button, Stack } from '@mui/material'
 import SideNav from '../../components/sideNav/SideNav';
 import { useUser } from '@auth0/nextjs-auth0/client';
 import { useRouter } from 'next/navigation'
+import BottomMobileNav from '../../components/bottomMobileNav.tsx/bottomMobileNav';
 
 export default function AuthenticatedLayout({
   children,
@@ -41,6 +42,7 @@ export default function AuthenticatedLayout({
           </>
         {/* } */}
       </Stack>
+      <BottomMobileNav />
     </>
   )
 }

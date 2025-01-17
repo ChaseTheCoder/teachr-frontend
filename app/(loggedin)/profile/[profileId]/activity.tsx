@@ -5,6 +5,7 @@ import { Box, Skeleton, Typography } from '@mui/material';
 import Post from '../../../../components/post/post';
 import { useQuery } from '@tanstack/react-query';
 import { getDataNoToken } from '../../../../services/unauthenticatedApiCalls';
+import { ActivityLoading } from '../../../../components/activityLoading';
 
 type ActivityProps = {
   profileData: any;
@@ -19,16 +20,6 @@ const NoActivity: React.FC = () => {
         <Typography color='textSecondary'>No Posts or Comments Yet</Typography>
       </Box>
     </Surface>
-  )
-}
-
-export const ActivityLoading: React.FC = () => {
-  return (
-    <Box sx={{ display: 'flex', flexDirection: 'column' }} gap={1}>
-      <Skeleton variant='rounded' height={80} />
-      <Skeleton variant='rounded' height={80} />
-      <Skeleton variant='rounded' height={80} />
-    </Box>
   )
 }
 
