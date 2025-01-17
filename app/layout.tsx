@@ -11,6 +11,7 @@ import "react-day-picker/style.css";
 import { Box } from '@mui/material';
 import Script from 'next/script';
 import { UserProvider } from '../context/UserContext';
+import { usePathname } from 'next/navigation';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -26,6 +27,7 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  let pathname = usePathname()
   return (
     <html lang="en">
       <head>

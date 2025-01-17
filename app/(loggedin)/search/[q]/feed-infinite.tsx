@@ -3,12 +3,17 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { Box, Skeleton } from '@mui/material';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
-import Post from '../../../components/post/post';
-import { getDataNoToken, getDataWithParamsNoToken } from '../../../services/unauthenticatedApiCalls';
-import FeedAd from '../../../components/googleAdsense/feed-ad';
-import { ActivityLoading, ActivityLoadingMultiSize } from '../../../components/activityLoading';
+import Post from '../../../../components/post/post';
+import { getDataNoToken, getDataWithParamsNoToken } from '../../../../services/unauthenticatedApiCalls';
+import FeedAd from '../../../../components/googleAdsense/feed-ad';
+import { ActivityLoading, ActivityLoadingMultiSize } from '../../../../components/activityLoading';
 
-export default function InfiniteFeed() {
+export default function SearchFeed({
+  searchParam,
+}: {
+  searchParam: string;
+}) {
+  console.log('searchParam', searchParam);
   const [userIds, setUserIds] = useState<string[]>([]);
   const [batchProfiles, setBatchProfiles] = useState([]);
   const observer = useRef<IntersectionObserver>();
@@ -26,8 +31,8 @@ export default function InfiniteFeed() {
     status,
     ...result
   } = useInfiniteQuery({
-    queryKey: ['postsFeed'],
-    queryFn: ({ pageParam }) => getDataNoToken(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/posts/feed/?page=${pageParam}&page_size=8`),
+    queryKey: ['searchFeed', searchParam],
+    queryFn: ({ pageParam }) => getDataNoToken(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/posts/search/?page=${pageParam}&page_size=8&search=${searchParam}`),
     initialPageParam: 1,
     getNextPageParam: (lastPage, allPages) => {
       return allPages.length + 1;
@@ -35,7 +40,7 @@ export default function InfiniteFeed() {
   })
 
   const { data: profileData, isFetching: isFetchingBatchProfiles, isLoading: isLoadingBatchProfiles, isError: isErrorBatchProfiles } = useQuery({
-    queryKey: ['batchProfilesFeed', userIds],
+    queryKey: ['batchProfilesFeedSearch', userIds],
     queryFn: () => userIds.length > 0 ? getDataWithParamsNoToken(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/profile_batch/`, 'user_id', userIds) : Promise.resolve([]),
     staleTime: 1000 * 60 * 60,
     enabled: !!userIds,

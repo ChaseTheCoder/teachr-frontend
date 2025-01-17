@@ -7,12 +7,13 @@ import { useQuery, QueryClient } from '@tanstack/react-query';
 import { getData } from '../../../../services/authenticatedApiCalls';
 import DynamicFeedIcon from '@mui/icons-material/DynamicFeed';
 import EditIcon from '@mui/icons-material/Edit';
-import Activity, { ActivityLoading } from './activity';
+import Activity from './activity';
 import EditProfile from './editProfile';
 import ProfileInformation from './profileInformation';
 import { IProfile } from '../../../../types/types';
 import { getDataNoToken } from '../../../../services/unauthenticatedApiCalls';
 import { useUserContext } from '../../../../context/UserContext';
+import { ActivityLoading } from '../../../../components/activityLoading';
 
 export default function Profile({
   params,

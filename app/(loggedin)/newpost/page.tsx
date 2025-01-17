@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react';
-import { Box, Button, Skeleton, TextField, Typography } from '@mui/material';
+import { Box, Button, Grid, Skeleton, TextField, Typography } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import { getData, postOrPatchData } from '../../../services/authenticatedApiCalls';
 import Surface from "../../../components/surface/Surface";
@@ -57,45 +57,71 @@ export default function NewPost() {
     </Box>
   )
 
-  return (
+  if(!profileData) return (
     <Surface>
       <Typography variant='h4' component='h1' gutterBottom>
-      Create a Public Post
+        Create a Public Post
       </Typography>
-      <form onSubmit={handleSubmit}>
-      <Box mb={2}>
-        <TextField
+      <Typography variant='body1' component='p' gutterBottom>
+        You need to create a profile before you can post.
+      </Typography>
+      <Button
         color='success'
-        variant='standard'
-        label='Title: What do you want to ask or share?'
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        fullWidth
-        required
-        />
-      </Box>
-      <Box mb={2}>
-        <TextField
-        color='success'
-        variant='standard'
-        label='Body: Provide more context to your post'
-        value={body}
-        onChange={(e) => setBody(e.target.value)}
-        fullWidth
-        multiline
-        rows={4}
-        />
-      </Box>
-      <LoadingButton
-        type='submit'
+        href={'/api/auth/signup'}
         variant='contained'
-        color='success'
-        disabled={title === '' || isLoadingProfile || !profileData}
-        loading={isLoading}
+        size='large'
       >
-        Post
-      </LoadingButton>
-      </form>
+        Signup, it&apos;s Free!
+      </Button>
+      <Typography variant='body1' component='p' gutterBottom>
+        Already signed up? Add profile <a href='/profile'>here</a>.
+      </Typography>
     </Surface>
+  );
+
+  return (
+    <Grid container spacing={1}>
+      <Grid item xs={12} md={10}>
+        <Surface>
+          <Typography variant='h4' component='h1' gutterBottom>
+          Create a Public Post
+          </Typography>
+          <form onSubmit={handleSubmit}>
+          <Box mb={2}>
+            <TextField
+            color='success'
+            variant='standard'
+            label='Title: What do you want to ask or share?'
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            fullWidth
+            required
+            />
+          </Box>
+          <Box mb={2}>
+            <TextField
+            color='success'
+            variant='standard'
+            label='Body: Provide more context to your post'
+            value={body}
+            onChange={(e) => setBody(e.target.value)}
+            fullWidth
+            multiline
+            rows={4}
+            />
+          </Box>
+          <LoadingButton
+            type='submit'
+            variant='contained'
+            color='success'
+            disabled={title === '' || isLoadingProfile || !profileData}
+            loading={isLoading}
+          >
+            Post
+          </LoadingButton>
+          </form>
+        </Surface>
+      </Grid>
+    </Grid>
   );
 }
