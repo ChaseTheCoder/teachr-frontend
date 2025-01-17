@@ -85,21 +85,8 @@ export default function Right({ auth0Id }: { auth0Id: string }) {
     <Box sx={{ flexGrow: 0 }}>
       <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }} gap={2}>
         <IconButton
-          color='success'
-          href='/new-post'
-          sx={{ 
-          display: { xs: 'flex', md: 'none' },
-          backgroundColor: 'green',
-          color: 'white',
-          '&:hover': {
-            backgroundColor: 'darkgreen'
-          }
-          }}
-        >
-          <Add />
-        </IconButton>
-        <IconButton
           href='/notifications'
+          sx={{ display: { xs: 'none', md: 'flex' } }}
         >
           <Badge badgeContent={notifications?.count ?? 0} color='error'>
             <NotificationsNoneIcon color='action' />

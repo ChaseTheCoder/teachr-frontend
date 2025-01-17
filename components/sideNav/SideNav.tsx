@@ -1,15 +1,13 @@
 'use client'
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Box, Button, Stack } from '@mui/material';
-import { Add, QuestionAnswer } from '@mui/icons-material';
+import { Add, Home } from '@mui/icons-material';
 import { usePathname } from 'next/navigation';
-import { useUser } from '@auth0/nextjs-auth0/client';
 import { useUserContext } from '../../context/UserContext';
 
 export default function SideNav() {
   let pathname = usePathname()
-  const { user } = useUserContext();
 
   return (
     <aside>
@@ -20,24 +18,22 @@ export default function SideNav() {
           style={{textAlign: "center"}}
           gap={2}
         >
-          {user &&
-            <Button
-              variant='contained'
-              startIcon={<Add />}
-              href='/new-post'
-              color='success'
-              sx={{ marginBottom: 3 }}
-            >
-              Post
+          <Button
+            variant='contained'
+            startIcon={<Add />}
+            href='/newpost'
+            color='success'
+            sx={{ marginBottom: 3 }}
+          >
+            Post
           </Button>
-          }
           <Button
             variant={pathname === '/feed' ? 'outlined' : 'text'}
-            startIcon={<QuestionAnswer />}
+            startIcon={<Home />}
             href='/feed'
             color='success'
           >
-            Feed
+            Home
           </Button>
         </Stack>
       </Box>

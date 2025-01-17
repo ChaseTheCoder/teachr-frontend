@@ -19,6 +19,7 @@ import Right from './right';
 import { ArrowForwardIos } from '@mui/icons-material';
 import { usePathname } from 'next/navigation';
 import { useUserContext } from '../../context/UserContext';
+import SearchBar from './searchBar';
 
 const pages = [
   {
@@ -50,7 +51,7 @@ function ResponsiveAppBar() {
       <Container maxWidth="xl">
         <Toolbar disableGutters>
 
-          <Box sx={{  display: { xs: 'flex', md: 'none' } }}>
+          {/* <Box sx={{  display: { xs: 'flex', md: 'none' } }}>
             <IconButton
               size="large"
               aria-label="account of current user"
@@ -86,7 +87,7 @@ function ResponsiveAppBar() {
                 </MenuItem>
               ))}
             </Menu>
-          </Box>
+          </Box> */}
 
           <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%' }} >
             <Box sx={{ display: 'flex', mr: 1 }}>
@@ -99,6 +100,9 @@ function ResponsiveAppBar() {
                 />
               </Link>
             </Box>
+
+            { pathname !== '/' && <SearchBar /> }
+            
             <Box sx={{ flexGrow: 0 }}>
               { pathname === '/' ?
                   <>
