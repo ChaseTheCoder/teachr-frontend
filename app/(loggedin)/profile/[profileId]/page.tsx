@@ -49,7 +49,7 @@ export default function Profile({
   }, [profileData, auth0Id, isFetchingProfileData, isLoadingUser, params.profileId]);
 
   const { data: otherProfileData, isFetching: isFetchingOtherProfile, isLoading: isLoadingOtherProfile, isError: isErrorOtherProfile } = useQuery({
-    queryKey: ['otherProfile'],
+    queryKey: ['otherProfile', params.profileId],
     queryFn: () => getDataNoToken(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/profile/${params.profileId}`),
     staleTime: 1000 * 60 * 60,
     enabled: currentUser === false,
