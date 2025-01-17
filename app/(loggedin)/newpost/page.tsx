@@ -9,6 +9,7 @@ import { useUser } from "@auth0/nextjs-auth0/client";
 import { useQuery, QueryClient } from '@tanstack/react-query';
 import { LoadingButton } from '@mui/lab';
 import { IProfile } from '../../../types/types';
+import { getDataNoToken } from '../../../services/unauthenticatedApiCalls';
 
 export default function NewPost() {
   const { user, error, isLoading: isLoadingUser } = useUser();
@@ -22,11 +23,12 @@ export default function NewPost() {
   
   const { data: profileData, isLoading: isLoadingProfile, isError } = useQuery<IProfile>({
     queryKey: ['profile'],
-    queryFn: () => getData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/profile_auth0/${auth0Id}`),
+    queryFn: () => getDataNoToken(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/profile_auth0/${auth0Id}`),
     staleTime: 1000 * 60 * 60,
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
     refetchOnMount: false,
+    enabled: !!auth0Id,
     initialData: () => {
       return queryClient.getQueryData(['profile']);
     },
@@ -57,21 +59,40 @@ export default function NewPost() {
     </Box>
   )
 
-  if(!profileData) return (
+  if(!auth0Id && !profileData) return (
     <Surface>
       <Typography variant='h4' component='h1' gutterBottom>
         Create a Public Post
       </Typography>
-      <Typography variant='body1' component='p' gutterBottom>
-        You need to create a profile before you can post.
+      <Typography variant='body1' component='p' gutterBottom paddingBottom={3}>
+        You need to create an account in order to post.
       </Typography>
       <Button
         color='success'
         href={'/api/auth/signup'}
         variant='contained'
         size='large'
+        sx={{ marginBottom: 2 }}
       >
         Signup, it&apos;s Free!
+      </Button>
+    </Surface>
+  );
+  if(auth0Id && !profileData) return (
+    <Surface>
+      <Typography variant='h4' component='h1' gutterBottom>
+        Create a Public Post
+      </Typography>
+      <Typography variant='body1' component='p' gutterBottom>
+        You&apos;re logged in, but we can&apos;t seem to find your profile.
+      </Typography>
+      <Button
+        color='success'
+        href={'/signup'}
+        variant='contained'
+        size='large'
+      >
+        Create Your Profile
       </Button>
       <Typography variant='body1' component='p' gutterBottom>
         Already signed up? Add profile <a href='/profile'>here</a>.
