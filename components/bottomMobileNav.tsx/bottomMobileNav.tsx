@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Badge, BottomNavigation, BottomNavigationAction } from '@mui/material';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import AodIcon from '@mui/icons-material/Aod';
-import { Add } from '@mui/icons-material';
+import { Add, Home } from '@mui/icons-material';
 import { QueryClient, useQuery } from '@tanstack/react-query';
 import { getData } from '../../services/authenticatedApiCalls';
 import { IProfile } from '../../types/types';
@@ -70,8 +69,8 @@ const BottomMobileNav = () => {
       }}
     >
       <BottomNavigationAction 
-        label="Feed"
-        icon={<AodIcon />}
+        label='Home'
+        icon={<Home />}
         href='/feed'
         sx={{ color: pathname === '/feed' && 'success.main' }}
       />

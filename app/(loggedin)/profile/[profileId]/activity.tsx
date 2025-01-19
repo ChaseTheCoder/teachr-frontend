@@ -38,7 +38,7 @@ export const Activity: React.FC<ActivityProps> = ({ profileId, profileData }: { 
   );
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column' }} gap={.5}>
+    <Box sx={{ display: 'flex', flexDirection: 'column' }} gap={1}>
         { (posts && posts.length > 0) ? 
           posts.map((post) => (
             <Post key={post.id} post={post} profile={profileData} />
