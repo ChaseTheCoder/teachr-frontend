@@ -103,7 +103,7 @@ function ResponsiveAppBar() {
 
             { pathname !== '/' && <SearchBar /> }
             
-            <Box sx={{ flexGrow: 0 }}>
+            <Box sx={{ flexGrow: 0, display: 'flex', alignItems: 'center' }}>
               { pathname === '/' ?
                   <>
                     {!auth0Id && 
@@ -130,13 +130,15 @@ function ResponsiveAppBar() {
                     auth0Id={auth0Id}
                   /> 
                   :
-                  <Button
-                    color='success'
-                  >
-                    <a href='/api/auth/login'>
+                  <Link href='/api/auth/login'>
+                    <Button
+                      color='success'
+                      size='small'
+                      sx={{ flex: 'none', whiteSpace: 'nowrap' }}
+                    >
                       Log In
-                    </a>
-                  </Button>
+                    </Button>
+                </Link>
                 }
             </Box>
           </Box>

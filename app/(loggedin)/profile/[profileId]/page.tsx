@@ -70,7 +70,7 @@ export default function Profile({
   }
 
   return (
-    <Box>
+    <Box sx={{ marginBottom: 4 }}>
       <ProfileInformation
       profileData={currentUser ? profileData : otherProfileData}
       isLoadingUser={currentUser ? isLoadingUser : isLoadingOtherProfile}
