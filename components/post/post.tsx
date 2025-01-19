@@ -57,22 +57,29 @@ export default function Post({ post, profile, homePage }: Props) {
           </Box>
         </Link>
       }
-      <Link key={post.id} href={homePage ? '/#' : `/post/${post.id}`} passHref>
+      <Link
+        key={post.id}
+        href={homePage ? '/#' : `/post/${post.id}`}
+        passHref
+      >
         <Box
           sx={{
+            display: 'flex',
+            flexDirection: 'column',
             '&:hover': {
               cursor: 'pointer',
               bgcolor: '#f0f0f0',
               borderRadius: 1,
             },
           }}
+          gap={1}
         >
           <Typography variant='h2' sx={{ fontSize: { xs: 16, sm: 18 } }} fontWeight='bold'>{post.title}</Typography>
-            {post.body && (
-              <Typography sx={{ fontSize: { xs: 12, sm: 14 } }}>
-                {post.body.length > 600 ? `${post.body.substring(0, 600)}...` : post.body}
-              </Typography>
-            )}
+          {post.body && (
+            <Typography sx={{ fontSize: { xs: 12, sm: 14 } }} color='#424242'>
+              {post.body.length > 600 ? `${post.body.substring(0, 600)}...` : post.body}
+            </Typography>
+          )}
         </Box>
       </Link>
     </Box>

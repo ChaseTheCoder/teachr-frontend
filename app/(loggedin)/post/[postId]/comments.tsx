@@ -6,6 +6,7 @@ import { DeleteOutline, MoreVert } from '@mui/icons-material';
 import Link from 'next/link';
 import { timeAgo } from '../../../../utils/time';
 import { getDataNoToken, getDataWithParamsNoToken } from '../../../../services/unauthenticatedApiCalls';
+import PostComment from './postComment';
 
 type Props = {
   postId: string
@@ -97,6 +98,7 @@ export default function Comments({ postId, currentUserId }: Props) {
 
   return (
     <>
+      <PostComment postId={postId} />
       {(comments && comments.length > 0) ? comments.map((comment) => {
         const userProfile = batchProfiles?.find(profile => profile.id === comment.user);
         const teacherName = userProfile?.teacher_name ?? 'Unknown Teacher';
@@ -160,7 +162,7 @@ export default function Comments({ postId, currentUserId }: Props) {
                   }
                 </Box>
                 <Typography variant='h2' sx={{ fontSize: { xs: 22, sm: 26 } }} fontWeight='bold'>{comment.title}</Typography>
-                {comment.body && <Typography sx={{ fontSize: { xs: 14, sm: 16 } }}>{comment.body}</Typography>}
+                {comment.body && <Typography sx={{ fontSize: { xs: 14, sm: 16 } }} color='#424242'>{comment.body}</Typography>}
               </Box>
           </Stack>
         </Box>

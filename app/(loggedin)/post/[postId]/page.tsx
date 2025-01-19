@@ -1,15 +1,13 @@
 'use client'
 
-import UserPost from "./userPost";
-import { Grid } from "@mui/material";
-import Comments from "./comments";
-import PostComment from "./postComment";
+import { Button, Grid } from "@mui/material";
 import { useQuery, QueryClient } from "@tanstack/react-query";
 import { getData } from "../../../../services/authenticatedApiCalls";
-import { useUser } from "@auth0/nextjs-auth0/client";
 import { IProfile } from "../../../../types/types";
-import { useEffect, useState } from "react";
 import { useUserContext } from "../../../../context/UserContext";
+import UserPost from "./userPost";
+import PostComment from "./postComment";
+import Comments from "./comments";
 
 export default function QuestionId({
   params,
@@ -32,7 +30,7 @@ export default function QuestionId({
     },
   });
 
-  if(isLoadingUser || isLoadingProfileData) return null;
+  if(isLoadingUser || isLoadingProfileData) return (null);
   
   return (
     <Grid container spacing={1}>
@@ -41,8 +39,6 @@ export default function QuestionId({
           postId={params.postId}
           currentUserId={profileData?.id}
         />
-        {user && <PostComment postId={params.postId} />}
-        {/* <PostComment postId={params.postId} /> */}
         <Comments
           postId={params.postId}
           currentUserId={profileData?.id}

@@ -122,7 +122,7 @@ export default function UserPost({ postId, currentUserId }: Props) {
           }
         </Box>
       <Typography variant='h2' sx={{ fontSize: { xs: 22, sm: 26 } }} fontWeight='bold'>{post.title}</Typography>
-      {post.body && <Typography sx={{ fontSize: { xs: 14, sm: 16 } }}>{post.body}</Typography>}
+      {post.body && <Typography sx={{ fontSize: { xs: 14, sm: 16 } }} color='#424242'>{post.body}</Typography>}
       <Popper
         sx={{ zIndex: 1200 }}
         open={open}

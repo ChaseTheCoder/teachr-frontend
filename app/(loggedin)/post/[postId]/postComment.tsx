@@ -1,8 +1,7 @@
 'use client'
 
-import React, { useEffect, useState } from 'react';
-import { Box, Button, Skeleton, TextField, Typography } from '@mui/material';
-import { useUser } from "@auth0/nextjs-auth0/client";
+import React, { useState } from 'react';
+import { Box, Button, Skeleton, TextField } from '@mui/material';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { LoadingButton } from '@mui/lab';
 import { getData, postOrPatchData } from '../../../../services/authenticatedApiCalls';
@@ -59,6 +58,18 @@ export default function PostComment({ postId }: Props) {
       <Skeleton variant='rounded' height={80} />
     </Box>
   )
+
+  if(!isLoadingUser && !user) return (
+    <Button
+      color='success'
+      href={'/api/auth/signup'}
+      variant='contained'
+      size='large'
+      sx={{ marginBottom: 1.5}}
+    >
+      Signup to join the conversation!
+    </Button>
+  );
 
   return (
     <Box
