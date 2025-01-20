@@ -135,11 +135,11 @@ export default function UserPost({ postId, currentUserId }: Props) {
               fontSize: { xs: 14, sm: 16 },
               color: '#424242',
               '& a': {
-                color: 'blue',
-                textDecoration: 'underline',
+          color: 'blue',
+          textDecoration: 'underline',
               }
             }}
-            dangerouslySetInnerHTML={{ __html: post.body }}
+            dangerouslySetInnerHTML={{ __html: post.body.replace(/<a /g, '<a target="_blank" rel="noopener noreferrer" ') }}
             component="div"
           />
         }
