@@ -1,8 +1,6 @@
 import { Avatar, Box, Typography } from '@mui/material';
 import React from 'react';
 import { IPost, IProfileBatch } from '../../types/types';
-import CommentIcon from '@mui/icons-material/Comment';
-import StarBorderIcon from '@mui/icons-material/StarBorder';
 import Link from 'next/link';
 import { timeAgo } from '../../utils/time';
 
@@ -76,9 +74,17 @@ export default function Post({ post, profile, homePage }: Props) {
         >
           <Typography variant='h2' sx={{ fontSize: { xs: 16, sm: 18 } }} fontWeight='bold'>{post.title}</Typography>
           {post.body && (
-            <Typography sx={{ fontSize: { xs: 12, sm: 14 } }} color='#424242'>
-              {post.body.length > 600 ? `${post.body.substring(0, 600)}...` : post.body}
-            </Typography>
+            <Box
+              sx={{ 
+                fontSize: { xs: 14, sm: 16 },
+                color: '#424242',
+                '& a': {
+                  color: 'blue',
+                  textDecoration: 'underline',
+                }
+              }}
+              dangerouslySetInnerHTML={{ __html: post.body }}
+            />
           )}
         </Box>
       </Link>

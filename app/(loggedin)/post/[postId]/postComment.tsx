@@ -7,6 +7,8 @@ import { LoadingButton } from '@mui/lab';
 import { getData, postOrPatchData } from '../../../../services/authenticatedApiCalls';
 import { IProfile } from '../../../../types/types';
 import { useUserContext } from '../../../../context/UserContext';
+import dynamic from 'next/dynamic';
+const CKeditor = dynamic(() => import('../../../../components/CKeditor'), { ssr: false });
 
 type Props = {
   postId: string
@@ -89,15 +91,13 @@ export default function PostComment({ postId }: Props) {
       </Typography> */}
       <form onSubmit={handleSubmit}>
       <Box mb={2}>
-        <TextField
-        color='success'
-        variant='standard'
-        placeholder='Respond to Post'
-        value={isTextFieldFocused ? body : ''}
-        onChange={(e) => setBody(e.target.value)}
-        onFocus={() => setTextFieldFocused(true)}
-        fullWidth
-        multiline
+        <CKeditor
+          onChange={(data) => {
+            setBody(data);
+          }}
+          value={body}
+          placeholder='Respond to Post'
+          setIsTextFieldFocused={setTextFieldFocused}
         />
       </Box>
       {isTextFieldFocused && (

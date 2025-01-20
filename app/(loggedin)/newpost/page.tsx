@@ -3,13 +3,15 @@
 import React, { useState } from 'react';
 import { Box, Button, Grid, Skeleton, TextField, Typography } from '@mui/material';
 import { useRouter } from 'next/navigation';
-import { getData, postOrPatchData } from '../../../services/authenticatedApiCalls';
+import { postOrPatchData } from '../../../services/authenticatedApiCalls';
 import Surface from "../../../components/surface/Surface";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import { useQuery, QueryClient } from '@tanstack/react-query';
 import { LoadingButton } from '@mui/lab';
 import { IProfile } from '../../../types/types';
 import { getDataNoToken } from '../../../services/unauthenticatedApiCalls';
+import dynamic from 'next/dynamic';
+const CKeditor = dynamic(() => import('../../../components/CKeditor'), { ssr: false });
 
 export default function NewPost() {
   const { user, error, isLoading: isLoadingUser } = useUser();
@@ -102,7 +104,7 @@ export default function NewPost() {
 
   return (
     <Grid container spacing={1}>
-      <Grid item xs={12} md={10}>
+      <Grid item xs={12} md={9}>
         <Surface>
           <Typography variant='h4' component='h1' gutterBottom>
           Create a Public Post
@@ -111,32 +113,27 @@ export default function NewPost() {
           <Box mb={2}>
             <TextField
             color='success'
-            variant='standard'
-            label='Title: What do you want to ask or share?'
+            variant='outlined'
+            label='Title'
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             fullWidth
             required
             />
           </Box>
-          <Box mb={2}>
-            <TextField
-            color='success'
-            variant='standard'
-            label='Body: Provide more context to your post'
+          <CKeditor
+            onChange={(data) => {
+              setBody(data);
+            }}
             value={body}
-            onChange={(e) => setBody(e.target.value)}
-            fullWidth
-            multiline
-            rows={4}
-            />
-          </Box>
+          />
           <LoadingButton
             type='submit'
             variant='contained'
             color='success'
             disabled={title === '' || isLoadingProfile || !profileData}
             loading={isLoading}
+            sx={{ marginTop: 2 }}
           >
             Post
           </LoadingButton>

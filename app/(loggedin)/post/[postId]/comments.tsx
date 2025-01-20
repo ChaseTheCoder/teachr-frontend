@@ -1,6 +1,6 @@
-import { Avatar, Box, CircularProgress, Divider, Fade, IconButton, List, ListItemButton, Paper, Popper, PopperPlacementType, Skeleton, Stack, Typography } from '@mui/material';
+import { Avatar, Box, Divider, Fade, IconButton, List, ListItemButton, Paper, Popper, Skeleton, Stack, Typography } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
-import { deleteData, getData, getDataWithParams } from '../../../../services/authenticatedApiCalls';
+import { deleteData } from '../../../../services/authenticatedApiCalls';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { DeleteOutline, MoreVert } from '@mui/icons-material';
 import Link from 'next/link';
@@ -162,7 +162,19 @@ export default function Comments({ postId, currentUserId }: Props) {
                   }
                 </Box>
                 <Typography variant='h2' sx={{ fontSize: { xs: 22, sm: 26 } }} fontWeight='bold'>{comment.title}</Typography>
-                {comment.body && <Typography sx={{ fontSize: { xs: 14, sm: 16 } }} color='#424242'>{comment.body}</Typography>}
+                {comment.body &&
+                  <Box
+                    sx={{ 
+                      fontSize: { xs: 14, sm: 16 },
+                      color: '#424242',
+                      '& a': {
+                        color: 'blue',
+                        textDecoration: 'underline',
+                      }
+                    }}
+                    dangerouslySetInnerHTML={{ __html: comment.body }}
+                    component="div"
+                  />}
               </Box>
           </Stack>
         </Box>
