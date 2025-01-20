@@ -18,8 +18,9 @@ export const GET = handleAuth({
       scope: 'openid profile email read:plan delete:plans update:plans read:messages'
     },
     returnTo: (req, res) => {
+      const returnTo = req.query.returnTo || `${process.env.AUTH0_BASE_URL}/feed`;
       const isFirstLogin = req.query.isFirstLogin === 'true';
-      return isFirstLogin ? `${process.env.AUTH0_BASE_URL}/signup` : `${process.env.AUTH0_BASE_URL}/feed`;
+      return isFirstLogin ? `${process.env.AUTH0_BASE_URL}/signup` : returnTo;
     },
   }),
   logout: handleLogout({
