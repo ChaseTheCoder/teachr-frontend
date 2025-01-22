@@ -73,8 +73,6 @@ export default function EditProfile({ auth0Id, signUpPage }: props) {
       return postOrPatchData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/profile_auth0/${auth0Id}`, 'POST', body);
     },
     onSuccess: (data) => {
-      // Handle success (e.g., show a success message, update state, etc.)
-      console.log('Profile added successfully:', data);
       if (signUpPage) {
         window.location.href = '/feed';
       }
@@ -100,8 +98,6 @@ export default function EditProfile({ auth0Id, signUpPage }: props) {
       return postOrPatchData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/profile/${profileData.id}`, 'PATCH', body);
     },
     onSuccess: (data) => {
-      // Handle success (e.g., show a success message, update state, etc.)
-      console.log('Profile added successfully:', data);
     },
     onError: (error) => {
       // Handle error (e.g., show an error message)

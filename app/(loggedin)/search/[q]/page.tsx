@@ -9,7 +9,6 @@ export default function search({
 }: {
   params: { q: string };
 }) {
-  console.log('searchqqqqq', params.q);
   const searchParam = params.q;
 
   return (
