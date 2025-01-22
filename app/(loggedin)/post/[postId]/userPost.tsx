@@ -129,20 +129,23 @@ export default function UserPost({ postId, currentUserId }: Props) {
         }}
       >
         <Typography variant='h2' sx={{ fontSize: { xs: 22, sm: 26 } }} fontWeight='bold'>{post.title}</Typography>
-        {post.body && 
-          <Box
-            sx={{ 
-              fontSize: { xs: 14, sm: 16 },
-              color: '#424242',
-              '& a': {
-          color: 'blue',
-          textDecoration: 'underline',
-              }
-            }}
-            dangerouslySetInnerHTML={{ __html: post.body.replace(/<a /g, '<a target="_blank" rel="noopener noreferrer" ') }}
-            component="div"
-          />
-        }
+        {post.body && (() => {
+          const postBody = post.body.replace(/<a /g, '<a target="_blank" rel="noopener noreferrer" ');
+          return (
+            <Box
+              sx={{ 
+                fontSize: { xs: 14, sm: 16 },
+                color: '#424242',
+                '& a': {
+                  color: 'blue',
+                  textDecoration: 'underline',
+                }
+              }}
+              dangerouslySetInnerHTML={{ __html: postBody }}
+              component="div"
+            />
+          );
+        })()}
       </Box>
       <Popper
         sx={{ zIndex: 1200 }}

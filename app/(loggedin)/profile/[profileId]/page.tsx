@@ -40,7 +40,7 @@ export default function Profile({
 
   useEffect(() => {
     if(!isFetchingProfileData && !isLoadingUser) {
-      if(auth0Id !== null || profileData?.id === params.profileId) {
+      if(profileData?.id === params.profileId) {
         setCurrentUser(true);
       } else {
         setCurrentUser(false);

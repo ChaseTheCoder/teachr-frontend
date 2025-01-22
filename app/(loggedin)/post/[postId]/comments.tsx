@@ -21,7 +21,6 @@ export default function Comments({ postId, currentUserId }: Props) {
   const [selectedCommentId, setSelectedCommentId] = useState<string | null>(null);
 
   const handleClickPopper = (event: React.MouseEvent<HTMLElement>, commentId: string) => {
-    console.log('Popper clicked for comment ID:', commentId); // Console log message
     setOpen(open ? false : true);
     setAnchorEl(event.currentTarget as HTMLButtonElement);
     setSelectedCommentId(commentId);
@@ -82,7 +81,6 @@ export default function Comments({ postId, currentUserId }: Props) {
   });
 
   const handleDeleteComment = () => {
-    console.log('handleDelete', selectedCommentId);
     mutationDelete.mutate();
   };
 
@@ -93,8 +91,6 @@ export default function Comments({ postId, currentUserId }: Props) {
       <Skeleton variant='rounded' height={80} />
     </Box>
   )
-
-  console.log('commentid', selectedCommentId);
 
   return (
     <>

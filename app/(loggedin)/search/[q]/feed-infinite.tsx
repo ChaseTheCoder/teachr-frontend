@@ -13,7 +13,6 @@ export default function SearchFeed({
 }: {
   searchParam: string;
 }) {
-  console.log('searchParam', searchParam);
   const [userIds, setUserIds] = useState<string[]>([]);
   const [batchProfiles, setBatchProfiles] = useState([]);
   const observer = useRef<IntersectionObserver>();
