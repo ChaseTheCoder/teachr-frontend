@@ -13,7 +13,7 @@ import Container from '@mui/material/Container';
 import MenuItem from '@mui/material/MenuItem';
 import Image from 'next/image';
 import Link from 'next/link';
-import TeachrLogo from '../../public/TeachrLogo.svg';
+import TeacherLogo from '../../public/TeacherLounge.svg';
 import { Button } from '@mui/material';
 import Right from './right';
 import { ArrowForwardIos } from '@mui/icons-material';
@@ -26,10 +26,6 @@ const pages = [
     title: 'Feed',
     link: '/feed'
   },
-  // {
-  //   title: 'Plans',
-  //   link: '/plans'
-  // }, 
 ];
 
 function ResponsiveAppBar() {
@@ -93,7 +89,7 @@ function ResponsiveAppBar() {
               <Link href={user ? '/feed' : '/'}>
                 <Image
                   priority
-                  src={TeachrLogo}
+                  src={TeacherLogo}
                   alt='Teachr Lounge logo'
                   height={38}
                 />
