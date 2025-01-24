@@ -10,8 +10,7 @@ import { useQuery, QueryClient } from '@tanstack/react-query';
 import { LoadingButton } from '@mui/lab';
 import { IProfile } from '../../../types/types';
 import { getDataNoToken } from '../../../services/unauthenticatedApiCalls';
-import dynamic from 'next/dynamic';
-const CKeditor = dynamic(() => import('../../../components/CKeditor'), { ssr: false });
+import Editor from '../../../components/editor';
 
 export default function NewPost() {
   const { user, error, isLoading: isLoadingUser } = useUser();
@@ -121,7 +120,7 @@ export default function NewPost() {
             required
             />
           </Box>
-          <CKeditor
+          <Editor
             onChange={(data) => {
               setBody(data);
             }}

@@ -7,8 +7,7 @@ import { LoadingButton } from '@mui/lab';
 import { getData, postOrPatchData } from '../../../../services/authenticatedApiCalls';
 import { IProfile } from '../../../../types/types';
 import { useUserContext } from '../../../../context/UserContext';
-import dynamic from 'next/dynamic';
-const CKeditor = dynamic(() => import('../../../../components/CKeditor'), { ssr: false });
+import Editor from '../../../../components/editor';
 
 type Props = {
   postId: string
@@ -86,12 +85,9 @@ export default function PostComment({ postId }: Props) {
       }}
       gap={1}
     >
-      {/* <Typography variant='body1' component='h2' gutterBottom sx={{ fontWeight: 'bold' }}>
-      Respond to Post
-      </Typography> */}
       <form onSubmit={handleSubmit}>
       <Box mb={2}>
-        <CKeditor
+        <Editor
           onChange={(data) => {
             setBody(data);
           }}
