@@ -13,7 +13,7 @@ import Container from '@mui/material/Container';
 import MenuItem from '@mui/material/MenuItem';
 import Image from 'next/image';
 import Link from 'next/link';
-import TeacherLogo from '../../public/TeacherLounge.svg';
+import TeacherLogo from '../../public/TeacherLogo.svg';
 import { Button } from '@mui/material';
 import Right from './right';
 import { ArrowForwardIos } from '@mui/icons-material';
