@@ -8,8 +8,6 @@ const nextConfig = {
   images: {
     domains: ['teachr-backend.onrender.com'],
   },
-  output: 'export',
-  distDir: 'out'
 }
 
 module.exports = nextConfig
