@@ -11,9 +11,6 @@
   },
   "dependencies": {
     "@auth0/nextjs-auth0": "^3.5.0",
-    "@ckeditor/ckeditor5-build-classic": "^44.1.0",
-    "@ckeditor/ckeditor5-link": "^44.1.0",
-    "@ckeditor/ckeditor5-react": "^9.4.0",
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
     "@fortawesome/fontawesome-svg-core": "^6.4.2",
