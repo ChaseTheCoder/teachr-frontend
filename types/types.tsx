@@ -21,3 +21,10 @@ export interface IProfile {
   title: string;
   profile_pic: string;
 }
+
+export interface EditorProps {
+  onChange: (data: string) => void;
+  value: string;
+  placeholder?: string;
+  setIsTextFieldFocused?: (focused: boolean) => void;
+}
