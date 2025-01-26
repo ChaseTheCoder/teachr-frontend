@@ -8,6 +8,7 @@ import Link from 'next/link';
 import Post404 from './not-found';
 import { timeAgo } from '../../../../utils/time';
 import { getDataNoToken } from '../../../../services/unauthenticatedApiCalls';
+import TeacherAvatar from '../../../../components/post/avatar';
 
 type Props = {
   postId: String
@@ -102,10 +103,7 @@ export default function UserPost({ postId, currentUserId }: Props) {
                 borderRadius: '50px',
             }}}
           >
-            <Avatar
-              alt="Profile Image"
-              sx={{ width: { xs: 30, md: 35 }, height: { xs: 30, md: 35 }, marginRight: '.5rem' }}
-            />
+            <TeacherAvatar verified={profile.verified}/>
             <Box sx={{ display: 'flex', flexDirection: 'column' }}>
               <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
                 <Typography sx={{ fontSize: { xs: 12, sm: 14 } }} fontWeight='bold'>{profile.teacher_name ?? 'User not found'}</Typography>
