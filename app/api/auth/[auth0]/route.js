@@ -9,7 +9,7 @@ const logoutUrl = [
 export const GET = handleAuth({
   signup: handleLogin({
     authorizationParams: { screen_hint: 'signup' },
-    returnTo: `${process.env.AUTH0_BASE_URL}/feed`
+    returnTo: `${process.env.AUTH0_BASE_URL}/signup`
   }),
   login: handleLogin({
     authorizationParams: {

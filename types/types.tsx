@@ -10,6 +10,7 @@ export interface IProfileBatch {
   id: string;
   teacher_name: string;
   title: string;
+  verified: boolean;
 }
 
 export interface IProfile {

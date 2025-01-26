@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { timeAgo } from '../../../../utils/time';
 import { getDataNoToken, getDataWithParamsNoToken } from '../../../../services/unauthenticatedApiCalls';
 import PostComment from './postComment';
+import TeacherAvatar from '../../../../components/post/avatar';
 
 type Props = {
   postId: string
@@ -100,6 +101,7 @@ export default function Comments({ postId, currentUserId }: Props) {
         const teacherName = userProfile?.teacher_name ?? 'Unknown Teacher';
         const title = userProfile?.title ?? 'Unknown User';
         const userId = userProfile?.id ?? '';
+        const verified = userProfile?.verified ?? false;
 
         return (
         <Box
@@ -137,10 +139,7 @@ export default function Comments({ postId, currentUserId }: Props) {
                       }}
                     >
                       <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                        <Avatar
-                          alt="Profile Image"
-                          sx={{ width: { xs: 30, md: 35 }, height: { xs: 30, md: 35 }, marginRight: '.5rem' }}
-                        />
+                        <TeacherAvatar verified={verified} />
                         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                           <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
                             <Typography sx={{ fontSize: { xs: 12, sm: 14 } }} fontWeight='bold'>{teacherName ?? 'User not found'}</Typography>
@@ -165,7 +164,8 @@ export default function Comments({ postId, currentUserId }: Props) {
                       '& a': {
                         color: 'blue',
                         textDecoration: 'underline',
-                      }
+                      },
+                      margin: 0
                     }}
                     dangerouslySetInnerHTML={{ __html: comment.body }}
                     component="p"

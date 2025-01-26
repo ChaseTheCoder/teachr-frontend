@@ -40,7 +40,7 @@ export default function Right({ auth0Id }: { auth0Id: string }) {
   
   const queryClient = new QueryClient();
   
-  const { data: profileData, isFetching: isFetchingProfileData, isLoading: isLoadingProfileData, isError: isErrorProfileData } = useQuery<IProfile>({
+  const { data: profileData, isFetching: isFetchingProfileData, isLoading: isLoadingProfileData, isError: isErrorProfileData, error: errorProfileData } = useQuery<IProfile>({
     queryKey: ['profile'],
     queryFn: () => getData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/profile_auth0/${auth0Id}`),
     staleTime: 1000 * 60 * 60,
@@ -81,6 +81,11 @@ export default function Right({ auth0Id }: { auth0Id: string }) {
     }
   }, [profileData])
 
+  useEffect(() => {
+    if(isErrorProfileData && errorProfileData) {
+      console.error(errorProfileData)
+    }
+  }, [isErrorProfileData, errorProfileData])
   return (
     <Box sx={{ flexGrow: 0 }}>
       <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }} gap={2}>
