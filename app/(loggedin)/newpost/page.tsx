@@ -55,50 +55,62 @@ export default function NewPost() {
   };
 
   if (isLoadingUser || isLoadingProfile) return (
-    <Box sx={{ display: 'flex', flexDirection: 'column' }} gap={1}>
-      <Skeleton variant='rectangular' height={80} />
-    </Box>
+    <Grid container spacing={1}>
+      <Grid item xs={12} md={9}>
+        <Box sx={{ display: 'flex', flexDirection: 'column' }} gap={1}>
+          <Skeleton variant='rectangular' height={80} />
+        </Box>
+      </Grid>
+    </Grid>
   )
 
   if(!auth0Id && !profileData) return (
-    <Surface>
-      <Typography variant='h4' component='h1' gutterBottom>
-        Create a Public Post
-      </Typography>
-      <Typography variant='body1' component='p' gutterBottom paddingBottom={3}>
-        You need to create an account in order to post.
-      </Typography>
-      <Button
-        color='success'
-        href={'/api/auth/signup'}
-        variant='contained'
-        size='large'
-        sx={{ marginBottom: 2 }}
-      >
-        Signup, it&apos;s Free!
-      </Button>
-    </Surface>
+    <Grid container spacing={1}>
+      <Grid item xs={12} md={9}>
+        <Surface>
+          <Typography variant='h4' component='h1' gutterBottom>
+            Create a Public Post
+          </Typography>
+          <Typography variant='body1' component='p' gutterBottom paddingBottom={3}>
+            You need to create an account in order to post.
+          </Typography>
+          <Button
+            color='success'
+            href={'/api/auth/signup'}
+            variant='contained'
+            size='large'
+            sx={{ marginBottom: 2 }}
+          >
+            Signup, it&apos;s Free!
+          </Button>
+        </Surface>
+      </Grid>
+    </Grid>
   );
   if(auth0Id && !profileData) return (
-    <Surface>
-      <Typography variant='h4' component='h1' gutterBottom>
-        Create a Public Post
-      </Typography>
-      <Typography variant='body1' component='p' gutterBottom>
-        You&apos;re logged in, but we can&apos;t seem to find your profile.
-      </Typography>
-      <Button
-        color='success'
-        href={'/signup'}
-        variant='contained'
-        size='large'
-      >
-        Create Your Profile
-      </Button>
-      <Typography variant='body1' component='p' gutterBottom>
-        Already signed up? Add profile <a href='/profile'>here</a>.
-      </Typography>
-    </Surface>
+    <Grid container spacing={1}>
+      <Grid item xs={12} md={9}>
+        <Surface>
+          <Typography variant='h4' component='h1' gutterBottom>
+            Create a Public Post
+          </Typography>
+          <Typography variant='body1' component='p' gutterBottom>
+            You&apos;re logged in, but we can&apos;t seem to find your profile.
+          </Typography>
+          <Button
+            color='success'
+            href={'/signup'}
+            variant='contained'
+            size='large'
+          >
+            Create Your Profile
+          </Button>
+          <Typography variant='body1' component='p' gutterBottom>
+            Already signed up? Add profile <a href='/profile'>here</a>.
+          </Typography>
+        </Surface>
+      </Grid>
+    </Grid>
   );
 
   return (

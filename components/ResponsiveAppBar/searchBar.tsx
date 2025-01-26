@@ -28,10 +28,13 @@ export default function SearchBar() {
       InputProps={{
         startAdornment: (
           <InputAdornment position="start">
-            <SearchIcon />
+            <SearchIcon aria-label="search icon" />
           </InputAdornment>
         ),
         disableUnderline: true,
+      }}
+      inputProps={{
+        'aria-label': 'search',
       }}
       sx={{
         width: '100%',
