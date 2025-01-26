@@ -1,5 +1,3 @@
-'use client'
-
 import React from 'react';
 import Image from 'next/image'
 import Surface from '../components/surface/Surface';
@@ -62,6 +60,16 @@ const postExamples = [
     }
   }
 ]
+
+export const metadata = {
+  title: 'Teacher Lounge - A Solution Oriented & Social Hub for Educators',
+  charSet: 'UTF-8',
+  viewport: 'width=device-width, initial-scale=1.0',
+  description: 'Connect with teachers in the ultimate teacher lounge! Post questions, find solutions, share humor, and upvote the best answers in this supportive social platform for educators.',
+  keywords: 'teachers, teacher humor, education community, teacher questions, classroom tips, teaching solutions, educators, teacher forum, teacher social network',
+  author: 'Teacher Lounge Community',
+  icon: '/favicon.ico',
+};
 
 export default function Home() {
 

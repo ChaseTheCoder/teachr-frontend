@@ -127,8 +127,9 @@ export default function UserPost({ postId, currentUserId }: Props) {
           flexDirection: 'column',
           width: '100%',
         }}
+        gap={1}
       >
-        <Typography variant='h2' sx={{ fontSize: { xs: 22, sm: 26 } }} fontWeight='bold'>{post.title}</Typography>
+        <Typography variant='h2' component='h1' sx={{ fontSize: { xs: 22, sm: 26 } }} fontWeight='bold'>{post.title}</Typography>
         {post.body && (() => {
           const postBody = post.body.replace(/<a /g, '<a target="_blank" rel="noopener noreferrer" ');
           return (
