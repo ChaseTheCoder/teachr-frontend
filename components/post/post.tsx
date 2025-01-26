@@ -3,6 +3,7 @@ import React from 'react';
 import { IPost, IProfileBatch } from '../../types/types';
 import Link from 'next/link';
 import { timeAgo } from '../../utils/time';
+import TeacherAvatar from './avatar';
 
 type Props = {
   post: IPost
@@ -41,17 +42,14 @@ export default function Post({ post, profile, homePage }: Props) {
               }
             }}
           >
-            <Avatar
-              alt="Profile Image"
-              sx={{ width: { xs: 30, md: 35 }, height: { xs: 30, md: 35 }, marginRight: '.5rem' }}
-            />
-              <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                  <Typography sx={{ fontSize: { xs: 12, sm: 14 } }} fontWeight='bold'>{profile.teacher_name ?? 'User not found'}</Typography>
-                  <Typography sx={{ fontSize: { xs: 12, sm: 14 }, paddingLeft: 1 }} color='textSecondary'>{profile.title ?? ''}</Typography>
-                </Box>
-                <Typography sx={{ fontSize: { xs: 10, sm: 12 } }} color='textSecondary'>{timeAgo(post.timestamp)}</Typography>
+            <TeacherAvatar verified={profile?.verified} />
+            <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+              <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                <Typography sx={{ fontSize: { xs: 12, sm: 14 } }} fontWeight='bold'>{profile.teacher_name ?? 'User not found'}</Typography>
+                <Typography sx={{ fontSize: { xs: 12, sm: 14 }, paddingLeft: 1 }} color='textSecondary'>{profile.title ?? ''}</Typography>
               </Box>
+              <Typography sx={{ fontSize: { xs: 10, sm: 12 } }} color='textSecondary'>{timeAgo(post.timestamp)}</Typography>
+            </Box>
           </Box>
         </Link>
       }
