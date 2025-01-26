@@ -13,7 +13,8 @@ const postExamples = [
       "last_name": "Sheaff",
       "teacher_name": "Ms. B",
       "title": "2nd Grade Teacher",
-      "profile_pic": "/media/profile_pics/Screenshot_2024-11-14_at_8.45.15PM.png"
+      "profile_pic": "/media/profile_pics/Screenshot_2024-11-14_at_8.45.15PM.png",
+      "verified": true
     },
     post: {
       "id": "6c7222c5-567a-44cd-960c-6ce12af0e164",
@@ -31,7 +32,8 @@ const postExamples = [
       "last_name": "Sheaff",
       "teacher_name": "Mr. Sheaff",
       "title": "6th Grade Science",
-      "profile_pic": "/media/profile_pics/Screenshot_2024-11-14_at_8.45.15PM.png"
+      "profile_pic": "/media/profile_pics/Screenshot_2024-11-14_at_8.45.15PM.png",
+      "verified": true
     },
     post: {
       "id": "6c7222c5-567a-44cd-960c-6ce12af0e165",
@@ -49,7 +51,8 @@ const postExamples = [
       "last_name": "Sheaff",
       "teacher_name": "Mrs. Alvera",
       "title": "2nd Grade Teacher",
-      "profile_pic": "/media/profile_pics/Screenshot_2024-11-14_at_8.45.15PM.png"
+      "profile_pic": "/media/profile_pics/Screenshot_2024-11-14_at_8.45.15PM.png",
+      "verified": true
     },
     post: {
       "id": "6c7222c5-567a-44cd-960c-6ce12af0e166",
