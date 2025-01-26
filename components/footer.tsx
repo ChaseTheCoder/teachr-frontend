@@ -7,7 +7,9 @@ const Footer: React.FC = () => {
     <footer>
       <Surface>
         <Box display="flex" justifyContent="center" alignItems="center" flexDirection="row">
-          <Typography variant='subtitle2' color='success'><a href="/about">© 2024 Teachr Lounge</a></Typography>
+          <Typography variant='subtitle2' component='p' color='success'>
+            <a href="/about">© 2025 Teachr Lounge</a>
+          </Typography>
         </Box>
       </Surface>
     </footer>

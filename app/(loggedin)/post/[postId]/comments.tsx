@@ -157,7 +157,6 @@ export default function Comments({ postId, currentUserId }: Props) {
                     </IconButton>
                   }
                 </Box>
-                <Typography variant='h2' sx={{ fontSize: { xs: 22, sm: 26 } }} fontWeight='bold'>{comment.title}</Typography>
                 {comment.body &&
                   <Box
                     sx={{ 
@@ -169,7 +168,8 @@ export default function Comments({ postId, currentUserId }: Props) {
                       }
                     }}
                     dangerouslySetInnerHTML={{ __html: comment.body }}
-                    component="div"
+                    component="p"
+                    role='comment'
                   />}
               </Box>
           </Stack>
