@@ -21,6 +21,9 @@ export interface IProfile {
   teacher_name: string;
   title: string;
   profile_pic: string;
+  verified: boolean;
+  email_domain: string;
+  verified_email: string
 }
 
 export interface EditorProps {

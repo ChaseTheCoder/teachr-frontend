@@ -144,3 +144,19 @@ export async function postSchedule(body) {
   const result = await response.json();
   return result;
 }
+
+export const handleVerify = async (email, profileId) => {
+  const accessToken = await getAccessToken();
+
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/verify-email/`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${accessToken.accessToken}`
+    },
+    body: JSON.stringify({ email: email, user_id: profileId }),
+  });
+
+  const result = await response.json();
+  return result;
+};
