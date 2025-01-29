@@ -4,6 +4,10 @@ export interface IPost {
   body: string | null;
   timestamp: string;
   user: string;
+  upvotes: number;
+  downvotes: number;
+  has_upvoted: boolean | null;
+  has_downvoted: boolean | null;
 }
 
 export interface IProfileBatch {

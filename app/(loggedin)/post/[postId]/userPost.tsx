@@ -1,14 +1,19 @@
+'use client'
+
 import { Avatar, Box, Fade, IconButton, List, ListItemButton, Paper, Popper, PopperPlacementType, Skeleton, Typography } from '@mui/material';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import MoreVert from '@mui/icons-material/MoreVert';
 import { deleteData, getData } from '../../../../services/authenticatedApiCalls';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { QueryClient, useMutation, useQuery } from '@tanstack/react-query';
 import { DeleteOutline } from '@mui/icons-material';
 import Link from 'next/link';
 import Post404 from './not-found';
 import { timeAgo } from '../../../../utils/time';
 import { getDataNoToken } from '../../../../services/unauthenticatedApiCalls';
 import TeacherAvatar from '../../../../components/post/avatar';
+import VoteButtons from '../../../../components/voteButtons';
+import { useUserContext } from '../../../../context/UserContext';
+import { IProfile } from '../../../../types/types';
 
 type Props = {
   postId: String
@@ -19,6 +24,32 @@ export default function UserPost({ postId, currentUserId }: Props) {
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
   const [open, setOpen] = React.useState(false);
   const [placement, setPlacement] = React.useState<PopperPlacementType>();
+  const { user, auth0Id, isLoadingUser } = useUserContext();
+  const queryClient = new QueryClient();
+  const [profileParam, setProfileParam] = useState<string>(null);
+
+  const { data: profileData, isFetching: isFetchingProfileData, isLoading: isLoadingProfileData, isError: isErrorProfileData } = useQuery<IProfile>({
+    queryKey: ['profile'],
+    queryFn: () => getData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/profile_auth0/${auth0Id}`),
+    staleTime: 1000 * 60 * 60,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    refetchOnMount: false,
+    enabled: !!auth0Id,
+    initialData: () => {
+      return queryClient.getQueryData(['profile']);
+    },
+  });
+
+  useEffect(() => {
+    if(!isLoadingProfileData && !isFetchingProfileData && !isLoadingUser) {
+      if(profileData && profileData.id) {
+        setProfileParam(`?user_id=${profileData.id}`);
+      } else {
+        setProfileParam('');
+      }
+    }
+  }, [profileData, isFetchingProfileData, isLoadingProfileData, isLoadingUser]);
 
   const handleClickPopper =
     (newPlacement: PopperPlacementType) =>
@@ -27,10 +58,12 @@ export default function UserPost({ postId, currentUserId }: Props) {
       setOpen((prev) => placement !== newPlacement || !prev);
       setPlacement(newPlacement);
     };
+  
   const { data: post, isFetching, isLoading, isError } = useQuery({
     queryKey: ['post', postId],
-    queryFn: () => getDataNoToken(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/post/${postId}/`),
+    queryFn: () => getDataNoToken(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/post/${postId}/${profileParam}`),
     staleTime: 1000 * 60 * 60,
+    enabled: profileParam !== null,
   })
   
   const { data: profile, isFetching: isFetchingProfile, isLoading: isLoadingProfile, isError: isErrorProfile } = useQuery({
@@ -145,6 +178,14 @@ export default function UserPost({ postId, currentUserId }: Props) {
             />
           );
         })()}
+        <VoteButtons
+          upvotes={post.upvotes}
+          downvotes={post.downvotes}
+          has_upvoted={post.has_upvoted}
+          has_downvoted={post.has_downvoted}
+          postId={post.id}
+          type='post'
+        />
       </Box>
       <Popper
         sx={{ zIndex: 1200 }}

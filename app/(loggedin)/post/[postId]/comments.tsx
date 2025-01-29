@@ -8,6 +8,7 @@ import { timeAgo } from '../../../../utils/time';
 import { getDataNoToken, getDataWithParamsNoToken } from '../../../../services/unauthenticatedApiCalls';
 import PostComment from './postComment';
 import TeacherAvatar from '../../../../components/post/avatar';
+import VoteButtons from '../../../../components/voteButtons';
 
 type Props = {
   postId: string
@@ -20,6 +21,7 @@ export default function Comments({ postId, currentUserId }: Props) {
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
   const [open, setOpen] = React.useState(false);
   const [selectedCommentId, setSelectedCommentId] = useState<string | null>(null);
+  const [profileParam, setProfileParam] = useState<string>(null);
 
   const handleClickPopper = (event: React.MouseEvent<HTMLElement>, commentId: string) => {
     setOpen(open ? false : true);
@@ -39,11 +41,22 @@ export default function Comments({ postId, currentUserId }: Props) {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [popperRef]);
+
+    useEffect(() => {
+      if(currentUserId !== undefined) {
+        if(currentUserId) {
+          setProfileParam(`?user_id=${currentUserId}`);
+        } else {
+          setProfileParam('');
+        }
+      }
+    }, [currentUserId]);
     
   const { data: comments, isFetching: isFetchingComments, isLoading: isLoadingComments, isError } = useQuery({
     queryKey: ['comments', postId],
-    queryFn: () => getDataNoToken(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/post/${postId}/comments/`),
+    queryFn: () => getDataNoToken(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/post/${postId}/comments/${profileParam}`),
     staleTime: 1000 * 60 * 60,
+    enabled: profileParam !== null,
   })
   
   const [userIds, setUserIds] = useState<string[]>([]);
@@ -118,61 +131,64 @@ export default function Comments({ postId, currentUserId }: Props) {
           gap={1}
           key={comment.id}
         >
-          <Stack
-            divider={<Divider/>}
-            spacing={3}
-          >
-              <Box sx={{ display: 'flex', flexDirection: 'column' }} gap={.5}>
-                <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <Link href={`/profile/${userId}`} passHref>
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        paddingRight: 1,
-                        '&:hover': {
-                          cursor: 'pointer',
-                          bgcolor: '#f0f0f0',
-                          borderRadius: '50px',
-                        }
-                      }}
-                    >
-                      <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                        <TeacherAvatar verified={verified} />
-                        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                          <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                            <Typography sx={{ fontSize: { xs: 12, sm: 14 } }} fontWeight='bold'>{teacherName ?? 'User not found'}</Typography>
-                            <Typography sx={{ fontSize: { xs: 12, sm: 14 }, paddingLeft: 1 }} color='textSecondary'>{title ?? ''}</Typography>
-                          </Box>
-                          <Typography sx={{ fontSize: { xs: 10, sm: 12 } }} color='textSecondary'>{timeAgo(comment.timestamp)}</Typography>
-                        </Box>
-                      </Box>
-                    </Box>
-                  </Link>
-                  {(currentUserId !== undefined && currentUserId === comment.user) &&
-                    <IconButton onClick={(event) => handleClickPopper(event, comment.id)}>
-                      <MoreVert fontSize='small' />
-                    </IconButton>
+        <Box sx={{ display: 'flex', flexDirection: 'column' }} gap={.5}>
+          <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+            <Link href={`/profile/${userId}`} passHref>
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  paddingRight: 1,
+                  '&:hover': {
+                    cursor: 'pointer',
+                    bgcolor: '#f0f0f0',
+                    borderRadius: '50px',
                   }
+                }}
+              >
+                <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                  <TeacherAvatar verified={verified} />
+                  <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                    <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                      <Typography sx={{ fontSize: { xs: 12, sm: 14 } }} fontWeight='bold'>{teacherName ?? 'User not found'}</Typography>
+                      <Typography sx={{ fontSize: { xs: 12, sm: 14 }, paddingLeft: 1 }} color='textSecondary'>{title ?? ''}</Typography>
+                    </Box>
+                    <Typography sx={{ fontSize: { xs: 10, sm: 12 } }} color='textSecondary'>{timeAgo(comment.timestamp)}</Typography>
+                  </Box>
                 </Box>
-                {comment.body &&
-                  <Box
-                    sx={{ 
-                      fontSize: { xs: 14, sm: 16 },
-                      color: '#424242',
-                      '& a': {
-                        color: 'blue',
-                        textDecoration: 'underline',
-                      },
-                      margin: 0
-                    }}
-                    dangerouslySetInnerHTML={{ __html: comment.body }}
-                    component="p"
-                    role='comment'
-                  />}
               </Box>
-          </Stack>
+            </Link>
+            {(currentUserId !== undefined && currentUserId === comment.user) &&
+              <IconButton onClick={(event) => handleClickPopper(event, comment.id)}>
+                <MoreVert fontSize='small' />
+              </IconButton>
+            }
+          </Box>
+          {comment.body &&
+            <Box
+              sx={{ 
+                fontSize: { xs: 14, sm: 16 },
+                color: '#424242',
+                '& a': {
+                  color: 'blue',
+                  textDecoration: 'underline',
+                },
+                margin: 0
+              }}
+              dangerouslySetInnerHTML={{ __html: comment.body }}
+              component="p"
+              role='comment'
+            />}
+        </Box>
+        <VoteButtons
+          upvotes={comment.upvotes}
+          downvotes={comment.downvotes}
+          has_upvoted={comment.has_upvoted}
+          has_downvoted={comment.has_downvoted}
+          postId={comment.id}
+          type='comment'
+        />
         </Box>
       )}) :
         <Box sx={{ display: 'flex', flexDirection: 'column', padding: [2,1] }}>

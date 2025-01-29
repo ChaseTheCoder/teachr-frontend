@@ -2,16 +2,54 @@
 
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { Box, Skeleton } from '@mui/material';
-import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
+import { QueryClient, useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import Post from '../../../components/post/post';
 import { getDataNoToken, getDataWithParamsNoToken } from '../../../services/unauthenticatedApiCalls';
 import FeedAd from '../../../components/googleAdsense/feed-ad';
 import { ActivityLoading, ActivityLoadingMultiSize } from '../../../components/activityLoading';
+import { profile } from 'console';
+import { IProfile } from '../../../types/types';
+import { getData } from '../../../services/authenticatedApiCalls';
+import { useUserContext } from '../../../context/UserContext';
 
 export default function InfiniteFeed() {
   const [userIds, setUserIds] = useState<string[]>([]);
   const [batchProfiles, setBatchProfiles] = useState([]);
   const observer = useRef<IntersectionObserver>();
+  const { user, auth0Id, isLoadingUser } = useUserContext();
+  const queryClient = new QueryClient();
+  const [profileParam, setProfileParam] = useState<string>(null);
+
+  const { data: profileData, isFetching: isFetchingProfileData, isLoading: isLoadingProfileData, isError: isErrorProfileData } = useQuery<IProfile>({
+    queryKey: ['profile'],
+    queryFn: () => getData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/profile_auth0/${auth0Id}`),
+    staleTime: 1000 * 60 * 60,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    refetchOnMount: false,
+    enabled: !!auth0Id,
+    initialData: () => {
+      return queryClient.getQueryData(['profile']);
+    },
+  });
+
+  const { data: batchProfileData, isFetching: isFetchingBatchProfiles, isLoading: isLoadingBatchProfiles, isError: isErrorBatchProfiles } = useQuery({
+    queryKey: ['batchProfilesFeed', userIds],
+    queryFn: () => userIds.length > 0 ? getDataWithParamsNoToken(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/profile_batch/`, 'user_id', userIds) : Promise.resolve([]),
+    staleTime: 1000 * 60 * 60,
+    enabled: !!userIds,
+  });
+
+  useEffect(() => {
+    if(!isLoadingProfileData && !isFetchingProfileData && !isLoadingUser) {
+      if(profileData && profileData.id) {
+        setProfileParam(`&user_id=${profileData.id}`);
+      } else {
+        setProfileParam('');
+      }
+    }
+  }, [profileData, isFetchingProfileData, isLoadingProfileData, isLoadingUser]);
+
 
   const {
     data: feedPosts,
@@ -27,19 +65,13 @@ export default function InfiniteFeed() {
     ...result
   } = useInfiniteQuery({
     queryKey: ['postsFeed'],
-    queryFn: ({ pageParam }) => getDataNoToken(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/posts/feed/?page=${pageParam}&page_size=8`),
+    queryFn: ({ pageParam }) => getDataNoToken(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/posts/feed/?page=${pageParam}&page_size=8${profileParam}`),
     initialPageParam: 1,
     getNextPageParam: (lastPage, allPages) => {
       return allPages.length + 1;
-    }
+    },
+    enabled: profileParam !== null,
   })
-
-  const { data: profileData, isFetching: isFetchingBatchProfiles, isLoading: isLoadingBatchProfiles, isError: isErrorBatchProfiles } = useQuery({
-    queryKey: ['batchProfilesFeed', userIds],
-    queryFn: () => userIds.length > 0 ? getDataWithParamsNoToken(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/profile_batch/`, 'user_id', userIds) : Promise.resolve([]),
-    staleTime: 1000 * 60 * 60,
-    enabled: !!userIds,
-  });
 
   useEffect(() => {
     if (feedPosts) {
@@ -56,10 +88,10 @@ export default function InfiniteFeed() {
   }, [feedPosts, isFetching, isLoading]);
 
   useEffect(() => {
-    if (profileData) {
-      setBatchProfiles(prevProfiles => [...prevProfiles, ...profileData]);
+    if (batchProfileData) {
+      setBatchProfiles(prevProfiles => [...prevProfiles, ...batchProfileData]);
     }
-  }, [profileData]);
+  }, [batchProfileData]);
 
   const lastPostElementRef = useCallback(node => {
     if (isLoading || isFetchingNextPage) return;
