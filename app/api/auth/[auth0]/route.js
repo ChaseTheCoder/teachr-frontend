@@ -9,7 +9,7 @@ const logoutUrl = [
 export const GET = handleAuth({
   signup: handleLogin({
     authorizationParams: { screen_hint: 'signup' },
-    returnTo: `${process.env.AUTH0_BASE_URL}/signup`
+    returnTo: `${process.env.AUTH0_BASE_URL}/feed`
   }),
   login: handleLogin({
     authorizationParams: {
@@ -17,10 +17,7 @@ export const GET = handleAuth({
       // Add the `offline_access` scope to also get a Refresh Token
       scope: 'openid profile email read:plan delete:plans update:plans read:messages'
     },
-    returnTo: (req, res) => {
-      const isFirstLogin = req.query.isFirstLogin === 'true';
-      return isFirstLogin ? `${process.env.AUTH0_BASE_URL}/signup` : `${process.env.AUTH0_BASE_URL}/feed`;
-    },
+    returnTo: `${process.env.AUTH0_BASE_URL}/feed`
   }),
   logout: handleLogout({
     returnTo: `${process.env.AUTH0_BASE_URL}/feed`

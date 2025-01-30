@@ -18,7 +18,8 @@ export default function InfiniteFeed() {
   const observer = useRef<IntersectionObserver>();
   const { user, auth0Id, isLoadingUser } = useUserContext();
   const queryClient = new QueryClient();
-  const [profileParam, setProfileParam] = useState<string>(null);
+  const [isProfileParamReady, setIsProfileParamReady] = useState(false);
+  const [profileParam, setProfileParam] = useState<string>('');
 
   const { data: profileData, isFetching: isFetchingProfileData, isLoading: isLoadingProfileData, isError: isErrorProfileData } = useQuery<IProfile>({
     queryKey: ['profile'],
@@ -47,6 +48,7 @@ export default function InfiniteFeed() {
       } else {
         setProfileParam('');
       }
+      setIsProfileParamReady(true);
     }
   }, [profileData, isFetchingProfileData, isLoadingProfileData, isLoadingUser]);
 
@@ -70,7 +72,7 @@ export default function InfiniteFeed() {
     getNextPageParam: (lastPage, allPages) => {
       return allPages.length + 1;
     },
-    enabled: profileParam !== null,
+    enabled: isProfileParamReady
   })
 
   useEffect(() => {
