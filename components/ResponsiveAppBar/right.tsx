@@ -15,6 +15,7 @@ import { Add } from '@mui/icons-material';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { IProfile } from '../../types/types';
+import TeacherAvatar from '../post/avatar';
 
 const settings = [
   {
@@ -100,7 +101,7 @@ export default function Right({ auth0Id }: { auth0Id: string }) {
         {/* <Typography color='textPrimary' fontWeight='bold' sx={{  display: { xs: 'none', md: 'flex' } }}>{teacherName}</Typography> */}
         <Tooltip title="Open settings">
           <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-            <Avatar alt='Profile Icon' />
+            <TeacherAvatar verified={profileData?.verified} />
           </IconButton>
         </Tooltip>
         <Menu

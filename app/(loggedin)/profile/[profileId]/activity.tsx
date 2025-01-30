@@ -1,4 +1,6 @@
-import React from 'react';
+'use client'
+
+import React, { useEffect, useState } from 'react';
 import Surface from '../../../../components/surface/Surface';
 import HistoryEduIcon from '@mui/icons-material/HistoryEdu';
 import { Box, Skeleton, Typography } from '@mui/material';
@@ -25,12 +27,21 @@ const NoActivity: React.FC = () => {
 
 
 export const Activity: React.FC<ActivityProps> = ({ profileId, profileData }: { profileId: string, profileData: any }) => {
+  const [isProfileParamReady, setIsProfileParamReady] = useState(false);
+  const [profileParam, setProfileParam] = useState<string>('');
+
+  useEffect(() => {
+    if(profileId) {
+      setProfileParam(`?user_id=${profileId}`);
+    }
+    setIsProfileParamReady(true);
+  }, [profileId]);
 
   const { data: posts, isFetching, isLoading, isError } = useQuery({
     queryKey: ['posts'],
-    queryFn: () => getDataNoToken(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/posts/user/${profileId}`),
+    queryFn: () => getDataNoToken(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/posts/user/${profileId}/${profileParam}`),
     staleTime: 1000 * 60 * 60,
-    enabled: !!profileId,
+    enabled: !!isProfileParamReady,
   })
 
   if (isLoading || isFetching) return (

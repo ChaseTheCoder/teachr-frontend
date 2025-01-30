@@ -21,7 +21,11 @@ const postExamples = [
       "title": "Am I supposed to be running small groups anymore?",
       "body": "I've been reading and hearing from a few teacher friends that small groups are not the best way to teach. I'm a 3rd grade teacher and I've been doing small groups for years. I'm not sure what to do now. What is the research saying?",
       "timestamp": "2024-11-19T21:33:06.648096Z",
-      "user": "2d770e04-bd9d-4def-9b5d-feec263cb571"
+      "user": "2d770e04-bd9d-4def-9b5d-feec263cb571",
+      "upvotes": 100,
+      "downvotes": 0,
+      "has_upvoted": true,
+      "has_downvoted": false
     }
   },
   {
@@ -40,7 +44,11 @@ const postExamples = [
       "title": "Cell Phones in the Classroom",
       "body": "My school doesn't have a policy on cell phones. I'm a 6th grade teacher and engagement has declined because of cell phone usage. What do you all do?",
       "timestamp": "2024-11-19T21:33:06.648096Z",
-      "user": "2d770e04-bd9d-4def-9b5d-feec263cb572"
+      "user": "2d770e04-bd9d-4def-9b5d-feec263cb572",
+      "upvotes": 53,
+      "downvotes": 0,
+      "has_upvoted": true,
+      "has_downvoted": false
     }
   },
   {
@@ -59,7 +67,11 @@ const postExamples = [
       "title": "Resources for differentiating worksheets",
       "body": "I'm a 2nd year teacher and definitly overwhelmed. I have a few students who are really struggling and I'm not sure how to help them. I've been trying to find resources online but I'm not sure what to look for. What are resources that are very simple to implement?",
       "timestamp": "2024-11-19T21:33:06.648096Z",
-      "user": "2d770e04-bd9d-4def-9b5d-feec263cb573"
+      "user": "2d770e04-bd9d-4def-9b5d-feec263cb573",
+      "upvotes": 33,
+      "downvotes": 0,
+      "has_upvoted": false,
+      "has_downvoted": false
     }
   }
 ]

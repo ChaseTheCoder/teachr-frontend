@@ -110,14 +110,15 @@ function ResponsiveAppBar() {
                         Log In
                       </a>
                     </Button>}
-                    <Button
-                    variant='outlined'
-                    href='/feed'
-                    color='success'
-                    endIcon={<ArrowForwardIos />}
-                    >
-                      Go to App
-                    </Button>
+                    <Link href='/feed'>
+                      <Button
+                      variant='outlined'
+                      color='success'
+                      endIcon={<ArrowForwardIos />}
+                      >
+                        Go to App
+                      </Button>
+                    </Link>
                   </>
                 :
                 auth0Id ? 
