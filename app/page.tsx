@@ -3,6 +3,7 @@ import Image from 'next/image'
 import Surface from '../components/surface/Surface';
 import { Box, Button, Divider, Grid, Link, Stack, Typography } from '@mui/material';
 import Post from '../components/post/post';
+import { ArrowForwardIos } from '@mui/icons-material';
 
 const postExamples = [
   {
@@ -139,6 +140,16 @@ export default function Home() {
             <Typography variant='h3' fontSize={{ xs: 18, sm: 22, md: 26 }} color='textSecondary' sx={{ paddingBottom: 3 }}>
               Share resources with educators.
             </Typography>
+            <Link href='/feed'>
+              <Button
+                variant='contained'
+                color='success'
+                endIcon={<ArrowForwardIos />}
+                sx={{ marginBottom: 3 }}
+              >
+                Go to App
+              </Button>
+            </Link>
           </Box>
         </Grid>
         <Grid item xs={12} md={6} sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
