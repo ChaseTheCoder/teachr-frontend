@@ -128,10 +128,16 @@ export default function Home() {
       </Surface>
       <Grid container spacing={2} sx={{ paddingX: { xs: 1, md: 4 } }}>
         <Grid item xs={12} md={6}>
-          <Box sx={{ display: 'flex', flexDirection: 'column', paddingX: { xs: 1, md: 4 } }} gap={3}>
-            <Typography variant='h3' fontWeight='bold' fontSize={{ xs: 24, sm: 28, md: 34 }}>See a Feed of Teacher Posts</Typography>
-            <Typography variant='h2' fontSize={{ xs: 14, sm: 16, md: 20 }} color='textSecondary' sx={{ paddingBottom: 3 }}>
-              Stay up to date to what teachers are discussing, needing support on, and resources they love. Or create your own post to get feedback or share your own resources and wisdom.
+          <Box sx={{ display: 'flex', flexDirection: 'column', paddingX: { xs: 1, md: 4 }, paddingTop: { xs: 3, md: 0 }, textAlign: { xs: 'center', md: 'left' } }} gap={{ xs: 2, md:3 }}>
+            <Typography variant='h2' fontWeight='bold' fontSize={{ xs: 24, sm: 28, md: 34 }}>See a Feed of Teacher Posts</Typography>
+            <Typography variant='h3' fontSize={{ xs: 18, sm: 22, md: 26 }} color='textSecondary'>
+              Stay up to date to what teachers are discussing.
+            </Typography>
+            <Typography variant='h3' fontSize={{ xs: 18, sm: 22, md: 26 }} color='textSecondary'>
+              Verified teachers get a stem & leaf on profile.
+            </Typography>
+            <Typography variant='h3' fontSize={{ xs: 18, sm: 22, md: 26 }} color='textSecondary' sx={{ paddingBottom: 3 }}>
+              Share resources with educators.
             </Typography>
           </Box>
         </Grid>
@@ -144,19 +150,19 @@ export default function Home() {
           }
         </Grid>
       </Grid>
-      <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'center', textAlign: 'center', alignItems: 'center' }} gap={{xs: 1, md: 2}}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'center', textAlign: 'center', alignItems: 'center', paddingTop: 6 }} gap={{xs: 1, md: 2}}>
         <Surface>
           <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'center', textAlign: 'center', alignItems: 'center', padding: 4, width: { xs: '90vw', md: '60vw' } }} gap={3}>
             <Image
               src="/Collaborate.png"
-              alt="Educational Illustration"
+              alt="Educational Illustration of teachers connecting online."
               width={0}
               height={0}
               sizes="30vw"
-              style={{ width: '30%', height: 'auto' }}
+              style={{ width: '50%', height: 'auto' }}
             />
-            <Typography variant='h3' fontWeight='bold' fontSize={{ xs: 28, sm: 38, md: 42 }} color='success'>Our Mission</Typography>
-            <Typography fontSize={{ xs: 14, sm: 16, md: 20 }} align='justify'>
+            <Typography variant='h2' fontWeight='bold' fontSize={{ xs: 28, sm: 38, md: 42 }} color='success'>Our Mission</Typography>
+            <Typography fontSize={{ xs: 16, md: 20 }} align='justify' color='textSecondary'>
               Our mission is to unite teachers on one platform through shared knowledge and resources. We believe that teachers are the best resource for other teachers. And our app will support them and provide features to elevate their profession and their professional growth.
             </Typography>
           </Box>

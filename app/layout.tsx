@@ -12,6 +12,7 @@ import { Box } from '@mui/material';
 import Script from 'next/script';
 import { UserProvider } from '../context/UserContext';
 import { usePathname } from 'next/navigation';
+import GoogleAnalytics from '../components/GoogleAnalytics';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -30,6 +31,7 @@ export default function RootLayout({
   let pathname = usePathname()
   return (
     <html lang="en">
+      <GoogleAnalytics />
       <Script
         async
         src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_GOOGLE_ADS_CLIENT_ID}`}
