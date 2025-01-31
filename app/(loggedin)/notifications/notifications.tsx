@@ -69,17 +69,13 @@ export default function Notifications() {
   useEffect(() => {
     if (notificationData && notificationData.length > 0) {
       setNotificationsDisplayed((prevNotifications) => [...prevNotifications, ...notificationData]);
-      let newUserIds = [];
-      notificationData
-        .forEach((notification) => {
-          if(!userIds.includes(notification.initiator)) {
-            newUserIds.push(notification.initiator);
-          }
+      let newUserIds = new Set(userIds);
+      notificationData.forEach((notification) => {
+        if (notification.initiator && !userIds.includes(notification.initiator) && notification.initiator !== null) {
+          newUserIds.add(notification.initiator);
         }
-      );
-      if(newUserIds.length > 0) {
-        setUserIds(newUserIds);
-      }
+      });
+      setUserIds(Array.from(newUserIds));
     }
     if (notificationData && notificationData.length < 10) {
       setDisableSeeMore(true);
@@ -104,13 +100,17 @@ export default function Notifications() {
   const createNotificationMessage = (notificationType: string) => {
     if(notificationType === 'comment') {
       return 'commented on your post';
+    } else if(notificationType === 'upvote_post') {
+      return 'Someone upvoted your post';
+    } else if(notificationType === 'upvote_comment') {
+      return 'Someone upvoted your comment';
+    } else if(notificationType === 'upvote') {
+      return 'Someone upvoted';
     }
   }
 
-  const createNotificationUrl = (notificationType: string, urlId: string) => {
-    if(notificationType === 'comment') {
-      return `/post/${urlId}`;
-    }
+  const createNotificationUrl = (urlId: string) => {
+    return `/post/${urlId}`;
   }
 
 
@@ -136,7 +136,7 @@ export default function Notifications() {
               {notificationsDisplayed.map((notification) => {
                 const userProfile = currentProfiles?.find(batchProfile => batchProfile.id === notification.initiator);
                 const message = createNotificationMessage(notification.notification_type);
-                const notificationUrl = createNotificationUrl(notification.notification_type, notification.url_id);
+                const notificationUrl = createNotificationUrl(notification.url_id);
                 return (
                   <ListItemButton
                     alignItems="center"
@@ -153,7 +153,7 @@ export default function Notifications() {
                     <ListItemText
                     primary={
                       <Typography variant="body1" color={notification.read ? 'textSecondary' : 'textPrimary'}>
-                        <strong>{userProfile?.teacher_name ?? 'User not found'}</strong> {message} {timeAgo(notification.timestamp)}
+                        {notification.notification_type === 'comment' && <strong>{userProfile?.teacher_name ?? 'User not found'}</strong> } {message} {timeAgo(notification.timestamp)}
                       </Typography>
                     }
                     />
