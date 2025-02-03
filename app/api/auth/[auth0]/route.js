@@ -20,7 +20,7 @@ export const GET = handleAuth({
     returnTo: `${process.env.AUTH0_BASE_URL}/feed`
   }),
   logout: handleLogout({
-    returnTo: `${process.env.AUTH0_BASE_URL}/feed`
+    returnTo: logoutUrl
   }),
   onError: (error, req, res) => {
     console.error('Auth0 error:', error);
