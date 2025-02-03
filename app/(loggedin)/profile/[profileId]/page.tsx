@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useEffect, useState } from 'react';
-import { Box, Button } from '@mui/material';
+import { Box, Button, Grid } from '@mui/material';
 import { useUser } from '@auth0/nextjs-auth0/client';
 import { useQuery, QueryClient } from '@tanstack/react-query';
 import { getData } from '../../../../services/authenticatedApiCalls';
@@ -70,41 +70,48 @@ export default function Profile({
   }
 
   return (
-    <Box sx={{ marginBottom: 4 }}>
-      <ProfileInformation
-      profileData={currentUser ? profileData : otherProfileData}
-      isLoadingUser={currentUser ? isLoadingUser : isLoadingOtherProfile}
-      isLoadingProfile={currentUser ? isLoadingProfileData : isLoadingOtherProfile}
-      error={currentUser ? isErrorProfileData : isErrorOtherProfile}
-      />
-      <Box sx={{ display: 'flex', flexDirection: 'row' }} gap={2}>
-      {currentUser && (
-        <>
-          <Button
-            color='success'
-            startIcon={<DynamicFeedIcon />}
-            onClick={() => setSectionSelected('activity')}
-          >
-            Activity
-          </Button>
-          <Button
-          color='success'
-          startIcon={<EditIcon />}
-          onClick={() => setSectionSelected('edit')}
-          >
-          Edit Profile
-          </Button>
-        </>
-      )}
-      </Box>
-      {sectionSelected === 'activity' ? (
-      <Activity
-        profileId={params.profileId}
-        profileData={currentUser ? profileData : otherProfileData}
-      />
-      ) : (
-      currentUser && <EditProfile auth0Id={auth0Id} />
-      )}
-    </Box>
+    <Grid container spacing={2}>
+      <Grid item xs={12} md={9} order={{ xs: 2, sm: 2, md: 1 }}>
+        <Box sx={{ marginBottom: 4 }}>
+          <ProfileInformation
+          profileData={currentUser ? profileData : otherProfileData}
+          isLoadingUser={currentUser ? isLoadingUser : isLoadingOtherProfile}
+          isLoadingProfile={currentUser ? isLoadingProfileData : isLoadingOtherProfile}
+          error={currentUser ? isErrorProfileData : isErrorOtherProfile}
+          />
+          <Box sx={{ display: 'flex', flexDirection: 'row' }} gap={2}>
+          {currentUser && (
+            <>
+              <Button
+                color='success'
+                startIcon={<DynamicFeedIcon />}
+                onClick={() => setSectionSelected('activity')}
+              >
+                Activity
+              </Button>
+              <Button
+              color='success'
+              startIcon={<EditIcon />}
+              onClick={() => setSectionSelected('edit')}
+              >
+              Edit Profile
+              </Button>
+            </>
+          )}
+          </Box>
+          {sectionSelected === 'activity' ? (
+          <Activity
+            profileId={params.profileId}
+            profileData={currentUser ? profileData : otherProfileData}
+          />
+          ) : (
+          currentUser && <EditProfile auth0Id={auth0Id} />
+          )}
+        </Box>
+      </Grid>
+      <Grid item xs={12} md={3} order={{ xs: 1, sm: 1, md: 2 }} display={{ xs: 'none', md: 'block' }}>
+        {/* Something in the future like an Ad */}
+      </Grid>
+    </Grid>
   )
 }
