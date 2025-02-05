@@ -67,7 +67,7 @@ export default function UserPost({ postId, currentUserId }: Props) {
   })
   
   const { data: profile, isFetching: isFetchingProfile, isLoading: isLoadingProfile, isError: isErrorProfile } = useQuery({
-    queryKey: ['posterProfile'],
+    queryKey: ['posterProfile', post?.user],
     queryFn: () => getDataNoToken(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/profile/${post.user}`),
     staleTime: 1000 * 60 * 60,
     enabled: !!post,

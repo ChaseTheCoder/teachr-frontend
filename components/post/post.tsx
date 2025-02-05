@@ -72,19 +72,24 @@ export default function Post({ post, profile, homePage }: Props) {
           gap={1}
         >
           <Typography variant='h2' sx={{ fontSize: { xs: 16, sm: 18 } }} fontWeight='bold'>{post.title}</Typography>
-          {post.body && (
+            {post.body && (
             <Box
               sx={{ 
-                fontSize: { xs: 14, sm: 16 },
-                color: '#424242',
-                '& a': {
-                  color: 'blue',
-                  textDecoration: 'underline',
-                }
+              fontSize: { xs: 12, sm: 14 },
+              color: '#424242',
+              margin: 0,
+              lineHeight: 1.4,
+              '& a': {
+                color: 'blue',
+                textDecoration: 'underline',
+              },
+              '& *': {
+                margin: 0,
+              }
               }}
               dangerouslySetInnerHTML={{ __html: post.body }}
             />
-          )}
+            )}
         </Box>
       </Link>
       <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
