@@ -161,6 +161,47 @@ export default function Home() {
           }
         </Grid>
       </Grid>
+      <Grid container spacing={2} sx={{ paddingX: { xs: 1, md: 4 }, marginTop: 4 }}>
+        <Grid item xs={12} md={6}>
+            <Box sx={{ padding: 2, borderRadius: 4, bgcolor: '#ffffff', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }} >
+            <Image
+              src="/Automate.png"
+              alt="Educational Illustration of teachers connecting online."
+              width={0}
+              height={0}
+              sizes="30vw"
+              style={{ width: '65%', height: 'auto' }}
+            />
+            </Box>
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', paddingX: { xs: 1, md: 4 }, paddingTop: { xs: 3, md: 0 }, maxWidth: '900px' }} gap={{ xs: 2, md:3 }}>
+            <Typography variant='h2' fontWeight='bold' fontSize={{ xs: 24, sm: 28, md: 34 }}>Why Teacher Lounge?</Typography>
+            <Typography variant='h3' fontSize={{ xs: 18, sm: 22 }} color='textSecondary'>
+              We interviewed teachers and they told us:
+            </Typography>
+            <Typography fontSize={14} color='textSecondary'>
+              &quot;I love new ideas, being in the know, following what people were doing. It was super important to be the best in my field to be the best in my evaluation.&quot;
+            </Typography>
+            <Typography fontSize={14} color='textSecondary'>
+              &quot;I&apos;m a 13th year teacher and I started a new curriculum. I use a FaceBook groups with other teachers, but would really love to seperate that from my social media.&quot;
+            </Typography>
+            <Typography fontSize={14} color='textSecondary'>
+              &quot;I could benefit from getting different perspectives on small groups, state testing, class routine and procedures.&quot;
+            </Typography>
+            <Link href='/feed'>
+              <Button
+                color='success'
+                href={'/api/auth/signup'}
+                variant='contained'
+                size='large'
+              >
+                Signup, it&apos;s Free!
+              </Button>
+            </Link>
+          </Box>
+        </Grid>
+      </Grid>
       <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'center', textAlign: 'center', alignItems: 'center', paddingTop: 6 }} gap={{xs: 1, md: 2}}>
         <Surface>
           <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'center', textAlign: 'center', alignItems: 'center', padding: 4, width: { xs: '90vw', md: '60vw' } }} gap={3}>
