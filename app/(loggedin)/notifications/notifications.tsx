@@ -141,6 +141,7 @@ export default function Notifications() {
                   <ListItemButton
                     alignItems="center"
                     key={notification.id}
+                    selected={!notification.read}
                     onClick={(e) => {
                       e.preventDefault();
                       handleNotificationClick(notificationUrl, notification.id, notification.read);
