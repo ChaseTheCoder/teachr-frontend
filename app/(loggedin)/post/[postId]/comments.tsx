@@ -42,22 +42,24 @@ export default function Comments({ postId, currentUserId }: Props) {
     };
   }, [popperRef]);
 
-    useEffect(() => {
-      if(currentUserId !== undefined) {
-        if(currentUserId) {
-          setProfileParam(`?user_id=${currentUserId}`);
-        } else {
-          setProfileParam('');
-        }
-      }
-    }, [currentUserId]);
+  useEffect(() => {
+    if(currentUserId) {
+      setProfileParam(`/?user_id=${currentUserId}`);
+    } else {
+      setProfileParam('/');
+    }
+  }, [currentUserId]);
     
   const { data: comments, isFetching: isFetchingComments, isLoading: isLoadingComments, isError } = useQuery({
-    queryKey: ['comments', postId],
-    queryFn: () => getDataNoToken(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/post/${postId}/comments/${profileParam}`),
+    queryKey: ['comments', postId, profileParam],
+    queryFn: () => getDataNoToken(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/post/${postId}/comments${profileParam}`),
     staleTime: 1000 * 60 * 60,
     enabled: profileParam !== null,
   })
+
+  console.log('comments: ' + comments);
+  console.log('params: ' + profileParam);
+  console.log('currentuserid: ' + currentUserId);
   
   const [userIds, setUserIds] = useState<string[]>([]);
   useEffect(() => {
