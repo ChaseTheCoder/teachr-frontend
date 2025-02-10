@@ -11,9 +11,10 @@ import Post404 from './not-found';
 import { timeAgo } from '../../../../utils/time';
 import { getDataNoToken } from '../../../../services/unauthenticatedApiCalls';
 import TeacherAvatar from '../../../../components/post/avatar';
-import VoteButtons from '../../../../components/voteButtons';
+import VoteButtons from '../../../../components/post/voteButtons';
 import { useUserContext } from '../../../../context/UserContext';
 import { IProfile } from '../../../../types/types';
+import CommentCount from '../../../../components/post/comment';
 
 type Props = {
   postId: String
@@ -178,14 +179,17 @@ export default function UserPost({ postId, currentUserId }: Props) {
             />
           );
         })()}
-        <VoteButtons
-          upvotes={post.upvotes}
-          downvotes={post.downvotes}
-          has_upvoted={post.has_upvoted}
-          has_downvoted={post.has_downvoted}
-          postId={post.id}
-          type='post'
-        />
+        <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 3 }}>
+          <VoteButtons
+            upvotes={post.upvotes}
+            downvotes={post.downvotes}
+            has_upvoted={post.has_upvoted}
+            has_downvoted={post.has_downvoted}
+            postId={post.id}
+            type='post'
+          />
+          <CommentCount comments={post.comments} />
+        </Box>
       </Box>
       <Popper
         sx={{ zIndex: 1200 }}

@@ -8,7 +8,7 @@ import { timeAgo } from '../../../../utils/time';
 import { getDataNoToken, getDataWithParamsNoToken } from '../../../../services/unauthenticatedApiCalls';
 import PostComment from './postComment';
 import TeacherAvatar from '../../../../components/post/avatar';
-import VoteButtons from '../../../../components/voteButtons';
+import VoteButtons from '../../../../components/post/voteButtons';
 
 type Props = {
   postId: string

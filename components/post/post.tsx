@@ -4,7 +4,8 @@ import { IPost, IProfileBatch } from '../../types/types';
 import Link from 'next/link';
 import { timeAgo } from '../../utils/time';
 import TeacherAvatar from './avatar';
-import VoteButtons from '../voteButtons';
+import VoteButtons from './voteButtons';
+import CommentCount from './comment';
 
 type Props = {
   post: IPost
@@ -92,7 +93,7 @@ export default function Post({ post, profile, homePage }: Props) {
             )}
         </Box>
       </Link>
-      <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+      <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 3 }}>
         <VoteButtons
           upvotes={post.upvotes}
           downvotes={post.downvotes}
@@ -101,6 +102,7 @@ export default function Post({ post, profile, homePage }: Props) {
           postId={post.id}
           type='post'
         />
+        <CommentCount comments={post.comments} />
       </Box>
     </Box>
   )

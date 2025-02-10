@@ -8,6 +8,7 @@ export interface IPost {
   downvotes: number;
   has_upvoted: boolean | null;
   has_downvoted: boolean | null;
+  comments: number;
 }
 
 export interface IProfileBatch {

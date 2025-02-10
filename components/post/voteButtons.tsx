@@ -4,10 +4,10 @@ import React, { useEffect, useState } from 'react';
 import { Box, IconButton, Typography } from '@mui/material';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
-import { useUserContext } from '../context/UserContext';
+import { useUserContext } from '../../context/UserContext';
 import { QueryClient, useQuery } from '@tanstack/react-query';
-import { getData, postOrPatchData } from '../services/authenticatedApiCalls';
-import { IProfile } from '../types/types';
+import { getData, postOrPatchData } from '../../services/authenticatedApiCalls';
+import { IProfile } from '../../types/types';
 
 interface VoteButtonsProps {
   upvotes: number;
