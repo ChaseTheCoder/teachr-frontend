@@ -26,7 +26,8 @@ const postExamples = [
       "upvotes": 100,
       "downvotes": 0,
       "has_upvoted": true,
-      "has_downvoted": false
+      "has_downvoted": false,
+      "comments": 33
     }
   },
   {
@@ -49,7 +50,8 @@ const postExamples = [
       "upvotes": 53,
       "downvotes": 0,
       "has_upvoted": true,
-      "has_downvoted": false
+      "has_downvoted": false,
+      "comments": 50
     }
   },
   {
@@ -72,7 +74,8 @@ const postExamples = [
       "upvotes": 33,
       "downvotes": 0,
       "has_upvoted": false,
-      "has_downvoted": false
+      "has_downvoted": false,
+      "comments": 188
     }
   }
 ]
