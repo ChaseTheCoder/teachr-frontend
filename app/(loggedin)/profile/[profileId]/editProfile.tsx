@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import Surface from '../../../../components/surface/Surface';
 import { LoadingButton } from '@mui/lab';
-import { Box, Skeleton, TextField } from '@mui/material';
+import { Avatar, Box, Divider, Skeleton, TextField, Typography } from '@mui/material';
 import { getData, postOrPatchData } from '../../../../services/authenticatedApiCalls';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useUser } from '@auth0/nextjs-auth0/client';
 import { useRouter } from 'next/navigation';
 import { IProfile } from '../../../../types/types';
+import MyEditor from './avatarEditor';
+import UploadProfilePic from './avatarEditor';
 
 interface props {
   auth0Id: string;
@@ -143,6 +145,15 @@ export default function EditProfile({ auth0Id, signUpPage }: props) {
             <Skeleton variant='text' sx={{ height: '50px' }} />
           </> :
           <>
+            <UploadProfilePic profileId={profileData.id} />
+            <Divider sx={{ marginY: 2 }} />
+            <Typography
+              variant='h2'
+              fontWeight='bold'
+              sx={{ fontSize: '22px'}}
+            >
+              Displayed Information
+            </Typography>
             <TextField 
               fullWidth
               required
@@ -192,6 +203,7 @@ export default function EditProfile({ auth0Id, signUpPage }: props) {
         size='small'
         onClick={() => handlePostProfile()}
         loading={pageLoading}
+        sx={{ width: 'fit-content' }}
         >
         { newProfile ? 'Create Profile' : 'Update Profile' }
       </LoadingButton>

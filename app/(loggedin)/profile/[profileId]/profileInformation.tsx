@@ -1,29 +1,77 @@
 import { Box, Avatar, Skeleton, Typography } from "@mui/material";
 import Surface from "../../../../components/surface/Surface";
+import { IProfile } from "../../../../types/types";
 
 interface IProfileData {
   teacher_name: string;
   first_name: string;
   last_name: string;
   title: string;
+  profile_pic_url: string;
 }
 
 interface IProps {
   isLoadingUser: boolean;
   isLoadingProfile: boolean;
-  profileData: IProfileData | undefined;
+  profileData: IProfile | undefined;
   error: boolean;
 }
 
-export default function ProfileInformation({ isLoadingUser, isLoadingProfile, profileData, error }: IProps) {
+export default function ProfileInformation(
+  { isLoadingUser, isLoadingProfile, profileData, error }: IProps) {
+  const size = 64;
   return (
     <Surface>
       <Box sx={{ display: 'flex', flexDirection: 'row' }}>
-      <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+      {/* <Box sx={{ display: 'flex', justifyContent: 'center' }}>
         <Avatar
           alt="Profile Image"
-          sx={{ width: {xs: 100, md:150}, height: {xs: 100, md:150} }}
+          sx={{ width: {xs: 75, md:100}, height: {xs: 75, md:100} }}
+          src={profileData?.profile_pic_url}
         />
+      </Box> */}
+      <Box display='inline-flex'>
+        <Box position="relative" display="inline-block" sx={{ overflow: 'visible' }}>
+          {profileData.verified &&
+            <>
+              <div 
+                className="absolute"
+                style={{ 
+                  width: size * 0.2,
+                  height: size * 0.1875,
+                  transform: 'translateX(-30%) translateY(-10%) rotate(10deg)',
+                  borderRadius: '100% 0 100% 0',
+                  backgroundColor: '#4caf50',
+                  top: '-7%',
+                  left: '47%',
+                  zIndex: 20,
+                  position: 'absolute',
+                  overflow: 'visible',
+                }}
+              />
+              <div 
+                className="absolute"
+                style={{ 
+                  width: size * 0.05,
+                  height: size * 0.15,
+                  transform: 'translateX(0%) translateY(-40%) rotate(-10deg)',
+                  borderRadius: '10% 10% 0 0',
+                  backgroundColor: '#8B4513',
+                  top: '-5%',
+                  left: '41%',
+                  zIndex: 10,
+                  position: 'absolute',
+                  overflow: 'visible',
+                }}
+              />
+            </>
+          }
+          <Avatar
+            alt="Profile Image"
+            sx={{ width: { xs: 75, md: 100 }, height: { xs: 75, md: 100 }, marginRight: '.5rem' }}
+            src={profileData.profile_pic_url}
+          />
+        </Box>
       </Box>
       <Box sx={{ display: 'flex', flexDirection: 'column', paddingLeft: { xs: '1rem', sm: '3rem' }, width: '100%' }} gap={1}>
         {isLoadingUser || isLoadingProfile ? (

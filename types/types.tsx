@@ -9,6 +9,7 @@ export interface IPost {
   has_upvoted: boolean | null;
   has_downvoted: boolean | null;
   comments: number;
+  profile_pic_url: string | null;
 }
 
 export interface IProfileBatch {
@@ -16,6 +17,7 @@ export interface IProfileBatch {
   teacher_name: string;
   title: string;
   verified: boolean;
+  profile_pic_url: string | null;
 }
 
 export interface IProfile {
@@ -28,7 +30,8 @@ export interface IProfile {
   profile_pic: string;
   verified: boolean;
   email_domain: string;
-  verified_email: string
+  verified_email: string;
+  profile_pic_url: string | null;
 }
 
 export interface EditorProps {

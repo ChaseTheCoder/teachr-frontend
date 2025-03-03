@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from 'react';
 import { Box, Button, Grid } from '@mui/material';
-import { useUser } from '@auth0/nextjs-auth0/client';
 import { useQuery, QueryClient } from '@tanstack/react-query';
 import { getData } from '../../../../services/authenticatedApiCalls';
 import DynamicFeedIcon from '@mui/icons-material/DynamicFeed';
