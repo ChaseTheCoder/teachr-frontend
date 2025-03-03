@@ -5,14 +5,11 @@ import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import Menu from '@mui/material/Menu';
-import Avatar from '@mui/material/Avatar';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';import { Badge } from '@mui/material';
 import { useQuery, QueryClient } from '@tanstack/react-query';
 import { getData } from '../../services/authenticatedApiCalls';
-import { Add } from '@mui/icons-material';
-import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { IProfile } from '../../types/types';
 import TeacherAvatar from '../post/avatar';
@@ -101,7 +98,10 @@ export default function Right({ auth0Id }: { auth0Id: string }) {
         {/* <Typography color='textPrimary' fontWeight='bold' sx={{  display: { xs: 'none', md: 'flex' } }}>{teacherName}</Typography> */}
         <Tooltip title="Open settings">
           <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-            <TeacherAvatar verified={profileData?.verified} />
+            <TeacherAvatar
+              verified={profileData?.verified}
+              profile_pic_url={profileData?.profile_pic_url}
+            />
           </IconButton>
         </Tooltip>
         <Menu

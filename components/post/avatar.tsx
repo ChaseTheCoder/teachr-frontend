@@ -1,10 +1,12 @@
 import React from 'react';
 import { Avatar, Box } from '@mui/material';
+
 interface TeacherAvatarProps {
   verified: boolean;
+  profile_pic_url?: string | null;
 }
 
-const TeacherAvatar: React.FC<TeacherAvatarProps> = ({ verified }) => {
+const TeacherAvatar: React.FC<TeacherAvatarProps> = ({ verified, profile_pic_url }) => {
   const size = 64;
   return (
     <Box display='inline-flex'>
@@ -44,8 +46,9 @@ const TeacherAvatar: React.FC<TeacherAvatarProps> = ({ verified }) => {
           </>
         }
         <Avatar
-        alt="Profile Image"
-        sx={{ width: { xs: 30, md: 35 }, height: { xs: 30, md: 35 }, marginRight: '.5rem' }}
+          alt="Profile Image"
+          sx={{ width: { xs: 30, md: 35 }, height: { xs: 30, md: 35 }, marginRight: '.5rem' }}
+          src={profile_pic_url}
         />
       </Box>
     </Box>
