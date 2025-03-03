@@ -9,7 +9,6 @@ export interface IPost {
   has_upvoted: boolean | null;
   has_downvoted: boolean | null;
   comments: number;
-  profile_pic_url: string | null;
 }
 
 export interface IProfileBatch {
