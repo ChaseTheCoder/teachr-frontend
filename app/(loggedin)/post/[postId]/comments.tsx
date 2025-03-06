@@ -56,10 +56,6 @@ export default function Comments({ postId, currentUserId }: Props) {
     staleTime: 1000 * 60 * 60,
     enabled: profileParam !== null,
   })
-
-  console.log('comments: ' + comments);
-  console.log('params: ' + profileParam);
-  console.log('currentuserid: ' + currentUserId);
   
   const [userIds, setUserIds] = useState<string[]>([]);
   useEffect(() => {
@@ -150,7 +146,7 @@ export default function Comments({ postId, currentUserId }: Props) {
                 }}
               >
                 <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                  <TeacherAvatar verified={verified} />
+                  <TeacherAvatar verified={verified} profile_pic_url={userProfile?.profile_pic_url } />
                   <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                     <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
                       <Typography sx={{ fontSize: { xs: 12, sm: 14 } }} fontWeight='bold'>{teacherName ?? 'User not found'}</Typography>
