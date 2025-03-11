@@ -5,7 +5,7 @@ const logoutUrl = `${process.env.AUTH0_ISSUER_BASE_URL}/v2/logout?client_id=${pr
 export const GET = handleAuth({
   signup: handleLogin({
     authorizationParams: { screen_hint: 'signup' },
-    returnTo: `${process.env.AUTH0_BASE_URL}/feed`
+    returnTo: `${process.env.AUTH0_BASE_URL}/signup`
   }),
   login: handleLogin({
     authorizationParams: {
