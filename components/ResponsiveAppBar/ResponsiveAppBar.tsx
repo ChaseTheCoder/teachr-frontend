@@ -99,43 +99,44 @@ function ResponsiveAppBar() {
             { pathname !== '/' && <SearchBar /> }
             
             <Box sx={{ flexGrow: 0, display: 'flex', alignItems: 'center' }}>
-              { pathname === '/' ?
-                  <>
-                    {!auth0Id && 
-                    <Button
-                      color='success'
-                      sx={{ marginRight: 2 }}
-                    >
-                      <a href='/api/auth/login'>
-                        Log In
-                      </a>
-                    </Button>}
-                    <Link href='/feed'>
-                      <Button
-                      variant='outlined'
-                      color='success'
-                      endIcon={<ArrowForwardIos />}
-                      >
+                { pathname !== '/signup' && (
+                  pathname === '/' ? (
+                    <>
+                      {!auth0Id && 
+                        <Button
+                          color='success'
+                          sx={{ marginRight: 2 }}
+                        >
+                          <a href='/api/auth/login'>
+                          Log In
+                          </a>
+                        </Button>
+                      }
+                      <Link href='/feed'>
+                        <Button
+                          variant='outlined'
+                          color='success'
+                          endIcon={<ArrowForwardIos />}
+                        >
                         Go to App
-                      </Button>
-                    </Link>
-                  </>
-                :
-                auth0Id ? 
-                  <Right
-                    auth0Id={auth0Id}
-                  /> 
-                  :
-                  <Link href='/api/auth/login'>
-                    <Button
+                        </Button>
+                      </Link>
+                    </>
+                  ) : (
+                    auth0Id ? 
+                    <Right auth0Id={auth0Id} /> 
+                    :
+                    <Link href='/api/auth/login'>
+                      <Button
                       color='success'
                       size='small'
                       sx={{ flex: 'none', whiteSpace: 'nowrap' }}
-                    >
+                      >
                       Log In
-                    </Button>
-                </Link>
-                }
+                      </Button>
+                    </Link>
+                  )
+                )}
             </Box>
           </Box>
         </Toolbar>

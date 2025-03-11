@@ -13,6 +13,7 @@ import { getData } from '../../services/authenticatedApiCalls';
 import { useEffect, useState } from 'react';
 import { IProfile } from '../../types/types';
 import TeacherAvatar from '../post/avatar';
+import { useRouter, usePathname } from 'next/navigation';
 
 const settings = [
   {
@@ -25,6 +26,8 @@ const settings = [
   }];
 
 export default function Right({ auth0Id }: { auth0Id: string }) {
+  const router = useRouter();
+  const pathname = usePathname();
   const [menuList, setMenuList] = useState(settings);
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
   const [teacherName, setTeacherName] = useState('')
@@ -50,6 +53,12 @@ export default function Right({ auth0Id }: { auth0Id: string }) {
       return queryClient.getQueryData(['profile']);
     },
   })
+
+  useEffect(() => {
+    if (!isLoadingProfileData && !isFetchingProfileData && !profileData && auth0Id) {
+      router.push('/signup');
+    }
+  }, [isLoadingProfileData, isFetchingProfileData, profileData, auth0Id, router]);
 
   const { data: notifications, isFetching: isFetchingNotifications, isLoading: isLoadingNotifications, isError: isErrorNotifications } = useQuery({
     queryKey: ['unreadnotifications'],
