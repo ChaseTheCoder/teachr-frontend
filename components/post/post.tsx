@@ -1,4 +1,4 @@
-import { Avatar, Box, Typography } from '@mui/material';
+import { Avatar, Box, Chip, Typography } from '@mui/material';
 import React from 'react';
 import { IPost, IProfileBatch } from '../../types/types';
 import Link from 'next/link';
@@ -6,6 +6,7 @@ import { timeAgo } from '../../utils/time';
 import TeacherAvatar from './avatar';
 import VoteButtons from './voteButtons';
 import CommentCount from './comment';
+import Tags from '../tag';
 
 type Props = {
   post: IPost
@@ -96,6 +97,14 @@ export default function Post({ post, profile, homePage }: Props) {
             )}
         </Box>
       </Link>
+      {/* <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 3 }}>
+            {post.tags.length > 0 &&
+              post.tags.map(tag => {
+                return <Tag tag={tag} key={tag.id} />
+              })
+            }
+      </Box> */}
+      <Tags tags={post.tags} />
       <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 3 }}>
         <VoteButtons
           upvotes={post.upvotes}

@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react';
-import { Box, Button, Grid, Skeleton, TextField, Typography } from '@mui/material';
+import { Box, Button, Chip, Grid, Skeleton, TextField, Typography } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import { postOrPatchData } from '../../../services/authenticatedApiCalls';
 import Surface from "../../../components/surface/Surface";
@@ -16,8 +16,11 @@ export default function NewPost() {
   const { user, error, isLoading: isLoadingUser } = useUser();
   const auth0Id = user?.sub;
   const [title, setTitle] = useState('');
+  const [tag, setTag] = useState('');
+  const [tags, setTags] = useState([]);
   const [body, setBody] = useState('');
   const [isLoading, setLoading] = useState(false);
+  const [textDisabled, setTextDisabled] = useState(false);
   const router = useRouter();
 
   const queryClient = new QueryClient();
@@ -35,20 +38,54 @@ export default function NewPost() {
     },
   });
 
+  const handleTag = async (event: React.FormEvent) => {
+    setTextDisabled(true);
+    if (tag.trim() === '') return;
+    if (tags.some(existingTag => existingTag.tag === tag.toLocaleLowerCase())) {
+      setTag('');
+      setTextDisabled(false);
+      return;
+    }
+    const tagSubmit = {
+      tag: tag.toLocaleLowerCase()
+    };
+    try {
+      const newTag = await postOrPatchData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/tag/get/`, 'POST', tagSubmit);
+      setTags([...tags, newTag]);
+    } catch (error) {
+      console.error('Error adding new tag:', error);
+    } finally {
+      setTag('');
+      setTextDisabled(false);
+    }
+  };
+
+  const handleDeletechip = (tagId) => {
+    setTags((tags) => tags.filter((tag) => tag.id !== tagId));
+  };
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setLoading(true);
-
+    // const tagIds = tags.map(tag => tag.id);
+    const tagIds = tags.map(tag => {
+      console.log('Processing tag:', tag);
+      return tag.id;
+    });
     const newPost = {
       title: title,
-      body: body
+      body: body,
+      tags: tagIds
     };
-
+    console.log('New post:', newPost);
     try {
       await postOrPatchData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/posts/user/${profileData.id}/`, 'POST', newPost);
+      console.log('Created post:', Response);
       router.push('/feed');
     } catch (error) {
       console.error('Error posting new data:', error);
+      setLoading(false);
+      return;
     } finally {
       setLoading(false);
     }
@@ -125,6 +162,7 @@ export default function NewPost() {
             <TextField
             color='success'
             variant='outlined'
+            size='small'
             label='Title'
             value={title}
             onChange={(e) => setTitle(e.target.value)}
@@ -138,6 +176,33 @@ export default function NewPost() {
             }}
             value={body}
           />
+          <Box mb={2} mt={2}>
+            <TextField
+              color='success'
+              variant='outlined'
+              size='small'
+              label='Tags'
+              disabled={textDisabled}
+              value={tag}
+              onChange={(e) => setTag(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  handleTag(e);
+                }
+              }}
+              fullWidth
+            />
+          </Box>
+          {tags.length > 0 &&
+            <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 2 }}>
+              {tags.length > 0 &&
+                tags.map(tag => {
+                  return <Chip label={tag.tag} key={tag.id} size='small' onDelete={() => handleDeletechip(tag.id)} />
+                })
+              }
+            </Box>
+          }
           <LoadingButton
             type='submit'
             variant='contained'

@@ -1,6 +1,6 @@
 'use client'
 
-import { Avatar, Box, Fade, IconButton, List, ListItemButton, Paper, Popper, PopperPlacementType, Skeleton, Typography } from '@mui/material';
+import { Avatar, Box, Chip, Fade, IconButton, List, ListItemButton, Paper, Popper, PopperPlacementType, Skeleton, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import MoreVert from '@mui/icons-material/MoreVert';
 import { deleteData, getData } from '../../../../services/authenticatedApiCalls';
@@ -15,6 +15,7 @@ import VoteButtons from '../../../../components/post/voteButtons';
 import { useUserContext } from '../../../../context/UserContext';
 import { IProfile } from '../../../../types/types';
 import CommentCount from '../../../../components/post/comment';
+import Tags from '../../../../components/tag';
 
 type Props = {
   postId: String
@@ -182,6 +183,7 @@ export default function UserPost({ postId, currentUserId }: Props) {
             />
           );
         })()}
+        <Tags tags={post.tags} />
         <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 3 }}>
           <VoteButtons
             upvotes={post.upvotes}
