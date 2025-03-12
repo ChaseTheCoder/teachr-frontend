@@ -72,7 +72,6 @@ export default function NewPost() {
     setLoading(true);
     // const tagIds = tags.map(tag => tag.id);
     const tagIds = tags.map(tag => {
-      console.log('Processing tag:', tag);
       return tag.id;
     });
     const newPost = {
@@ -80,13 +79,10 @@ export default function NewPost() {
       body: body,
       tags: tagIds
     };
-    console.log('New post:', newPost);
     try {
       await postOrPatchData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/posts/user/${profileData.id}/`, 'POST', newPost);
-      console.log('Created post:', Response);
       router.push('/feed');
     } catch (error) {
-      console.error('Error posting new data:', error);
       setLoading(false);
       return;
     } finally {
