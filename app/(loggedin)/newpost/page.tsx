@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Box, Button, Chip, Grid, Skeleton, TextField, Typography } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import { postOrPatchData } from '../../../services/authenticatedApiCalls';
@@ -22,6 +22,7 @@ export default function NewPost() {
   const [isLoading, setLoading] = useState(false);
   const [textDisabled, setTextDisabled] = useState(false);
   const router = useRouter();
+  const tagInputRef = useRef<HTMLInputElement>(null);
 
   const queryClient = new QueryClient();
   
@@ -44,6 +45,7 @@ export default function NewPost() {
     if (tags.some(existingTag => existingTag.tag === tag.toLocaleLowerCase())) {
       setTag('');
       setTextDisabled(false);
+      tagInputRef.current?.focus();
       return;
     }
     const tagSubmit = {
@@ -57,6 +59,7 @@ export default function NewPost() {
     } finally {
       setTag('');
       setTextDisabled(false);
+      tagInputRef.current?.focus();
     }
   };
 
@@ -178,6 +181,7 @@ export default function NewPost() {
           />
           <Box mb={2} mt={2}>
             <TextField
+              inputRef={tagInputRef}
               color='success'
               variant='outlined'
               size='small'
@@ -194,15 +198,17 @@ export default function NewPost() {
               fullWidth
             />
           </Box>
-          {tags.length > 0 &&
-            <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 2 }}>
-              {tags.length > 0 &&
-                tags.map(tag => {
+          <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 2 }}>
+            {tags.length > 0 ?
+              tags.map(tag => {
                   return <Chip label={tag.tag} key={tag.id} size='small' onDelete={() => handleDeletechip(tag.id)} />
-                })
-              }
-            </Box>
-          }
+                }) :
+              <Typography variant='subtitle1' color='textSecondary'>
+                Type out a tag and hit &apos;Enter&apos; so others can find your post.
+              </Typography>
+
+            }
+          </Box>
           <LoadingButton
             type='submit'
             variant='contained'

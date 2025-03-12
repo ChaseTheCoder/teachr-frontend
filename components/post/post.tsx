@@ -68,6 +68,7 @@ export default function Post({ post, profile, homePage }: Props) {
           sx={{
             display: 'flex',
             flexDirection: 'column',
+            width: '100%',
             '&:hover': {
               cursor: 'pointer',
               bgcolor: '#f0f0f0',
@@ -76,13 +77,14 @@ export default function Post({ post, profile, homePage }: Props) {
           }}
           gap={1}
         >
-          <Typography variant='h2' sx={{ fontSize: { xs: 16, sm: 18 } }} fontWeight='bold'>{post.title}</Typography>
+          <Typography variant='h2' sx={{ fontSize: { xs: 16, sm: 18 }, width: '100%' }} fontWeight='bold'>{post.title}</Typography>
             {post.body && (
             <Box
               sx={{ 
               fontSize: { xs: 12, sm: 14 },
               color: '#424242',
               margin: 0,
+              width: '100%',
               lineHeight: 1.4,
               '& a': {
                 color: 'blue',
