@@ -1,3 +1,8 @@
+export interface ITag {
+  id: string;
+  tag: string;
+}
+
 export interface IPost {
   id: string;
   title: string;
@@ -9,6 +14,7 @@ export interface IPost {
   has_upvoted: boolean | null;
   has_downvoted: boolean | null;
   comments: number;
+  tags: ITag[];
 }
 
 export interface IProfileBatch {
