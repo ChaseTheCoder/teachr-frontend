@@ -13,12 +13,14 @@ import { IProfile } from '../../../../types/types';
 import { getDataNoToken } from '../../../../services/unauthenticatedApiCalls';
 import { useUserContext } from '../../../../context/UserContext';
 import { ActivityLoading } from '../../../../components/activityLoading';
+import { useRouter, usePathname } from 'next/navigation';
 
 export default function Profile({
   params,
 }: {
   params: { profileId: string };
 }) {
+  const router = useRouter();
   const [sectionSelected, setSectionSelected] = useState('activity');
   const [currentUser, setCurrentUser] = useState(null);
   const { user, auth0Id, isLoadingUser } = useUserContext();
@@ -36,6 +38,12 @@ export default function Profile({
       return queryClient.getQueryData(['profile']);
     },
   });
+
+  useEffect(() => {
+    if (!isLoadingUser && !isFetchingProfileData && !profileData && user) {
+      router.replace('/signup');
+    }
+  }, [isLoadingUser, isFetchingProfileData, profileData, user]);
 
   useEffect(() => {
     if(!isFetchingProfileData && !isLoadingUser) {

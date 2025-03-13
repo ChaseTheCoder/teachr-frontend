@@ -145,10 +145,10 @@ export default function EditProfile({ auth0Id, signUpPage }: props) {
             <Skeleton variant='text' sx={{ height: '50px' }} />
           </> :
           <>
-            { !signUpPage &&
-              <>  
+            {!signUpPage &&
+              <>
                 <UploadProfilePic profileId={profileData.id} />
-                <Divider sx={{ marginY: 2 }} /> 
+                <Divider sx={{ marginY: 2 }} />
               </>
             }
             <Typography

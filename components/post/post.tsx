@@ -1,4 +1,4 @@
-import { Avatar, Box, Typography } from '@mui/material';
+import { Avatar, Box, Chip, Typography } from '@mui/material';
 import React from 'react';
 import { IPost, IProfileBatch } from '../../types/types';
 import Link from 'next/link';
@@ -6,6 +6,7 @@ import { timeAgo } from '../../utils/time';
 import TeacherAvatar from './avatar';
 import VoteButtons from './voteButtons';
 import CommentCount from './comment';
+import Tags from '../tag';
 
 type Props = {
   post: IPost
@@ -67,6 +68,7 @@ export default function Post({ post, profile, homePage }: Props) {
           sx={{
             display: 'flex',
             flexDirection: 'column',
+            width: '100%',
             '&:hover': {
               cursor: 'pointer',
               bgcolor: '#f0f0f0',
@@ -75,13 +77,14 @@ export default function Post({ post, profile, homePage }: Props) {
           }}
           gap={1}
         >
-          <Typography variant='h2' sx={{ fontSize: { xs: 16, sm: 18 } }} fontWeight='bold'>{post.title}</Typography>
+          <Typography variant='h2' sx={{ fontSize: { xs: 16, sm: 18 }, width: '100%' }} fontWeight='bold'>{post.title}</Typography>
             {post.body && (
             <Box
               sx={{ 
               fontSize: { xs: 12, sm: 14 },
               color: '#424242',
               margin: 0,
+              width: '100%',
               lineHeight: 1.4,
               '& a': {
                 color: 'blue',
@@ -96,6 +99,14 @@ export default function Post({ post, profile, homePage }: Props) {
             )}
         </Box>
       </Link>
+      {/* <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 3 }}>
+            {post.tags.length > 0 &&
+              post.tags.map(tag => {
+                return <Tag tag={tag} key={tag.id} />
+              })
+            }
+      </Box> */}
+      <Tags tags={post.tags} />
       <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 3 }}>
         <VoteButtons
           upvotes={post.upvotes}
