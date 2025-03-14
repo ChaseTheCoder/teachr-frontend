@@ -20,7 +20,7 @@ const TeacherAvatar: React.FC<TeacherAvatarProps> = ({ verified, profile_pic_url
                 height: size * 0.1875,
                 transform: 'translateX(-30%) translateY(-10%) rotate(10deg)',
                 borderRadius: '100% 0 100% 0',
-                backgroundColor: '#4caf50',
+                backgroundColor: '#246928',
                 top: '-20%',
                 left: '50%',
                 zIndex: 20,
