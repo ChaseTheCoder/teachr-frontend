@@ -10,8 +10,8 @@ export default function LoadingIndicator({ description }: Props) {
   return (
     <React.Fragment>
       <Container maxWidth="sm">
-        <Box sx={{ bgcolor: '#cfe8fc', height: '100%', width: '100%', display: 'flex' }}>
-          <CircularProgress/>
+        <Box sx={{ bgcolor: '#fff', height: '100%', width: '100%', display: 'flex' }}>
+          <CircularProgress size='large'/>
           <Typography align='center'>{description}</Typography>
         </Box>
       </Container>

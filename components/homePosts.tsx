@@ -41,7 +41,7 @@ export default function HomePosts() {
     }
   }, [posts, isFetching, isLoading]);
 
-  if (isLoading || isFetching) {
+  if (isLoading || isFetching || isLoadingBatchProfiles || isFetchingBatchProfiles || !posts || !batchProfileData) {
     return <LoadingIndicator description='Loading posts...' />
   }
 

@@ -14,7 +14,7 @@ export default function HomePage() {
             <Grid item xs={12} md={5}>
                 <Box sx={{ textAlign: 'center', alignItems: 'center', display: 'flex', flexDirection: 'column' }} gap={{xs: 1, md: 7}}>
                   <Image
-                    src="/Main.png"
+                    src="/AppleHappySmile1.png"
                     alt="Educational Illustration"
                     width={0}
                     height={0}
@@ -28,8 +28,8 @@ export default function HomePage() {
                 <Typography variant='h1' fontWeight='bold' fontSize={{ xs: 26, sm: 32, md: 44 }} align='center'>
                   Connect with Teachers Nationwide
                 </Typography>
-                <Typography variant='h2' fontSize={{ xs: 14, sm: 16, md: 18 }} color='textSecondary'>
-                  Post questions, share resources, and connect in a digital teachers&apos; lounge.
+                <Typography variant='h2' fontSize={{ xs: 18, sm: 20, md: 22 }} color='textSecondary' sx={{ width: '70%' }}>
+                  Where real teachers swap sanity-saving strategies without the social media circus.
                 </Typography>
                 <Box display="flex" justifyContent="center" sx={{ marginTop: '2rem' }}>
                   <Button
@@ -53,7 +53,7 @@ export default function HomePage() {
               Stay up to date to what teachers are discussing.
             </Typography>
             <Typography variant='h3' fontSize={{ xs: 18, sm: 22 }} color='textSecondary'>
-              Verified teachers get a stem & leaf on profile.
+              Verified teachers get a stem and leaf on their avatar.
             </Typography>
             <Typography variant='h3' fontSize={{ xs: 18, sm: 22 }} color='textSecondary' sx={{ paddingBottom: 3 }}>
               Share resources with educators.
@@ -78,8 +78,8 @@ export default function HomePage() {
         <Grid item xs={12} md={6}>
             <Box sx={{ padding: 2, borderRadius: 4, bgcolor: '#ffffff', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }} >
             <Image
-              src="/Automate.png"
-              alt="Educational Illustration of teachers connecting online."
+              src="/AppleSmilePondering1.png"
+              alt="Apple character smiling and pondering."
               width={0}
               height={0}
               sizes="30vw"
@@ -93,15 +93,30 @@ export default function HomePage() {
             <Typography variant='h3' fontSize={{ xs: 18, sm: 22 }} color='textSecondary'>
               We interviewed teachers and they told us:
             </Typography>
-            <Typography fontSize={14} color='textSecondary'>
-              &quot;I love new ideas, being in the know, following what people were doing. It was super important to be the best in my field to be the best in my evaluation.&quot;
-            </Typography>
-            <Typography fontSize={14} color='textSecondary'>
-              &quot;I&apos;m a 13th year teacher and I started a new curriculum. I use a FaceBook groups with other teachers, but would really love to seperate that from my social media.&quot;
-            </Typography>
-            <Typography fontSize={14} color='textSecondary'>
-              &quot;I could benefit from getting different perspectives on small groups, state testing, class routine and procedures.&quot;
-            </Typography>
+            <Box>              
+              <Typography fontSize={14} color='textSecondary'>
+                &quot;I love new ideas, being in the know, and following what teachers were doing. It was super important to be the best in my field, to be the best in my evaluation.&quot;
+              </Typography>
+              <Typography fontSize={14} color='textSecondary'>
+                -40 Year Veteran Elementary Teacher
+              </Typography>
+            </Box>
+            <Box>
+              <Typography fontSize={14} color='textSecondary'>
+                &quot;I&apos;m a 13th year teacher and I started a new curriculum. I use a FaceBook groups with other teachers, but would really love to seperate that from my social media.&quot;
+              </Typography>
+              <Typography fontSize={14} color='textSecondary'>
+                -Special Education Teacher
+              </Typography>
+            </Box>
+            <Box>
+              <Typography fontSize={14} color='textSecondary'>
+                &quot;I could benefit from getting different perspectives on small groups, state testing, class routine and procedures.&quot;
+              </Typography>
+              <Typography fontSize={14} color='textSecondary'>
+                -2nd Year Teacher
+              </Typography>
+            </Box>
             <Link href='/feed'>
               <Button
                 color='success'
@@ -119,7 +134,7 @@ export default function HomePage() {
         <Surface>
           <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'center', textAlign: 'center', alignItems: 'center', padding: 4, width: { xs: '90vw', md: '60vw' } }} gap={3}>
             <Image
-              src="/Collaborate.png"
+              src="/AppleHappyPhone.png"
               alt="Educational Illustration of teachers connecting online."
               width={0}
               height={0}
@@ -128,7 +143,7 @@ export default function HomePage() {
             />
             <Typography variant='h2' fontWeight='bold' fontSize={{ xs: 28, sm: 38, md: 42 }} color='success'>Our Mission</Typography>
             <Typography fontSize={{ xs: 16, md: 20 }} align='justify' color='textSecondary'>
-              Our mission is to unite teachers on one platform through shared knowledge and resources. We believe that teachers are the best resource for other teachers. And our app will support them and provide features to elevate their profession and their professional growth.
+              Our mission is to unite teachers on one platform through shared knowledge and resources. We believe that teachers are the best resource for other teachers. And our app will support them and provide features to elevate their profession and their professional growth. As we grow, we&apos;ll add features and limit them to verified teachers to keep the quality of the content high.
             </Typography>
           </Box>
         </Surface>
