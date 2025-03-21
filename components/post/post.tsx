@@ -1,4 +1,4 @@
-import { Avatar, Box, Chip, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import React from 'react';
 import { IPost, IProfileBatch } from '../../types/types';
 import Link from 'next/link';
@@ -11,10 +11,9 @@ import Tags from '../tag';
 type Props = {
   post: IPost
   profile: IProfileBatch
-  homePage?: boolean
 }
 
-export default function Post({ post, profile, homePage }: Props) {
+export default function Post({ post, profile }: Props) {
 
   return (
     <Box
@@ -30,7 +29,7 @@ export default function Post({ post, profile, homePage }: Props) {
       gap={1}
     >
       {profile &&
-        <Link key={`feed-profile-${profile.id}`} href={homePage ? '/#' : `/profile/${profile.id}`} passHref>
+        <Link key={`feed-profile-${profile.id}`} href={`/profile/${profile.id}`} passHref>
           <Box 
             sx={{ 
               display: 'flex', 
@@ -61,7 +60,7 @@ export default function Post({ post, profile, homePage }: Props) {
       }
       <Link
         key={post.id}
-        href={homePage ? '/#' : `/post/${post.id}`}
+        href={`/post/${post.id}`}
         passHref
       >
         <Box
@@ -99,14 +98,7 @@ export default function Post({ post, profile, homePage }: Props) {
             )}
         </Box>
       </Link>
-      {/* <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 3 }}>
-            {post.tags.length > 0 &&
-              post.tags.map(tag => {
-                return <Tag tag={tag} key={tag.id} />
-              })
-            }
-      </Box> */}
-      <Tags tags={post.tags} />
+      <Tags tags={post.tags} grades={post.grades} />
       <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 3 }}>
         <VoteButtons
           upvotes={post.upvotes}

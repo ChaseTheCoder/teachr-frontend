@@ -1,3 +1,8 @@
+export interface IGrade {
+  id: string;
+  grade: string;
+}
+
 export interface ITag {
   id: string;
   tag: string;
@@ -14,6 +19,7 @@ export interface IPost {
   has_upvoted: boolean | null;
   has_downvoted: boolean | null;
   comments: number;
+  grades: IGrade[];
   tags: ITag[];
 }
 

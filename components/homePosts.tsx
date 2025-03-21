@@ -51,7 +51,7 @@ export default function HomePosts() {
         posts.map((post) => {
           const profile = batchProfileData?.find(profile => profile.id === post.user);
           return (
-            <Post key={post.id} post={post} profile={profile} homePage />
+            <Post key={post.id} post={post} profile={profile} />
         )})
       }
     </>

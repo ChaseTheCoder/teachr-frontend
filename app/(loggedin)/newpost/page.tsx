@@ -1,14 +1,14 @@
 'use client'
 
 import React, { useState, useRef } from 'react';
-import { Box, Button, Chip, Grid, Skeleton, TextField, Typography } from '@mui/material';
+import { Box, Button, ButtonGroup, Chip, Grid, Skeleton, TextField, Typography } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import { postOrPatchData } from '../../../services/authenticatedApiCalls';
 import Surface from "../../../components/surface/Surface";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import { useQuery, QueryClient } from '@tanstack/react-query';
 import { LoadingButton } from '@mui/lab';
-import { IProfile } from '../../../types/types';
+import { IGrade, IProfile } from '../../../types/types';
 import { getDataNoToken } from '../../../services/unauthenticatedApiCalls';
 import Editor from '../../../components/editor';
 
@@ -20,7 +20,7 @@ export default function NewPost() {
   const [tags, setTags] = useState([]);
   const [body, setBody] = useState('');
   const [isLoading, setLoading] = useState(false);
-  const [textDisabled, setTextDisabled] = useState(false);
+  const [selectedGrades, setSelectedGrades] = useState<string[]>([]);
   const router = useRouter();
   const tagInputRef = useRef<HTMLInputElement>(null);
 
@@ -38,14 +38,20 @@ export default function NewPost() {
       return queryClient.getQueryData(['profile']);
     },
   });
+  
+  const { data: gradesData, isLoading: isLoadingGrades, isError: isErrorGrades } = useQuery<IGrade[]>({
+    queryKey: ['grades'],
+    queryFn: () => getDataNoToken(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/grades/`),
+    staleTime: 1000 * 60 * 60,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    refetchOnMount: false,
+  });
 
   const handleTag = async (event: React.FormEvent) => {
-    setTextDisabled(true);
     if (tag.trim() === '') return;
     if (tags.some(existingTag => existingTag.tag === tag.toLocaleLowerCase())) {
       setTag('');
-      setTextDisabled(false);
-      tagInputRef.current?.focus();
       return;
     }
     const tagSubmit = {
@@ -58,8 +64,6 @@ export default function NewPost() {
       console.error('Error adding new tag:', error);
     } finally {
       setTag('');
-      setTextDisabled(false);
-      tagInputRef.current?.focus();
     }
   };
 
@@ -70,13 +74,13 @@ export default function NewPost() {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setLoading(true);
-    // const tagIds = tags.map(tag => tag.id);
     const tagIds = tags.map(tag => {
       return tag.id;
     });
     const newPost = {
       title: title,
       body: body,
+      grades: selectedGrades,
       tags: tagIds
     };
     try {
@@ -175,31 +179,54 @@ export default function NewPost() {
             }}
             value={body}
           />
-          <Box mb={2} mt={2}>
-            <TextField
-              inputRef={tagInputRef}
-              color='success'
-              variant='outlined'
-              size='small'
-              label='Tags'
-              disabled={textDisabled}
-              value={tag}
-              onChange={(e) => setTag(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  e.preventDefault();
-                  handleTag(e);
-                }
-              }}
-              fullWidth
-            />
+          <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 2 }} mb={2} mt={2}>
+            <ButtonGroup size="small" aria-label="Small button group">
+              {gradesData && gradesData.map(grade => {
+                const isSelected = selectedGrades.includes(grade.id);
+                return (
+                  <Button
+                    key={grade.id}
+                    variant={isSelected ? 'contained' : 'outlined'}
+                    color='success'
+                    size='small'
+                    onClick={() => {
+                      setSelectedGrades(prev => 
+                        prev.includes(grade.id) 
+                          ? prev.filter(id => id !== grade.id)
+                          : [...prev, grade.id]
+                      );
+                    }}
+                  >
+                    {grade.grade}
+                  </Button>
+                );
+              })}
+            </ButtonGroup>
           </Box>
-          <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 2 }}>
+            <Box mb={1}>
+              <TextField
+                inputRef={tagInputRef}
+                color='success'
+                variant='outlined'
+                size='small'
+                label='Tags'
+                value={tag}
+                onChange={(e) => setTag(e.target.value)}
+                onKeyDown={async (e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    await handleTag(e);
+                  }
+                }}
+                fullWidth
+              />
+            </Box>
+          <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 1 }} mb={2}>
             {tags.length > 0 ?
               tags.map(tag => {
                   return <Chip label={tag.tag} key={tag.id} size='small' onDelete={() => handleDeletechip(tag.id)} />
                 }) :
-              <Typography variant='subtitle1' color='textSecondary'>
+              <Typography fontSize={14} color='textSecondary' ml={1}>
                 Type out a tag and hit &apos;Enter&apos; so others can find your post.
               </Typography>
 
