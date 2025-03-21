@@ -229,7 +229,6 @@ export default function NewPost() {
               <Typography fontSize={14} color='textSecondary' ml={1}>
                 Type out a tag and hit &apos;Enter&apos; so others can find your post.
               </Typography>
-
             }
           </Box>
           <LoadingButton
