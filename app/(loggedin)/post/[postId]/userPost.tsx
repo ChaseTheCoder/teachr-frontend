@@ -183,7 +183,10 @@ export default function UserPost({ postId, currentUserId }: Props) {
             />
           );
         })()}
-        <Tags tags={post.tags} />
+        <Tags
+          tags={post.tags}
+          grades={post.grades}
+        />
         <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 3 }}>
           <VoteButtons
             upvotes={post.upvotes}
