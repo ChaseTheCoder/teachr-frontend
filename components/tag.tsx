@@ -10,9 +10,9 @@ interface TagsProps {
 
 const Tags: React.FC<TagsProps> = ({tags, grades}) => {
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 1 }}>
+    <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 1, flexWrap: 'wrap' }}>
       {grades.length > 0 &&
-        grades.map(grade => {
+      grades.map(grade => {
           return <Chip label={grade.grade} key={grade.id} size='small' variant='outlined' />
         })
       }
