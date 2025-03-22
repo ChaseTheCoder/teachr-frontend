@@ -48,6 +48,14 @@ export default function NewPost() {
     refetchOnMount: false,
   });
 
+  const handleSelectAllGrades = () => {
+    if (selectedGrades.length > 0) {
+      setSelectedGrades([]);
+    } else {
+      setSelectedGrades(gradesData?.map(grade => grade.id) || []);
+    }
+  };
+
   const handleTag = async (event: React.FormEvent) => {
     if (tag.trim() === '') return;
     if (tags.some(existingTag => existingTag.tag === tag.toLocaleLowerCase())) {
@@ -179,29 +187,39 @@ export default function NewPost() {
             }}
             value={body}
           />
-          <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 2 }} mb={2} mt={2}>
-            <ButtonGroup size="small" aria-label="Small button group">
+          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }} mb={2} mt={2}>
+            <Button
+              variant="text"
+              color="success"
+              size="small"
+              onClick={handleSelectAllGrades}
+              sx={{ alignSelf: 'flex-start', marginBottom: 1 }}
+            >
+              {selectedGrades.length > 0 ? 'Unselect All Grades' : 'Select All Grades'}
+            </Button>
+            <Box flexDirection='row'>
               {gradesData && gradesData.map(grade => {
-                const isSelected = selectedGrades.includes(grade.id);
-                return (
-                  <Button
-                    key={grade.id}
-                    variant={isSelected ? 'contained' : 'outlined'}
-                    color='success'
-                    size='small'
-                    onClick={() => {
-                      setSelectedGrades(prev => 
-                        prev.includes(grade.id) 
-                          ? prev.filter(id => id !== grade.id)
-                          : [...prev, grade.id]
-                      );
-                    }}
-                  >
-                    {grade.grade}
-                  </Button>
-                );
+              const isSelected = selectedGrades.includes(grade.id);
+              return (
+              <Button
+              key={grade.id}
+              variant={isSelected ? 'contained' : 'outlined'}
+              color='success'
+              size='small'
+              onClick={() => {
+                  setSelectedGrades(prev => 
+                  prev.includes(grade.id) 
+                    ? prev.filter(id => id !== grade.id)
+                    : [...prev, grade.id]
+                  );
+                }}
+                sx={{ margin: '2px' }}
+                >
+                {grade.grade}
+                </Button>
+              );
               })}
-            </ButtonGroup>
+            </Box>
           </Box>
             <Box mb={1}>
               <TextField
