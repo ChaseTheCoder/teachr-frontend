@@ -18,7 +18,7 @@ export default function AuthenticatedLayout({
         <Box sx={{ display: { xs: 'none', md: 'block' } }}>
           <SideNav/>
         </Box>
-        <Box sx={{ paddingTop: { xs: '14px', md: '18px'}, paddingX: { xs: '7px', md: '18px'}, width: '100%' }}>
+        <Box sx={{ paddingTop: { xs: '14px', md: '18px'}, paddingX: { xs: 0, md: '18px'}, width: '100%' }}>
           {children}
         </Box>
       </Stack>
