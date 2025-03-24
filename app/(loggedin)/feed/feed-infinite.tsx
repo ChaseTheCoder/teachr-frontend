@@ -12,7 +12,12 @@ import { IProfile } from '../../../types/types';
 import { getData } from '../../../services/authenticatedApiCalls';
 import { useUserContext } from '../../../context/UserContext';
 
-export default function InfiniteFeed() {
+interface InfiniteFeedProps {
+  selectedGrades: string[];
+  selectedTags: string[];
+}
+
+export default function InfiniteFeed({ selectedGrades, selectedTags }: InfiniteFeedProps) {
   const [userIds, setUserIds] = useState<string[]>([]);
   const [batchProfiles, setBatchProfiles] = useState([]);
   const observer = useRef<IntersectionObserver>();
@@ -20,6 +25,9 @@ export default function InfiniteFeed() {
   const queryClient = new QueryClient();
   const [isProfileParamReady, setIsProfileParamReady] = useState(false);
   const [profileParam, setProfileParam] = useState<string>('');
+  const [gradeParams, setGradeParams] = useState<string>('');
+  const [tagParams, setTagParams] = useState<string>('');
+  const [feedUrl, setFeedUrl] = useState<string>(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/posts/feed/`);
 
   const { data: profileData, isFetching: isFetchingProfileData, isLoading: isLoadingProfileData, isError: isErrorProfileData } = useQuery<IProfile>({
     queryKey: ['profile'],
@@ -52,6 +60,30 @@ export default function InfiniteFeed() {
     }
   }, [profileData, isFetchingProfileData, isLoadingProfileData, isLoadingUser]);
 
+  useEffect(() => {
+    console.log('selectedGrades', selectedGrades);
+    console.log('selectedTags', selectedTags);
+    if (selectedGrades.length > 0) {
+      const params = selectedGrades.map(grade => `&grade_ids=${grade}`).join('');
+      setGradeParams(params);
+    } else {
+      setGradeParams('');
+    }
+    if (selectedTags.length > 0) {
+      const params = selectedTags.map(tag => `&tag_ids=${tag}`).join('');
+      setTagParams(params);
+    } else {
+      setTagParams('');
+    }
+  }, [selectedGrades, selectedTags]);
+
+  useEffect(() => {
+    console.log('feedUrl', feedUrl);
+    if (isProfileParamReady) {
+      setFeedUrl(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/posts/feed/?page=1${gradeParams}${tagParams}${profileParam}`);
+    }
+  }, [gradeParams, isProfileParamReady, profileData, profileParam, tagParams]);
+
 
   const {
     data: feedPosts,
@@ -66,13 +98,13 @@ export default function InfiniteFeed() {
     status,
     ...result
   } = useInfiniteQuery({
-    queryKey: ['postsFeed'],
-    queryFn: ({ pageParam }) => getDataNoToken(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/posts/feed/?page=${pageParam}&page_size=8${profileParam}`),
+    queryKey: ['postsFeed', feedUrl],
+    queryFn: ({ pageParam }) => getDataNoToken(feedUrl + `&page=${pageParam}`),
     initialPageParam: 1,
     getNextPageParam: (lastPage, allPages) => {
       return allPages.length + 1;
     },
-    enabled: isProfileParamReady
+    enabled: isProfileParamReady && !!feedUrl
   })
 
   useEffect(() => {
