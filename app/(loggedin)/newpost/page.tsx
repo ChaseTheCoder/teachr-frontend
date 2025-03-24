@@ -202,11 +202,11 @@ export default function NewPost() {
               const isSelected = selectedGrades.includes(grade.id);
               return (
               <Button
-              key={grade.id}
-              variant={isSelected ? 'contained' : 'outlined'}
-              color='success'
-              size='small'
-              onClick={() => {
+                key={grade.id}
+                variant={isSelected ? 'contained' : 'outlined'}
+                color='success'
+                size='small'
+                onClick={() => {
                   setSelectedGrades(prev => 
                   prev.includes(grade.id) 
                     ? prev.filter(id => id !== grade.id)
@@ -214,7 +214,7 @@ export default function NewPost() {
                   );
                 }}
                 sx={{ margin: '2px' }}
-                >
+              >
                 {grade.grade}
                 </Button>
               );
