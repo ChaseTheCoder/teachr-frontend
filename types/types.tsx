@@ -51,3 +51,30 @@ export interface EditorProps {
   placeholder?: string;
   setIsTextFieldFocused?: (focused: boolean) => void;
 }
+
+export interface IGroup {
+  id: string;
+  title: string;
+  about: string;
+  created_at: string;
+  is_public: boolean;
+  member_count: number;
+  is_member: boolean;
+  is_admin: boolean;
+}
+
+export type IGroupList = IGroup[];
+
+export interface IGroupDetail {
+  id: string;
+  title: string;
+  about: string;
+  created_at: string;
+  is_public: boolean;
+  member_count: number;
+  admins: IProfileBatch[];
+  is_member: boolean;
+  is_admin: boolean;
+  profile_pic: string | null;
+  profile_pic_url: string | null;
+}
