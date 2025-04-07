@@ -1,4 +1,4 @@
-import { Group } from "@mui/icons-material";
+import { AdminPanelSettings, Group } from "@mui/icons-material";
 import { Box, Button, Typography } from "@mui/material";
 import { postOrPatchData } from "../../../services/authenticatedApiCalls";
 import { useState } from "react";
@@ -53,24 +53,47 @@ const JoinGroup: React.FC<JoinGroupProps> = ({
     }
   });
 
+  if(isPending) {
+    return (
+      <Box
+        display='flex'
+        flexDirection='row'
+        alignItems='center'
+        gap={1}
+      >
+        <Group color='warning' fontSize='small' />
+        <Typography
+          sx={{
+            fontSize: { xs: 12, sm: 14 },
+          }}
+          color='textSecondary'
+        >
+          Your request to join this group is pending
+        </Typography>
+      </Box>
+    )
+  } 
+
   if(isMember) {
     return (
-    <Box
-      display='flex'
-      flexDirection='row'
-      alignItems='center'
-      gap={1}
-    >
-      <Group color='success' fontSize='small' />
-      <Typography
-        sx={{
-          fontSize: { xs: 12, sm: 14 },
-        }}
-        color='textSecondary'
+      <Box
+        display='flex'
+        flexDirection='row'
+        alignItems='center'
+        gap={1}
       >
-        {isAdmin? 'You are an Admin' : 'You are a member'}
-      </Typography>
-    </Box>
+        {isAdmin ?
+          <AdminPanelSettings color='success' fontSize='small' /> :
+          <Group color='success' fontSize='small' />}
+        <Typography
+          sx={{
+            fontSize: { xs: 12, sm: 14 },
+          }}
+          color='textSecondary'
+        >
+          {isAdmin? 'You are an Admin' : 'You are a member'}
+        </Typography>
+      </Box>
     )
   } 
 

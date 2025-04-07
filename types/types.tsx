@@ -75,6 +75,12 @@ export interface IGroupDetail {
   admins: IProfileBatch[];
   is_member: boolean;
   is_admin: boolean;
+  is_pending: boolean;
   profile_pic: string | null;
   profile_pic_url: string | null;
+}
+
+export interface IGroupMembers {
+  members: IProfileBatch[];
+  pending?: IProfileBatch[];
 }

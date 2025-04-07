@@ -1,5 +1,4 @@
 import { Avatar, Box, Typography } from "@mui/material";
-import { Group } from "@mui/icons-material";
 import JoinGroup from "../joinGroup";
 import { IGroupDetail } from "../../../../types/types";
 
@@ -59,7 +58,7 @@ const GroupInformation: React.FC<GroupInformationProps> = ({groupData, profileId
         <JoinGroup
           isPublic={groupData.is_public}
           isMember={groupData.is_member}
-          isPending={false}
+          isPending={groupData.is_pending}
           isAdmin={groupData.is_admin}
           groupId={groupData.id}
           profileId={profileId}
