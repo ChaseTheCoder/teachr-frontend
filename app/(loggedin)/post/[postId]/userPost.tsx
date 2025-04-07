@@ -140,7 +140,7 @@ export default function UserPost({ postId, currentUserId }: Props) {
           >
             <TeacherAvatar
               verified={profile.verified}
-              profile_pic_url={profile.profile_pic_url}
+              profilePicUrl={profile.profile_pic_url}
             />
             <Box sx={{ display: 'flex', flexDirection: 'column' }}>
               <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
