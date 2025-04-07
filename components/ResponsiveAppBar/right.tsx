@@ -109,7 +109,7 @@ export default function Right({ auth0Id }: { auth0Id: string }) {
           <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
             <TeacherAvatar
               verified={profileData?.verified}
-              profile_pic_url={profileData?.profile_pic_url}
+              profilePicUrl={profileData?.profile_pic_url}
             />
           </IconButton>
         </Tooltip>

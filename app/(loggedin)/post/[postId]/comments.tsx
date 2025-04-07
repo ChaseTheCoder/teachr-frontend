@@ -146,7 +146,7 @@ export default function Comments({ postId, currentUserId }: Props) {
                 }}
               >
                 <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                  <TeacherAvatar verified={verified} profile_pic_url={userProfile?.profile_pic_url } />
+                  <TeacherAvatar verified={verified} profilePicUrl={userProfile?.profile_pic_url } />
                   <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                     <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
                       <Typography sx={{ fontSize: { xs: 12, sm: 14 } }} fontWeight='bold'>{teacherName ?? 'User not found'}</Typography>
