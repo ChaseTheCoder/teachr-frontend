@@ -106,10 +106,13 @@ export default function Notifications() {
       return 'Someone upvoted your comment';
     } else if(notificationType === 'upvote') {
       return 'Someone upvoted';
+    } else if (notificationType === 'group_invite_accepted') {
+      return 'Your group invite was accepted';
     }
   }
 
-  const createNotificationUrl = (urlId: string) => {
+  const createNotificationUrl = (urlId: string, notificationType: string) => {
+    if(notificationType === 'group_invite_accepted') return `/groups/${urlId}`;
     return `/post/${urlId}`;
   }
 
@@ -136,7 +139,7 @@ export default function Notifications() {
               {notificationsDisplayed.map((notification) => {
                 const userProfile = currentProfiles?.find(batchProfile => batchProfile.id === notification.initiator);
                 const message = createNotificationMessage(notification.notification_type);
-                const notificationUrl = createNotificationUrl(notification.url_id);
+                const notificationUrl = createNotificationUrl(notification.url_id, notification.notification_type);
                 return (
                   <ListItemButton
                     alignItems="center"

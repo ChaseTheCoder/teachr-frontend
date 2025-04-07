@@ -2,12 +2,13 @@
 
 import React from 'react';
 import { Box, Button, Stack } from '@mui/material';
-import { Add, Home } from '@mui/icons-material';
+import { Add, Home, Group } from '@mui/icons-material';
 import { usePathname } from 'next/navigation';
 import { useUserContext } from '../../context/UserContext';
 
 export default function SideNav() {
   let pathname = usePathname()
+  const { user } = useUserContext();
 
   return (
     <aside>
@@ -35,6 +36,16 @@ export default function SideNav() {
           >
             Home
           </Button>
+          {user && (
+            <Button
+              variant={pathname.includes('groups') ? 'outlined' : 'text'}
+              startIcon={<Group />}
+              href='/groups/'
+              color='success'
+            >
+              Groups
+            </Button>
+          )}
         </Stack>
       </Box>
     </aside>

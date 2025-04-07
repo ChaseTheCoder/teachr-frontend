@@ -23,13 +23,6 @@ export default function ProfileInformation(
   return (
     <Surface>
       <Box sx={{ display: 'flex', flexDirection: 'row' }}>
-      {/* <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-        <Avatar
-          alt="Profile Image"
-          sx={{ width: {xs: 75, md:100}, height: {xs: 75, md:100} }}
-          src={profileData?.profile_pic_url}
-        />
-      </Box> */}
       <Box display='inline-flex'>
         <Box position="relative" display="inline-block" sx={{ overflow: 'visible' }}>
           {profileData.verified &&
