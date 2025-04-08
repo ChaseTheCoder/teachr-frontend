@@ -20,9 +20,6 @@ const GroupList: React.FC = () => {
     refetchOnReconnect: false,
     refetchOnMount: false,
     enabled: !!auth0Id,
-    // initialData: () => {
-    //   return queryClient.getQueryData(['profile']);
-    // },
   });
 
   const { data: groupData, isFetching: isFetchingGroupData, isLoading: isLoadingGroupData, isError: isErrorGroupData } = useQuery<IGroupList>({

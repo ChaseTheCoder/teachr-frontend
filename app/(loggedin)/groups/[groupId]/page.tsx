@@ -54,10 +54,11 @@ export default function GroupLayout({
           groupData={groupData}
           profileId={profileData?.id}
         />
-        <Box sx={{ display: 'flex', flexDirection: 'row' }} gap={2}>
+        <Box sx={{ display: 'flex', flexDirection: 'row' }} gap={2} mx={.5} ml={1}>
           <Button
             color='success'
             size='small'
+            variant={sectionSelected === 'activity' ? 'outlined' : 'text'}
             onClick={() => setSectionSelected('activity')}
           >
             Activity
@@ -65,6 +66,7 @@ export default function GroupLayout({
           <Button
             color='success'
             size='small'
+            variant={sectionSelected === 'about' ? 'outlined' : 'text'}
             onClick={() => setSectionSelected('about')}
           >
             About
@@ -73,6 +75,7 @@ export default function GroupLayout({
             <Button
               color='success'
               size='small'
+              variant={sectionSelected === 'membership' ? 'outlined' : 'text'}
               onClick={() => setSectionSelected('membership')}
             >
               Membership
@@ -82,6 +85,7 @@ export default function GroupLayout({
             <Button
               color='success'
               size='small'
+              variant={sectionSelected === 'settings' ? 'outlined' : 'text'}
               onClick={() => setSectionSelected('settings')}
             >
               Admin Settings
@@ -92,6 +96,8 @@ export default function GroupLayout({
           <GroupActivity
             isPublic={groupData.is_public}
             isMember={groupData.is_member}
+            groupId={groupId}
+            profileId={profileData?.id}
           />
         )}
         {sectionSelected === 'about' && (
