@@ -23,7 +23,7 @@ const GroupList: React.FC = () => {
   });
 
   const { data: groupData, isFetching: isFetchingGroupData, isLoading: isLoadingGroupData, isError: isErrorGroupData } = useQuery<IGroupList>({
-    queryKey: ['groups', profileData?.id],
+    queryKey: ['groups'],
     queryFn: () => getData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/groups/?user=${profileData?.id}`),
     staleTime: 1000 * 60 * 60,
     refetchOnWindowFocus: false,

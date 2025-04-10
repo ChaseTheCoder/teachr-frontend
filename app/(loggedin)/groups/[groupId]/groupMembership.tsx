@@ -46,6 +46,9 @@ const GroupMembership: React.FC<GroupMembershipProps> = ({ groupId, isAdmin, pro
         setSectionSelected('activity');
       }
       queryClient.refetchQueries({ queryKey: ['group', groupId] });
+      queryClient.refetchQueries({ queryKey: ['groups'] });
+      queryClient.refetchQueries({ queryKey: ['groupMembers', groupId] });
+      queryClient.refetchQueries({ queryKey: ['posts', 'group', groupId] });
     },
     onError: (error) => {
       console.error('Error leaving group:', error);

@@ -115,7 +115,7 @@ export default function NewPost() {
         },
       });
       if (groupId) {
-        await queryClient.invalidateQueries({ queryKey: ['groupPosts', groupId] });
+        await queryClient.invalidateQueries({ queryKey: ['posts', 'group', groupId] });
         await queryClient.invalidateQueries({ queryKey: ['group', groupId] });
         router.push(`/groups/${groupId}`);
       } else {
