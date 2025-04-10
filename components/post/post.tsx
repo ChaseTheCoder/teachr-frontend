@@ -98,7 +98,7 @@ export default function Post({ post, profile }: Props) {
             )}
         </Box>
       </Link>
-      <Tags tags={post.tags} grades={post.grades} />
+      <Tags group={post.group} tags={post.tags} grades={post.grades} />
       <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 3 }}>
         <VoteButtons
           upvotes={post.upvotes}

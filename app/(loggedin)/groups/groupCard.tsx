@@ -37,7 +37,7 @@ export default function GroupCard({ group }: { group: IGroup }) {
         >
           <Avatar
             sx={{ width: { xs: 30, md: 35 }, height: { xs: 30, md: 35 }, marginRight: '.5rem' }}
-            src={undefined}
+            src={group.profile_pic}
           />
           <Typography sx={{ fontSize: { xs: 16, sm: 18 } }} fontWeight='bold'>{group.title}</Typography>
         </Box>

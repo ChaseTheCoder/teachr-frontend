@@ -1,6 +1,6 @@
 'use client'
 
-import { Avatar, Box, Chip, Fade, IconButton, List, ListItemButton, Paper, Popper, PopperPlacementType, Skeleton, Typography } from '@mui/material';
+import { Box, Fade, IconButton, List, ListItemButton, Paper, Popper, PopperPlacementType, Skeleton, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import MoreVert from '@mui/icons-material/MoreVert';
 import { deleteData, getData } from '../../../../services/authenticatedApiCalls';
@@ -77,7 +77,7 @@ export default function UserPost({ postId, currentUserId }: Props) {
 
   const mutationDelete = useMutation({
     mutationFn: () => {
-      return deleteData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/post/${post.id}}`);
+      return deleteData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/post/${post.id}/?user_id=${profileData.id}`);
     },
     onSuccess: () => {
       window.location.href = '/feed';
@@ -184,6 +184,7 @@ export default function UserPost({ postId, currentUserId }: Props) {
           );
         })()}
         <Tags
+          group={post.group ?? null}
           tags={post.tags}
           grades={post.grades}
         />

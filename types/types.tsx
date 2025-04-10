@@ -10,10 +10,10 @@ export interface ITag {
 
 export interface IPost {
   id: string;
+  user: string;
   title: string;
   body: string | null;
   timestamp: string;
-  user: string;
   upvotes: number;
   downvotes: number;
   has_upvoted: boolean | null;
@@ -21,6 +21,8 @@ export interface IPost {
   comments: number;
   grades: IGrade[];
   tags: ITag[];
+  group: IGroupPost | null;
+  is_public: boolean;
 }
 
 export interface IProfileBatch {
@@ -61,9 +63,17 @@ export interface IGroup {
   member_count: number;
   is_member: boolean;
   is_admin: boolean;
+  is_pending: boolean;
+  profile_pic: string | null;
 }
 
 export type IGroupList = IGroup[];
+
+export interface IGroupPost {
+  id: string;
+  title: string;
+  is_public: boolean;
+}
 
 export interface IGroupDetail {
   id: string;
