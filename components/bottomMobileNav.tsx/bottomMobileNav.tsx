@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Badge, BottomNavigation, BottomNavigationAction } from '@mui/material';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import { Add, Home } from '@mui/icons-material';
+import { Add, Group, Home } from '@mui/icons-material';
 import { QueryClient, useQuery } from '@tanstack/react-query';
 import { getData } from '../../services/authenticatedApiCalls';
 import { IProfile } from '../../types/types';
@@ -73,6 +73,13 @@ const BottomMobileNav = () => {
         icon={<Home />}
         href='/feed'
         sx={{ color: pathname === '/feed' && 'success.main' }}
+      />
+      <BottomNavigationAction 
+        label='Groups'
+        disabled={!profileData}
+        icon={<Group />}
+        href='/groups'
+        sx={{ color: pathname.startsWith('/groups') && 'success.main' }}
       />
       <BottomNavigationAction
         label="Post"

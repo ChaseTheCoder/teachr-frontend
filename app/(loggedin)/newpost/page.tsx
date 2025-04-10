@@ -3,18 +3,22 @@
 import React, { useState, useRef } from 'react';
 import { Box, Button, ButtonGroup, Chip, Grid, Skeleton, TextField, Typography } from '@mui/material';
 import { useRouter } from 'next/navigation';
-import { postOrPatchData } from '../../../services/authenticatedApiCalls';
+import { getData, postOrPatchData } from '../../../services/authenticatedApiCalls';
 import Surface from "../../../components/surface/Surface";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import { useQuery, QueryClient } from '@tanstack/react-query';
 import { LoadingButton } from '@mui/lab';
 import { IGrade, IProfile } from '../../../types/types';
 import { getDataNoToken } from '../../../services/unauthenticatedApiCalls';
+import { useSearchParams } from 'next/navigation';
 import Editor from '../../../components/editor';
+import { PostType } from './postType';
 
 export default function NewPost() {
   const { user, error, isLoading: isLoadingUser } = useUser();
   const auth0Id = user?.sub;
+  const searchParams = useSearchParams();
+  const groupId = searchParams.get('groupId');
   const [title, setTitle] = useState('');
   const [tag, setTag] = useState('');
   const [tags, setTags] = useState([]);
@@ -37,6 +41,16 @@ export default function NewPost() {
     initialData: () => {
       return queryClient.getQueryData(['profile']);
     },
+  });
+
+  const { data: groupData, isFetching: isFetchingGroupData, isLoading: isLoadingGroupData, isError: isErrorGroupData } = useQuery({
+    queryKey: ['group', groupId],
+    queryFn: () => getData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/group/${groupId}/?user=${profileData?.id}`),
+    staleTime: 1000 * 60 * 60,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    refetchOnMount: false,
+    enabled: !!user && !!profileData?.id && !!groupId,
   });
   
   const { data: gradesData, isLoading: isLoadingGrades, isError: isErrorGrades } = useQuery<IGrade[]>({
@@ -89,11 +103,16 @@ export default function NewPost() {
       title: title,
       body: body,
       grades: selectedGrades,
-      tags: tagIds
+      tags: tagIds,
+      group: groupId,
     };
     try {
       await postOrPatchData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/posts/user/${profileData.id}/`, 'POST', newPost);
-      router.push('/feed');
+      if (groupId) {
+        router.push(`/groups/${groupId}`);
+      } else {
+        router.push('/feed');
+      }
     } catch (error) {
       setLoading(false);
       return;
@@ -165,9 +184,9 @@ export default function NewPost() {
     <Grid container spacing={1}>
       <Grid item xs={12} md={9}>
         <Surface>
-          <Typography variant='h4' component='h1' gutterBottom>
-          Create a Public Post
-          </Typography>
+          <PostType
+            groupData={groupData ?? null}
+          />
           <form onSubmit={handleSubmit}>
           <Box mb={2}>
             <TextField
@@ -187,13 +206,13 @@ export default function NewPost() {
             }}
             value={body}
           />
-          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }} mb={2} mt={2}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }} mb={2} mt={2}>
             <Button
               variant="text"
               color="success"
               size="small"
               onClick={handleSelectAllGrades}
-              sx={{ alignSelf: 'flex-start', marginBottom: 1 }}
+              sx={{ marginBottom: .25 }}
             >
               {selectedGrades.length > 0 ? 'Unselect All Grades' : 'Select All Grades'}
             </Button>
@@ -201,22 +220,20 @@ export default function NewPost() {
               {gradesData && gradesData.map(grade => {
               const isSelected = selectedGrades.includes(grade.id);
               return (
-              <Button
-                key={grade.id}
-                variant={isSelected ? 'contained' : 'outlined'}
-                color='success'
-                size='small'
-                onClick={() => {
-                  setSelectedGrades(prev => 
-                  prev.includes(grade.id) 
-                    ? prev.filter(id => id !== grade.id)
-                    : [...prev, grade.id]
-                  );
-                }}
-                sx={{ margin: '2px' }}
-              >
-                {grade.grade}
-                </Button>
+                <Chip
+                  label={grade.grade}
+                  key={grade.id}
+                  variant={isSelected ? 'filled' : 'outlined'}
+                  size='small'
+                  onClick={() => {
+                    setSelectedGrades(prev => 
+                    prev.includes(grade.id) 
+                      ? prev.filter(id => id !== grade.id)
+                      : [...prev, grade.id]
+                    );
+                  }}
+                  sx={{ margin: '2px' }}
+                />
               );
               })}
             </Box>
@@ -255,7 +272,7 @@ export default function NewPost() {
             color='success'
             disabled={title === '' || isLoadingProfile || !profileData}
             loading={isLoading}
-            sx={{ marginTop: 2 }}
+            sx={{ marginTop: .5 }}
           >
             Post
           </LoadingButton>

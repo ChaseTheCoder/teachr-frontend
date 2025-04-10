@@ -3,11 +3,13 @@ import { Box, TextField, Typography } from "@mui/material";
 import { useState } from "react";
 import { useRouter } from 'next/navigation';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { deleteData } from '../../../../services/authenticatedApiCalls';
+import { deleteData, postOrPatchData } from '../../../../services/authenticatedApiCalls';
+import Editor from "../../../../components/editor";
 
 interface AdminSettingsProps {
   title: string;
   about: string;
+  rules: string;
   groupId: string;
   profileId: string;
   isPublic: boolean;
@@ -17,7 +19,8 @@ interface AdminSettingsProps {
 
 const AdminSettings: React.FC<AdminSettingsProps> = ({
   title, 
-  about, 
+  about,
+  rules,
   groupId, 
   profileId, 
   isPublic, 
@@ -32,7 +35,37 @@ const AdminSettings: React.FC<AdminSettingsProps> = ({
   const queryClient = useQueryClient();
   const [groupTitle, setGroupTitle] = useState(title);
   const [groupAbout, setGroupAbout] = useState(about);
+  const [groupRules, setGroupRules] = useState(rules);
+  const [isUpdating, setIsUpdating] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+
+  const handleUpdateGroup = useMutation({
+    mutationFn: async () => {
+      setIsUpdating(true);
+      try {
+        const response = await postOrPatchData(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/group/${groupId}/?user_id=${profileId}`,
+          'PATCH',
+          { title: groupTitle, about: groupAbout, rules: groupRules }
+        );
+        return response;
+      } catch (error) {
+        if (error.message.includes('Unexpected end of JSON input')) {
+          return null;
+        }
+        throw error;
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['group', groupId] });
+    },
+    onError: (error) => {
+      console.error('Error updating group:', error);
+    },
+    onSettled: () => {
+      setIsUpdating(false);
+    }
+  });
 
   const deleteGroupMutation = useMutation({
     mutationFn: async () => {
@@ -65,7 +98,7 @@ const AdminSettings: React.FC<AdminSettingsProps> = ({
     <Box
       display='flex'
       flexDirection='column'
-      gap={2}
+      gap={3}
     >
       <Box
         display='flex'
@@ -107,7 +140,34 @@ const AdminSettings: React.FC<AdminSettingsProps> = ({
           size="small"
           sx={{ marginBottom: 2 }}
         />
+        <Typography
+          fontSize={{ xs: 10, md: 12 }}
+          color='textSecondary'
+          sx={{ marginLeft: 1.5 }}
+        >
+          Group Rules
+        </Typography>
+        <Editor
+          onChange={(data) => {
+            setGroupRules(data);
+          }}
+          value={groupRules}
+        />
+        <LoadingButton
+          color='success'
+          size='small'
+          variant='contained'
+          sx={{ width: 'fit-content', minWidth: 'auto', marginTop: 2 }}
+          loading={isUpdating}
+          disabled={groupTitle === title && groupAbout === about && groupRules === rules}
+          onClick={() => {
+              handleUpdateGroup.mutate();
+          }}
+        >
+          Update Group
+        </LoadingButton>
       </Box>
+  
       <Box
         display='flex'
         flexDirection='column'

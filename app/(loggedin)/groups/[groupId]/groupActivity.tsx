@@ -2,7 +2,7 @@
 
 import { getData } from "../../../../services/authenticatedApiCalls";
 import { useQuery } from "@tanstack/react-query";
-import { Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import Post from "../../../../components/post/post";
 
 interface GroupActivityProps {
@@ -55,7 +55,7 @@ const GroupActivity: React.FC<GroupActivityProps> = ({isPublic, isMember, groupI
   return (
     <>
       {groupPosts && groupPosts.length > 0 ? (
-        <>
+        <Box sx={{ display: 'flex', flexDirection: 'column' }} gap={1}>
           {groupPosts.map((post) => (
             <Post
               key={post.id}
@@ -63,7 +63,7 @@ const GroupActivity: React.FC<GroupActivityProps> = ({isPublic, isMember, groupI
               profile={post.user}
             />
           ))}
-        </>
+        </Box>
       ) : (
         <div>
           <Typography
