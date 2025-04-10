@@ -95,7 +95,7 @@ export default function GroupLayout({
                 label="Post in Group"
                 color="success"
                 size="small"
-                variant={sectionSelected === 'membership' ? 'filled' : 'outlined'}
+                variant='outlined'
                 clickable
                 icon={<Add />}
               />

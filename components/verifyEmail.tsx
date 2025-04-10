@@ -27,8 +27,6 @@ const VerifyEmail: React.FC<{ profileId: string }> = ({ profileId }) => {
   const mutation = useMutation({
     mutationFn: () => handleVerify(email, profileId),
     onSuccess: (data) => {
-      console.log(data);
-      console.log(data.status);
       setVerificationStatusData(data.status)
     },
     onError: (error) => {

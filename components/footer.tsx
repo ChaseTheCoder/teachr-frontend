@@ -18,7 +18,7 @@ const Footer: React.FC = () => {
       >
         <Box display="flex" justifyContent="center" alignItems="center" flexDirection="row">
           <Typography variant='subtitle2' component='p' color='success'>
-            <a href="/about">© 2025 Teachr Lounge</a>
+            <a href="/about">© 2025 Teacher Lounge</a>
           </Typography>
         </Box>
       </Box>

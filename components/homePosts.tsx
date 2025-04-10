@@ -13,14 +13,12 @@ export default function HomePosts() {
   const post3 = process.env.NEXT_PUBLIC_HOME_PAGE_POST_3;
   const paramaters = '?post_ids=' + post1 + '&post_ids=' + post2 + '&post_ids=' + post3;
   const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/posts/home_page/${paramaters}`;
-  console.log(url);
 
   const { data: posts, isFetching, isLoading, isError } = useQuery({
     queryKey: ['posts_home_page'],
     queryFn: () => getDataNoToken(url),
     staleTime: 1000 * 60 * 60
   })
-  console.log(posts);
 
   const { data: batchProfileData, isFetching: isFetchingBatchProfiles, isLoading: isLoadingBatchProfiles, isError: isErrorBatchProfiles } = useQuery({
     queryKey: ['batchProfilesFeed', userIds],

@@ -1,14 +1,22 @@
 import { Avatar, Box, Typography } from "@mui/material";
 import { IGroup } from "../../../types/types";
 import Link from "next/link";
+import { AdminPanelSettings, Group } from "@mui/icons-material";
 
 export default function GroupCard({ group }: { group: IGroup }) {
 
   function isMemberOrAdmin(isMember: boolean, isAdmin: boolean) {
     if (isAdmin) {
-      return ' | You are an admin of this group';
+      return 'Admin of this group';
     } else if (isMember) {
-      return ' | You are a member of this group';
+      return 'Member of this group';
+    }
+  }
+  function isMemberOrAdminIcon(isMember: boolean, isAdmin: boolean) {
+    if (isAdmin) {
+      return <AdminPanelSettings color='success' fontSize='small' />
+    } else if (isMember) {
+      return <Group color='success' fontSize='small' />
     }
   }
   return (
@@ -41,8 +49,31 @@ export default function GroupCard({ group }: { group: IGroup }) {
           />
           <Typography sx={{ fontSize: { xs: 16, sm: 18 } }} fontWeight='bold'>{group.title}</Typography>
         </Box>
-        <Typography sx={{ fontSize: { xs: 12, sm: 14 } }}>{group.about}</Typography>
-        <Typography sx={{ fontSize: { xs: 10, sm: 12 } }} color='textSecondary'>{group.member_count} members | {group.is_public ? 'Public' : 'Private'}{isMemberOrAdmin(group.is_member, group.is_admin)}</Typography>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 1,
+            alignItems: 'flex-start'
+          }}
+        >
+          <Typography sx={{ fontSize: { xs: 12, sm: 14 } }}>{group.about}</Typography>
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 0.5
+            }}
+          >
+            <Typography sx={{ fontSize: { xs: 10, sm: 12 } }} color='textSecondary'>
+              {group.member_count} members | {group.is_public ? 'Public' : 'Private'}   
+            </Typography>
+            {isMemberOrAdminIcon(group.is_member, group.is_admin)}
+            <Typography sx={{ fontSize: { xs: 10, sm: 12 } }} color='textSecondary'>
+              {isMemberOrAdmin(group.is_member, group.is_admin)}
+            </Typography>
+          </Box>
+        </Box>
       </Box>
     </Link>
   );

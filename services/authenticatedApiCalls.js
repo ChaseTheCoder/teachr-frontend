@@ -69,9 +69,7 @@ export async function getDataNoUserId(apiUrl) {
 
 export async function postOrPatchData(apiUrl, method, body) {
   const accessToken = await getAccessToken();
-  console.log('Request body before stringify:', body);
   const stringifiedBody = JSON.stringify(body);
-  console.log('Request body after stringify:', stringifiedBody);
 
   const response = await fetch(apiUrl, {
     method: method,
@@ -82,9 +80,6 @@ export async function postOrPatchData(apiUrl, method, body) {
     body: stringifiedBody,
   });
 
-  // Log the raw response
-  console.log('Response status:', response.status);
-  console.log('Response headers:', Object.fromEntries(response.headers.entries()));
   if (!response.ok) {
     throw new Error(`HTTP error! Status: ${response.status}`);
   }

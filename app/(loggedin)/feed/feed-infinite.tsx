@@ -61,8 +61,6 @@ export default function InfiniteFeed({ selectedGrades, selectedTags }: InfiniteF
   }, [profileData, isFetchingProfileData, isLoadingProfileData, isLoadingUser]);
 
   useEffect(() => {
-    console.log('selectedGrades', selectedGrades);
-    console.log('selectedTags', selectedTags);
     if (selectedGrades.length > 0) {
       const params = selectedGrades.map(grade => `&grade_ids=${grade}`).join('');
       setGradeParams(params);
@@ -78,7 +76,6 @@ export default function InfiniteFeed({ selectedGrades, selectedTags }: InfiniteF
   }, [selectedGrades, selectedTags]);
 
   useEffect(() => {
-    console.log('feedUrl', feedUrl);
     if (isProfileParamReady) {
       setFeedUrl(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/posts/feed/?page=1${gradeParams}${tagParams}${profileParam}`);
     }

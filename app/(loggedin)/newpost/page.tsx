@@ -13,6 +13,7 @@ import { getDataNoToken } from '../../../services/unauthenticatedApiCalls';
 import { useSearchParams } from 'next/navigation';
 import Editor from '../../../components/editor';
 import { PostType } from './postType';
+import GroupAbout from '../groups/[groupId]/groupAbout';
 
 export default function NewPost() {
   const { user, error, isLoading: isLoadingUser } = useUser();
@@ -108,7 +109,14 @@ export default function NewPost() {
     };
     try {
       await postOrPatchData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/posts/user/${profileData.id}/`, 'POST', newPost);
+      queryClient.invalidateQueries({
+        predicate: (query) => {
+          return query.queryKey[0] === 'postsFeed';
+        },
+      });
       if (groupId) {
+        await queryClient.invalidateQueries({ queryKey: ['groupPosts', groupId] });
+        await queryClient.invalidateQueries({ queryKey: ['group', groupId] });
         router.push(`/groups/${groupId}`);
       } else {
         router.push('/feed');
@@ -278,6 +286,12 @@ export default function NewPost() {
           </LoadingButton>
           </form>
         </Surface>
+      </Grid>
+      <Grid item display={{ xs: 'none', sm: 'none', md: 'block' }} md={3}>
+        <GroupAbout
+          about={groupData.about}
+          rules={groupData.rules}
+        />
       </Grid>
     </Grid>
   );

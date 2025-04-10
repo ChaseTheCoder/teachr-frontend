@@ -32,8 +32,6 @@ const GroupList: React.FC = () => {
     enabled: !isLoadingProfileData && !!profileData?.id,
   });
 
-  console.log('Group Data:', groupData);
-
   if (isLoadingUser || isLoadingProfileData || isLoadingGroupData) {
     return <ActivityLoadingMultiSize />;
   }
