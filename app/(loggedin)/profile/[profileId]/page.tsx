@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { Box, Button, Grid } from '@mui/material';
-import { useQuery, QueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { getData } from '../../../../services/authenticatedApiCalls';
 import DynamicFeedIcon from '@mui/icons-material/DynamicFeed';
 import EditIcon from '@mui/icons-material/Edit';
@@ -13,7 +13,7 @@ import { IProfile } from '../../../../types/types';
 import { getDataNoToken } from '../../../../services/unauthenticatedApiCalls';
 import { useUserContext } from '../../../../context/UserContext';
 import { ActivityLoading } from '../../../../components/activityLoading';
-import { useRouter, usePathname } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
 export default function Profile({
   params,
@@ -24,7 +24,7 @@ export default function Profile({
   const [sectionSelected, setSectionSelected] = useState('activity');
   const [currentUser, setCurrentUser] = useState(null);
   const { user, auth0Id, isLoadingUser } = useUserContext();
-  const queryClient = new QueryClient();
+  const queryClient = useQueryClient();
   
   const { data: profileData, isFetching: isFetchingProfileData, isLoading: isLoadingProfileData, isError: isErrorProfileData } = useQuery<IProfile>({
     queryKey: ['profile'],

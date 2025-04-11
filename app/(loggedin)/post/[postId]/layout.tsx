@@ -1,7 +1,7 @@
 'use client'
 
 import { Grid } from "@mui/material";
-import { useQuery, QueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getData } from "../../../../services/authenticatedApiCalls";
 import { IProfile } from "../../../../types/types";
 import { useUserContext } from "../../../../context/UserContext";
@@ -14,7 +14,7 @@ export default function PostLayout({
   params: { postId: string };
 }) {
   const { user, auth0Id, isLoadingUser } = useUserContext();
-  const queryClient = new QueryClient()
+  const queryClient = useQueryClient()
   
   const { data: profileData, isFetching: isFetchingProfileData, isLoading: isLoadingProfileData, isError: isErrorProfileData } = useQuery<IProfile>({
     queryKey: ['profile'],

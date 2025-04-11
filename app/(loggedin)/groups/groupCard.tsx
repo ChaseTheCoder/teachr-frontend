@@ -5,18 +5,22 @@ import { AdminPanelSettings, Group } from "@mui/icons-material";
 
 export default function GroupCard({ group }: { group: IGroup }) {
 
-  function isMemberOrAdmin(isMember: boolean, isAdmin: boolean) {
+  function membershipStatusText(isMember: boolean, isPending: boolean, isAdmin: boolean) {
     if (isAdmin) {
       return 'Admin of this group';
     } else if (isMember) {
       return 'Member of this group';
+    } else if (isPending) {
+      return 'Pending membership';
     }
   }
-  function isMemberOrAdminIcon(isMember: boolean, isAdmin: boolean) {
+  function membershipStatusIcon(isMember: boolean, isPending: boolean, isAdmin: boolean) {
     if (isAdmin) {
       return <AdminPanelSettings color='success' fontSize='small' />
     } else if (isMember) {
       return <Group color='success' fontSize='small' />
+    } else if (isPending) {
+      return <Group color='warning' fontSize='small' />
     }
   }
   return (
@@ -68,9 +72,9 @@ export default function GroupCard({ group }: { group: IGroup }) {
             <Typography sx={{ fontSize: { xs: 10, sm: 12 } }} color='textSecondary'>
               {group.member_count} members | {group.is_public ? 'Public' : 'Private'}   
             </Typography>
-            {isMemberOrAdminIcon(group.is_member, group.is_admin)}
+            {membershipStatusIcon(group.is_member, group.is_pending, group.is_admin)}
             <Typography sx={{ fontSize: { xs: 10, sm: 12 } }} color='textSecondary'>
-              {isMemberOrAdmin(group.is_member, group.is_admin)}
+              {membershipStatusText(group.is_member, group.is_pending, group.is_admin)}
             </Typography>
           </Box>
         </Box>

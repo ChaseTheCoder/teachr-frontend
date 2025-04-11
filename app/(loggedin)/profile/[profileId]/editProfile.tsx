@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import Surface from '../../../../components/surface/Surface';
 import { LoadingButton } from '@mui/lab';
-import { Avatar, Box, Divider, Skeleton, TextField, Typography } from '@mui/material';
+import { Box, Divider, Skeleton, TextField, Typography } from '@mui/material';
 import { getData, postOrPatchData } from '../../../../services/authenticatedApiCalls';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useUser } from '@auth0/nextjs-auth0/client';
 import { useRouter } from 'next/navigation';
 import { IProfile } from '../../../../types/types';
-import MyEditor from './avatarEditor';
 import UploadProfilePic from './avatarEditor';
 
 interface props {

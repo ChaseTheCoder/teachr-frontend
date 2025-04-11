@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { Accordion, AccordionDetails, AccordionSummary, Box, Chip, Skeleton, Typography, useMediaQuery, useTheme } from '@mui/material';
 import VerifyEmail from '../../../components/verifyEmail';
 import { useUserContext } from '../../../context/UserContext';
-import { QueryClient, useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { getData } from '../../../services/authenticatedApiCalls';
 import { IProfile } from '../../../types/types';
 import { getDataNoToken } from '../../../services/unauthenticatedApiCalls';
@@ -17,7 +17,7 @@ interface PopularProps {
 
 const Popular: React.FC<PopularProps> = ({ onGradesChange, onTagsChange }) => {
   const { user, auth0Id, isLoadingUser } = useUserContext();
-  const queryClient = new QueryClient();
+  const queryClient = useQueryClient();
   const [selectedGrades, setSelectedGrades] = useState<string[]>([]);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const theme = useTheme();

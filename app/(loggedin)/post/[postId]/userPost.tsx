@@ -4,7 +4,7 @@ import { Box, Fade, IconButton, List, ListItemButton, Paper, Popper, PopperPlace
 import React, { useEffect, useState } from 'react';
 import MoreVert from '@mui/icons-material/MoreVert';
 import { deleteData, getData } from '../../../../services/authenticatedApiCalls';
-import { QueryClient, useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { DeleteOutline } from '@mui/icons-material';
 import Link from 'next/link';
 import Post404 from './not-found';
@@ -27,7 +27,7 @@ export default function UserPost({ postId, currentUserId }: Props) {
   const [open, setOpen] = React.useState(false);
   const [placement, setPlacement] = React.useState<PopperPlacementType>();
   const { user, auth0Id, isLoadingUser } = useUserContext();
-  const queryClient = new QueryClient();
+  const queryClient = useQueryClient();
   const [profileParam, setProfileParam] = useState<string>(null);
 
   const { data: profileData, isFetching: isFetchingProfileData, isLoading: isLoadingProfileData, isError: isErrorProfileData } = useQuery<IProfile>({

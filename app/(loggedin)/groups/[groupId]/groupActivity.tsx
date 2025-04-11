@@ -13,7 +13,7 @@ interface GroupActivityProps {
 }
 const GroupActivity: React.FC<GroupActivityProps> = ({isPublic, isMember, groupId, profileId}) => {
   const { data: groupPosts, isLoading: isLoadingGroupPosts, isError: isErrorGroupPosts } = useQuery({
-    queryKey: ['posts', 'group', groupId],
+    queryKey: ['group', 'posts', groupId],
     queryFn: () => getData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/posts/group/${groupId}/?user_id=${profileId}`),
     staleTime: 1000 * 60 * 60,
     refetchOnWindowFocus: false,

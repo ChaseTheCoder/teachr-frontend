@@ -32,6 +32,7 @@ export async function getData(apiUrl) {
 }
 
 export async function getDataWithParams(apiUrl, key, params) {
+  console.log('getDataWithParams', apiUrl, key, params);
   const accessToken = await getAccessToken();
   let urlWithParams = new URL(apiUrl);
   await params.forEach(date => urlWithParams.searchParams.append(key, date));

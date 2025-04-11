@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Badge, BottomNavigation, BottomNavigationAction } from '@mui/material';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import { Add, Group, Home } from '@mui/icons-material';
-import { QueryClient, useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { getData } from '../../services/authenticatedApiCalls';
 import { IProfile } from '../../types/types';
 import { useUserContext } from '../../context/UserContext';
@@ -10,7 +10,7 @@ import { usePathname } from 'next/navigation';
 
 const BottomMobileNav = () => {
   const { auth0Id, user } = useUserContext();
-  const queryClient = new QueryClient();
+  const queryClient = useQueryClient();
   let pathname = usePathname();
   const [visible, setVisible] = useState(true);
   let lastScrollY = 0;

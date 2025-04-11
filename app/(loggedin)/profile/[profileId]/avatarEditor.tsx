@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react'
-import AvatarEditor from 'react-avatar-editor'
 import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Avatar, Button, Stack, Typography } from '@mui/material';

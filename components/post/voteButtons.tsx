@@ -5,7 +5,7 @@ import { Box, IconButton, Typography } from '@mui/material';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import { useUserContext } from '../../context/UserContext';
-import { QueryClient, useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { getData, postOrPatchData } from '../../services/authenticatedApiCalls';
 import { IProfile } from '../../types/types';
 
@@ -20,7 +20,7 @@ interface VoteButtonsProps {
 
 const VoteButtons: React.FC<VoteButtonsProps> = ({ type, upvotes, downvotes, has_upvoted, has_downvoted, postId }) => {
   const { user, auth0Id, isLoadingUser } = useUserContext();
-  const queryClient = new QueryClient();
+  const queryClient = useQueryClient();
   const [disabled, setDisabled] = useState(true);
   const [upvotesCount, setUpvotesCount] = useState(upvotes);
   const [downvotesCount, setDownvotesCount] = useState(downvotes);
