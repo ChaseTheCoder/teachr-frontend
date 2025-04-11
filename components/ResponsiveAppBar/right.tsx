@@ -8,7 +8,7 @@ import Menu from '@mui/material/Menu';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';import { Badge } from '@mui/material';
-import { useQuery, QueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { getData } from '../../services/authenticatedApiCalls';
 import { useEffect, useState } from 'react';
 import { IProfile } from '../../types/types';
@@ -39,7 +39,7 @@ export default function Right({ auth0Id }: { auth0Id: string }) {
     setAnchorElUser(null);
   };
   
-  const queryClient = new QueryClient();
+  const queryClient = useQueryClient();
   
   const { data: profileData, isFetching: isFetchingProfileData, isLoading: isLoadingProfileData, isError: isErrorProfileData, error: errorProfileData } = useQuery<IProfile>({
     queryKey: ['profile'],

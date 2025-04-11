@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useUserContext } from '../../../context/UserContext';
-import { QueryClient, useQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { getData } from '../../../services/authenticatedApiCalls';
 import { IGroupList, IProfile } from '../../../types/types';
 import { Box, Button, Typography } from '@mui/material';
@@ -10,7 +10,6 @@ import { AddCircleOutline } from '@mui/icons-material';
 
 const GroupList: React.FC = () => {
   const { auth0Id, isLoadingUser } = useUserContext();
-  const queryClient = new QueryClient()
   
   const { data: profileData, isFetching: isFetchingProfileData, isLoading: isLoadingProfileData, isError: isErrorProfileData } = useQuery<IProfile>({
     queryKey: ['profile'],
@@ -23,7 +22,7 @@ const GroupList: React.FC = () => {
   });
 
   const { data: groupData, isFetching: isFetchingGroupData, isLoading: isLoadingGroupData, isError: isErrorGroupData } = useQuery<IGroupList>({
-    queryKey: ['groups', profileData?.id],
+    queryKey: ['groups'],
     queryFn: () => getData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/groups/?user=${profileData?.id}`),
     staleTime: 1000 * 60 * 60,
     refetchOnWindowFocus: false,
@@ -31,8 +30,6 @@ const GroupList: React.FC = () => {
     refetchOnMount: false,
     enabled: !isLoadingProfileData && !!profileData?.id,
   });
-
-  console.log('Group Data:', groupData);
 
   if (isLoadingUser || isLoadingProfileData || isLoadingGroupData) {
     return <ActivityLoadingMultiSize />;

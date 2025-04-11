@@ -43,7 +43,8 @@ const JoinGroup: React.FC<JoinGroupProps> = ({
       }
     },
     onSuccess: (data) => {
-      queryClient.refetchQueries({ queryKey: ['groups', groupId, profileId]})
+      queryClient.refetchQueries({ queryKey: ['group', groupId]})
+      queryClient.refetchQueries({ queryKey: ['groups']})
     },
     onError: (error) => {
       console.error('Error updating group membership:', error);

@@ -91,6 +91,7 @@ export interface IGroupDetail {
 }
 
 export interface IGroupMembers {
+  admins?: IProfileBatch[];
   members: IProfileBatch[];
   pending?: IProfileBatch[];
 }

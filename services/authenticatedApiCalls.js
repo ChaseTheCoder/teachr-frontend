@@ -32,6 +32,7 @@ export async function getData(apiUrl) {
 }
 
 export async function getDataWithParams(apiUrl, key, params) {
+  console.log('getDataWithParams', apiUrl, key, params);
   const accessToken = await getAccessToken();
   let urlWithParams = new URL(apiUrl);
   await params.forEach(date => urlWithParams.searchParams.append(key, date));
@@ -69,9 +70,7 @@ export async function getDataNoUserId(apiUrl) {
 
 export async function postOrPatchData(apiUrl, method, body) {
   const accessToken = await getAccessToken();
-  console.log('Request body before stringify:', body);
   const stringifiedBody = JSON.stringify(body);
-  console.log('Request body after stringify:', stringifiedBody);
 
   const response = await fetch(apiUrl, {
     method: method,
@@ -82,9 +81,6 @@ export async function postOrPatchData(apiUrl, method, body) {
     body: stringifiedBody,
   });
 
-  // Log the raw response
-  console.log('Response status:', response.status);
-  console.log('Response headers:', Object.fromEntries(response.headers.entries()));
   if (!response.ok) {
     throw new Error(`HTTP error! Status: ${response.status}`);
   }

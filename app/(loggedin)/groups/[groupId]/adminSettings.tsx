@@ -83,7 +83,7 @@ const AdminSettings: React.FC<AdminSettingsProps> = ({
       }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['groups', profileId] });
+      queryClient.invalidateQueries({ queryKey: ['group', groupId] });
       router.push('/groups');
     },
     onError: (error) => {

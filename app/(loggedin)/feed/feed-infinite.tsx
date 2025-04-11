@@ -2,12 +2,11 @@
 
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { Box, Skeleton } from '@mui/material';
-import { QueryClient, useInfiniteQuery, useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, useQuery, useQueryClient } from '@tanstack/react-query';
 import Post from '../../../components/post/post';
 import { getDataNoToken, getDataWithParamsNoToken } from '../../../services/unauthenticatedApiCalls';
 import FeedAd from '../../../components/googleAdsense/feed-ad';
 import { ActivityLoading, ActivityLoadingMultiSize } from '../../../components/activityLoading';
-import { profile } from 'console';
 import { IProfile } from '../../../types/types';
 import { getData } from '../../../services/authenticatedApiCalls';
 import { useUserContext } from '../../../context/UserContext';
@@ -22,7 +21,7 @@ export default function InfiniteFeed({ selectedGrades, selectedTags }: InfiniteF
   const [batchProfiles, setBatchProfiles] = useState([]);
   const observer = useRef<IntersectionObserver>();
   const { user, auth0Id, isLoadingUser } = useUserContext();
-  const queryClient = new QueryClient();
+  const queryClient = useQueryClient();
   const [isProfileParamReady, setIsProfileParamReady] = useState(false);
   const [profileParam, setProfileParam] = useState<string>('');
   const [gradeParams, setGradeParams] = useState<string>('');
@@ -61,8 +60,6 @@ export default function InfiniteFeed({ selectedGrades, selectedTags }: InfiniteF
   }, [profileData, isFetchingProfileData, isLoadingProfileData, isLoadingUser]);
 
   useEffect(() => {
-    console.log('selectedGrades', selectedGrades);
-    console.log('selectedTags', selectedTags);
     if (selectedGrades.length > 0) {
       const params = selectedGrades.map(grade => `&grade_ids=${grade}`).join('');
       setGradeParams(params);
@@ -78,7 +75,6 @@ export default function InfiniteFeed({ selectedGrades, selectedTags }: InfiniteF
   }, [selectedGrades, selectedTags]);
 
   useEffect(() => {
-    console.log('feedUrl', feedUrl);
     if (isProfileParamReady) {
       setFeedUrl(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/posts/feed/?page=1${gradeParams}${tagParams}${profileParam}`);
     }

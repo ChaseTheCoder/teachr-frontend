@@ -20,7 +20,7 @@ const GroupMembership: React.FC<GroupMembershipProps> = ({ groupId, isAdmin, pro
   const [isLoading, setIsLoading] = useState(false);
 
   const { data: membersData, isLoading: isLoadingMembers } = useQuery<IGroupMembers>({
-    queryKey: ['groupMembers', groupId],
+    queryKey: ['group', 'members', groupId],
     queryFn: () => getData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/group/${groupId}/members/?user=${profileId}`),
     enabled: !!groupId && !!profileId,
   });
@@ -45,7 +45,10 @@ const GroupMembership: React.FC<GroupMembershipProps> = ({ groupId, isAdmin, pro
       if (setSectionSelected) {
         setSectionSelected('activity');
       }
-      queryClient.refetchQueries({ queryKey: ['groups', groupId, profileId] });
+      queryClient.refetchQueries({ queryKey: ['group', groupId] });
+      queryClient.refetchQueries({ queryKey: ['groups'] });
+      queryClient.refetchQueries({ queryKey: ['group', 'members', groupId] });
+      queryClient.refetchQueries({ queryKey: ['group', 'posts', groupId] });
     },
     onError: (error) => {
       console.error('Error leaving group:', error);
@@ -154,7 +157,21 @@ const GroupMembership: React.FC<GroupMembershipProps> = ({ groupId, isAdmin, pro
               fontSize={{ xs: 12, md: 14 }}
               fontWeight='bold'
             >
-              {membersData?.members.length} {membersData?.members.length === 1 ? 'Member' : 'Members'}
+              Admin
+            </Typography>
+            {membersData?.admins.map((member) => (
+              <MemberCard
+                key={member.id}
+                groupId={groupId}
+                profileId={profileId}
+                member={member}
+              />
+            ))}
+            <Typography
+              fontSize={{ xs: 12, md: 14 }}
+              fontWeight='bold'
+            >
+              Members
             </Typography>
             {membersData?.members.map((member) => (
               <MemberCard

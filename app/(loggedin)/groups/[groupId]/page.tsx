@@ -1,9 +1,9 @@
 'use client'
 
 import { useEffect } from 'react';
-import { Box, Button, Chip, Grid, Skeleton, Typography, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Chip, Grid, Skeleton, useMediaQuery, useTheme } from "@mui/material";
 import { Add } from '@mui/icons-material';
-import { useQuery, QueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getData } from "../../../../services/authenticatedApiCalls";
 import { IProfile } from "../../../../types/types";
 import { useUserContext } from "../../../../context/UserContext";
@@ -23,7 +23,7 @@ export default function GroupLayout({
   const { user, auth0Id, isLoadingUser } = useUserContext();
   const theme = useTheme();
   const isMediumScreen = useMediaQuery(theme.breakpoints.up('md'));
-  const queryClient = new QueryClient()
+  const queryClient = useQueryClient()
   const { groupId } = params;
   const [sectionSelected, setSectionSelected] = useState('activity');
 
@@ -95,7 +95,7 @@ export default function GroupLayout({
                 label="Post in Group"
                 color="success"
                 size="small"
-                variant={sectionSelected === 'membership' ? 'filled' : 'outlined'}
+                variant='outlined'
                 clickable
                 icon={<Add />}
               />

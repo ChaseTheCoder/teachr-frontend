@@ -1,18 +1,19 @@
 'use client'
 
 import React, { useState, useRef } from 'react';
-import { Box, Button, ButtonGroup, Chip, Grid, Skeleton, TextField, Typography } from '@mui/material';
+import { Box, Button, Chip, Grid, Skeleton, TextField, Typography } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import { getData, postOrPatchData } from '../../../services/authenticatedApiCalls';
 import Surface from "../../../components/surface/Surface";
 import { useUser } from "@auth0/nextjs-auth0/client";
-import { useQuery, QueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { LoadingButton } from '@mui/lab';
 import { IGrade, IProfile } from '../../../types/types';
 import { getDataNoToken } from '../../../services/unauthenticatedApiCalls';
 import { useSearchParams } from 'next/navigation';
 import Editor from '../../../components/editor';
 import { PostType } from './postType';
+import GroupAbout from '../groups/[groupId]/groupAbout';
 
 export default function NewPost() {
   const { user, error, isLoading: isLoadingUser } = useUser();
@@ -27,8 +28,7 @@ export default function NewPost() {
   const [selectedGrades, setSelectedGrades] = useState<string[]>([]);
   const router = useRouter();
   const tagInputRef = useRef<HTMLInputElement>(null);
-
-  const queryClient = new QueryClient();
+  const queryClient = useQueryClient();
   
   const { data: profileData, isLoading: isLoadingProfile, isError } = useQuery<IProfile>({
     queryKey: ['profile'],
@@ -108,11 +108,25 @@ export default function NewPost() {
     };
     try {
       await postOrPatchData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/posts/user/${profileData.id}/`, 'POST', newPost);
+      // Force refetch everything before redirect
       if (groupId) {
-        router.push(`/groups/${groupId}`);
-      } else {
-        router.push('/feed');
+        await Promise.all([
+          // Force refetch group posts
+          queryClient.refetchQueries({
+            queryKey: ['group', 'posts', groupId],
+            exact: true
+          }),
+        ]);
       }
+
+      // Always invalidate feed queries
+      await queryClient.invalidateQueries({
+        predicate: (query) => query.queryKey[0] === 'postsFeed'
+      });
+
+      // Add a small delay and redirect
+      await new Promise(resolve => setTimeout(resolve, 250));
+      router.push(groupId ? `/groups/${groupId}` : '/feed');
     } catch (error) {
       setLoading(false);
       return;
@@ -279,6 +293,14 @@ export default function NewPost() {
           </form>
         </Surface>
       </Grid>
+      { groupData &&
+        <Grid item display={{ xs: 'none', sm: 'none', md: 'block' }} md={3}>
+          <GroupAbout
+            about={groupData.about}
+            rules={groupData.rules}
+          />
+        </Grid>
+      }
     </Grid>
   );
 }

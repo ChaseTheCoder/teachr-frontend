@@ -51,7 +51,7 @@ const MemberCard: React.FC<IMemberCard> = ({ member, groupId, profileId, isPendi
       }
     },
     onSuccess: () => {
-      queryClient.refetchQueries({ queryKey: ['groupMembers', groupId] });
+      queryClient.refetchQueries({ queryKey: ['group', 'members', groupId] });
     },
     onError: (error) => {
       console.error('Error leaving group:', error);
