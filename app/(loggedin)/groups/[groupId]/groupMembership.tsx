@@ -179,6 +179,7 @@ const GroupMembership: React.FC<GroupMembershipProps> = ({ groupId, isAdmin, pro
                 groupId={groupId}
                 profileId={profileId}
                 member={member}
+                adminId={profileId}
               />
             ))}
           </>

@@ -135,6 +135,7 @@ export default function GroupLayout({
           <GroupActivity
             isPublic={groupData.is_public}
             isMember={groupData.is_member}
+            isAdmin={groupData.is_admin}
             groupId={groupId}
             profileId={profileData?.id}
           />
