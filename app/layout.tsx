@@ -10,7 +10,7 @@ import Footer from '../components/footer';
 import "react-day-picker/style.css";
 import { Box } from '@mui/material';
 import Script from 'next/script';
-import { UserProvider } from '../context/UserContext';
+import { UserProfileProvider } from '../context/UserContext';
 import { usePathname } from 'next/navigation';
 import GoogleAnalytics from '../components/GoogleAnalytics';
 
@@ -41,7 +41,7 @@ export default function RootLayout({
         <GoogleAnalytics />
         <QueryClientProvider client={queryClient}>
           <Auth0UserProvider>
-            <UserProvider>
+              <UserProfileProvider>
               <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
                 <main>
                   <ResponsiveAppBar/>
@@ -54,7 +54,7 @@ export default function RootLayout({
               </Box>
               <Footer/>
               <ReactQueryDevtools />
-            </UserProvider>
+            </UserProfileProvider>
           </Auth0UserProvider>
         </QueryClientProvider>
       </body> 

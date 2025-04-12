@@ -20,7 +20,7 @@ export default function GroupLayout({
 }: {
   params: { groupId: string };
 }) {
-  const { user, auth0Id, isLoadingUser } = useUserContext();
+  const { user, auth0Id, isLoadingUser, profileData, isLoadingProfile } = useUserContext();
   const theme = useTheme();
   const isMediumScreen = useMediaQuery(theme.breakpoints.up('md'));
   const queryClient = useQueryClient()
@@ -32,19 +32,6 @@ export default function GroupLayout({
       setSectionSelected('activity');
     }
   }, [isMediumScreen, sectionSelected]);
-  
-  const { data: profileData, isFetching: isFetchingProfileData, isLoading: isLoadingProfileData, isError: isErrorProfileData } = useQuery<IProfile>({
-    queryKey: ['profile'],
-    queryFn: () => getData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/profile_auth0/${auth0Id}`),
-    staleTime: 1000 * 60 * 60,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
-    refetchOnMount: false,
-    enabled: !!auth0Id,
-    initialData: () => {
-      return queryClient.getQueryData(['profile']);
-    },
-  });
 
   const { data: groupData, isFetching: isFetchingGroupData, isLoading: isLoadingGroupData, isError: isErrorGroupData } = useQuery({
     queryKey: ['group', groupId],
@@ -56,7 +43,7 @@ export default function GroupLayout({
     enabled: !!user && !!profileData?.id,
   });
 
-  if(isLoadingUser || isLoadingProfileData || isLoadingGroupData) return (<Skeleton variant='text' sx={{ height: '150px' }} />);
+  if(isLoadingUser || isLoadingProfile || isLoadingGroupData) return (<Skeleton variant='text' sx={{ height: '150px' }} />);
   
   return (
     <Grid container spacing={1}>

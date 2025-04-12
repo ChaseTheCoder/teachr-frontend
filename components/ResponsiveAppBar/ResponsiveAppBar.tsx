@@ -20,6 +20,7 @@ import { ArrowForwardIos } from '@mui/icons-material';
 import { usePathname } from 'next/navigation';
 import { useUserContext } from '../../context/UserContext';
 import SearchBar from './searchBar';
+import { Group } from '@mui/icons-material';
 
 const pages = [
   {
@@ -30,7 +31,7 @@ const pages = [
 
 function ResponsiveAppBar() {
   let pathname = usePathname();
-  const { auth0Id, user } = useUserContext();
+  const { auth0Id, user, profileData, isLoadingProfile } = useUserContext();
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -102,7 +103,7 @@ function ResponsiveAppBar() {
                 { pathname !== '/signup' && (
                   pathname === '/' ? (
                     <>
-                      {!auth0Id && 
+                      {!user && 
                         <Button
                           color='success'
                           sx={{ marginRight: 2 }}
@@ -123,8 +124,8 @@ function ResponsiveAppBar() {
                       </Link>
                     </>
                   ) : (
-                    auth0Id ? 
-                    <Right auth0Id={auth0Id} /> 
+                    profileData ? 
+                    <Right/>
                     :
                     <Link href='/api/auth/login'>
                       <Button

@@ -15,23 +15,10 @@ type Props = {
 
 export default function PostComment({ postId }: Props) {
   const queryClient = useQueryClient();
-  const { user, auth0Id, isLoadingUser } = useUserContext();
+  const { user, auth0Id, isLoadingUser, profileData, isLoadingProfile } = useUserContext();
   const [body, setBody] = useState('');
   const [isLoading, setLoading] = useState(false);
   const [isTextFieldFocused, setTextFieldFocused] = useState(false);
-  
-  const { data: profileData, isFetching: isFetchingProfileData, isLoading: isLoadingProfileData, isError: isErrorProfileData } = useQuery<IProfile>({
-    queryKey: ['profile'],
-    queryFn: () => getData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/profile_auth0/${auth0Id}`),
-    staleTime: 1000 * 60 * 60,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
-    refetchOnMount: false,
-    enabled: !!auth0Id,
-    initialData: () => {
-      return queryClient.getQueryData(['profile']);
-    },
-  });
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -54,7 +41,7 @@ export default function PostComment({ postId }: Props) {
     }
   };
 
-  if (isLoadingUser || isLoadingProfileData) return (
+  if (isLoadingUser || isLoadingProfile) return (
     <Box sx={{ display: 'flex', flexDirection: 'column' }} >
       <Skeleton variant='rounded' height={80} />
     </Box>
@@ -108,7 +95,7 @@ export default function PostComment({ postId }: Props) {
             type='submit'
             variant='contained'
             color='success'
-            disabled={body === '' || isLoadingProfileData || !profileData}
+            disabled={body === '' || isLoadingProfile || !profileData}
             loading={isLoading}
           >
             Post

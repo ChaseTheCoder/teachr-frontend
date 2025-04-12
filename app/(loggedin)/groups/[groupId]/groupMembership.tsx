@@ -1,11 +1,11 @@
-import { Group } from "@mui/icons-material";
-import { Avatar, Box, Stack, Typography } from "@mui/material";
+import { Box, Stack, Typography } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { getData, postOrPatchData } from "../../../../services/authenticatedApiCalls";
 import { IGroupMembers } from "../../../../types/types";
 import MemberCard from "./groupMembershipCard";
+import { useRouter } from "next/navigation";
 
 interface GroupMembershipProps {
   groupId: string;
@@ -16,6 +16,7 @@ interface GroupMembershipProps {
 }
 
 const GroupMembership: React.FC<GroupMembershipProps> = ({ groupId, isAdmin, profileId, isPublic, setSectionSelected }) => {
+  const router = useRouter();
   const queryClient = useQueryClient();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -49,6 +50,8 @@ const GroupMembership: React.FC<GroupMembershipProps> = ({ groupId, isAdmin, pro
       queryClient.refetchQueries({ queryKey: ['groups'] });
       queryClient.refetchQueries({ queryKey: ['group', 'members', groupId] });
       queryClient.refetchQueries({ queryKey: ['group', 'posts', groupId] });
+
+      router.push('/groups');
     },
     onError: (error) => {
       console.error('Error leaving group:', error);

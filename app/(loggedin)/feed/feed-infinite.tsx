@@ -7,8 +7,6 @@ import Post from '../../../components/post/post';
 import { getDataNoToken, getDataWithParamsNoToken } from '../../../services/unauthenticatedApiCalls';
 import FeedAd from '../../../components/googleAdsense/feed-ad';
 import { ActivityLoading, ActivityLoadingMultiSize } from '../../../components/activityLoading';
-import { IProfile } from '../../../types/types';
-import { getData } from '../../../services/authenticatedApiCalls';
 import { useUserContext } from '../../../context/UserContext';
 
 interface InfiniteFeedProps {
@@ -20,26 +18,13 @@ export default function InfiniteFeed({ selectedGrades, selectedTags }: InfiniteF
   const [userIds, setUserIds] = useState<string[]>([]);
   const [batchProfiles, setBatchProfiles] = useState([]);
   const observer = useRef<IntersectionObserver>();
-  const { user, auth0Id, isLoadingUser } = useUserContext();
+  const { user, auth0Id, isLoadingUser, profileData, isLoadingProfile } = useUserContext();
   const queryClient = useQueryClient();
   const [isProfileParamReady, setIsProfileParamReady] = useState(false);
   const [profileParam, setProfileParam] = useState<string>('');
   const [gradeParams, setGradeParams] = useState<string>('');
   const [tagParams, setTagParams] = useState<string>('');
   const [feedUrl, setFeedUrl] = useState<string>(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/posts/feed/`);
-
-  const { data: profileData, isFetching: isFetchingProfileData, isLoading: isLoadingProfileData, isError: isErrorProfileData } = useQuery<IProfile>({
-    queryKey: ['profile'],
-    queryFn: () => getData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/profile_auth0/${auth0Id}`),
-    staleTime: 1000 * 60 * 60,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
-    refetchOnMount: false,
-    enabled: !!auth0Id,
-    initialData: () => {
-      return queryClient.getQueryData(['profile']);
-    },
-  });
 
   const { data: batchProfileData, isFetching: isFetchingBatchProfiles, isLoading: isLoadingBatchProfiles, isError: isErrorBatchProfiles } = useQuery({
     queryKey: ['batchProfilesFeed', userIds],
@@ -49,7 +34,7 @@ export default function InfiniteFeed({ selectedGrades, selectedTags }: InfiniteF
   });
 
   useEffect(() => {
-    if(!isLoadingProfileData && !isFetchingProfileData && !isLoadingUser) {
+    if(!isLoadingProfile && !isLoadingUser) {
       if(profileData && profileData.id) {
         setProfileParam(`&user_id=${profileData.id}`);
       } else {
@@ -57,7 +42,7 @@ export default function InfiniteFeed({ selectedGrades, selectedTags }: InfiniteF
       }
       setIsProfileParamReady(true);
     }
-  }, [profileData, isFetchingProfileData, isLoadingProfileData, isLoadingUser]);
+  }, [profileData, isLoadingUser]);
 
   useEffect(() => {
     if (selectedGrades.length > 0) {

@@ -1,31 +1,23 @@
 'use client'
 
 import React, { useState } from 'react';
-import { Box, Button, FormControlLabel, Grid, Radio, RadioGroup, Switch, TextField, Typography } from '@mui/material';
+import { Box, FormControlLabel, Grid, Radio, RadioGroup, TextField, Typography } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import { postOrPatchData } from '../../../../services/authenticatedApiCalls';
 import Surface from "../../../../components/surface/Surface";
 import { useUser } from "@auth0/nextjs-auth0/client";
-import { useQuery } from '@tanstack/react-query';
 import { LoadingButton } from '@mui/lab';
-import { IProfile } from '../../../../types/types';
-import { getDataNoToken } from '../../../../services/unauthenticatedApiCalls';
+import { useUserContext } from '../../../../context/UserContext';
 
 export default function NewGroup() {
   const { user, error, isLoading: isLoadingUser } = useUser();
+  const { profileData, isLoadingProfile } =  useUserContext();
   const auth0Id = user?.sub;
   const [title, setTitle] = useState('');
   const [about, setAbout] = useState('');
   const [isPublic, setIsPublic] = useState(true);
   const [isLoading, setLoading] = useState(false);
   const router = useRouter();
-  
-  const { data: profileData, isLoading: isLoadingProfile } = useQuery<IProfile>({
-    queryKey: ['profile'],
-    queryFn: () => getDataNoToken(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/profile_auth0/${auth0Id}`),
-    staleTime: 1000 * 60 * 60,
-    enabled: !!auth0Id,
-  });
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();

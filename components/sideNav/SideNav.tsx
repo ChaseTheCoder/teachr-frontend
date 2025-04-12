@@ -5,6 +5,7 @@ import { Box, Button, Stack } from '@mui/material';
 import { Add, Home, Group } from '@mui/icons-material';
 import { usePathname } from 'next/navigation';
 import { useUserContext } from '../../context/UserContext';
+import Link from 'next/link';
 
 export default function SideNav() {
   let pathname = usePathname()
@@ -19,32 +20,44 @@ export default function SideNav() {
           style={{textAlign: "center"}}
           gap={2}
         >
-          <Button
-            variant='contained'
-            startIcon={<Add />}
-            href='/newpost'
-            color='success'
-            sx={{ marginBottom: 3 }}
+          <Link
+            href={`/newpost`}
+            passHref
           >
-            Post
-          </Button>
+            <Button
+              variant='contained'
+              startIcon={<Add />}
+              color='success'
+              sx={{ marginBottom: 3 }}
+            >
+              Post
+            </Button>
+          </Link>
+          <Link
+            href='/feed'
+            passHref
+          >
           <Button
             variant={pathname === '/feed' ? 'outlined' : 'text'}
             startIcon={<Home />}
-            href='/feed'
             color='success'
           >
             Home
           </Button>
+          </Link>
           {user && (
+              <Link
+              href={`/groups`}
+              passHref
+            >
             <Button
               variant={pathname.includes('groups') ? 'outlined' : 'text'}
               startIcon={<Group />}
-              href='/groups/'
               color='success'
             >
               Groups
             </Button>
+            </Link>
           )}
         </Stack>
       </Box>

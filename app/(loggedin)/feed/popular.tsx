@@ -16,7 +16,7 @@ interface PopularProps {
 }
 
 const Popular: React.FC<PopularProps> = ({ onGradesChange, onTagsChange }) => {
-  const { user, auth0Id, isLoadingUser } = useUserContext();
+  const { user, auth0Id, isLoadingUser, profileData, isLoadingProfile } = useUserContext();
   const queryClient = useQueryClient();
   const [selectedGrades, setSelectedGrades] = useState<string[]>([]);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
@@ -30,19 +30,6 @@ const Popular: React.FC<PopularProps> = ({ onGradesChange, onTagsChange }) => {
   useEffect(() => {
     onTagsChange(selectedTags);
   }, [selectedTags, onTagsChange]);
-  
-  const { data: profileData, isFetching: isFetchingProfileData, isLoading: isLoadingProfileData, isError: isErrorProfileData } = useQuery<IProfile>({
-    queryKey: ['profile'],
-    queryFn: () => getData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/profile_auth0/${auth0Id}`),
-    staleTime: 1000 * 60 * 60,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
-    refetchOnMount: false,
-    enabled: !!auth0Id,
-    initialData: () => {
-      return queryClient.getQueryData(['profile']);
-    },
-  });
 
   const { data: gradesData, isFetching: isFetchingGradesData, isLoading: isLoadingGradesData, isError: isErrorGradesData } = useQuery({
     queryKey: ['grades'],
@@ -115,7 +102,7 @@ const Popular: React.FC<PopularProps> = ({ onGradesChange, onTagsChange }) => {
     )
   }
 
-  if(isLoadingUser || isLoadingProfileData || isLoadingGradesData || isLoadingTagsData) {
+  if(isLoadingUser || isLoadingProfile || isLoadingGradesData || isLoadingTagsData) {
     return (
       <Skeleton variant='rounded' height={300} />
     )

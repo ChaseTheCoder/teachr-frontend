@@ -7,6 +7,7 @@ import { getData } from '../../services/authenticatedApiCalls';
 import { IProfile } from '../../types/types';
 import { useUserContext } from '../../context/UserContext';
 import { usePathname } from 'next/navigation';
+import Link from 'next/link';
 
 const BottomMobileNav = () => {
   const { auth0Id, user } = useUserContext();
@@ -39,7 +40,10 @@ const BottomMobileNav = () => {
   })
 
   const handleScroll = () => {
-    if (window.scrollY > lastScrollY) {
+    if (window.scrollY === 0) {
+      // At the top of the page
+      setVisible(true);
+    } else if (window.scrollY > lastScrollY) {
       // Scrolling down
       setVisible(false);
     } else {
@@ -68,36 +72,53 @@ const BottomMobileNav = () => {
         display: { xs: 'flex', md: 'none' },
       }}
     >
-      <BottomNavigationAction 
-        label='Home'
-        icon={<Home />}
+      <Link
         href='/feed'
-        sx={{ color: pathname === '/feed' && 'success.main' }}
-      />
-      <BottomNavigationAction 
-        label='Groups'
-        disabled={!profileData}
-        icon={<Group />}
+        passHref
+      >
+        <BottomNavigationAction 
+          label='Home'
+          icon={<Home />}
+          sx={{ color: pathname === '/feed' && 'success.main' }}
+        />
+      </Link>
+      <Link
         href='/groups'
-        sx={{ color: pathname.startsWith('/groups') && 'success.main' }}
-      />
-      <BottomNavigationAction
-        label="Post"
-        icon={<Add />}
+        passHref
+      >
+        <BottomNavigationAction 
+          label='Groups'
+          disabled={!profileData}
+          icon={<Group />}
+          sx={{ color: pathname.startsWith('/groups') && 'success.main' }}
+        />
+      </Link>
+      <Link
         href='/newpost'
-        sx={{ color: pathname === '/newpost' && 'success.main' }}
-      />
-      <BottomNavigationAction
-        disabled={!profileData}
-        label="Notifications"
-        icon={
-          <Badge badgeContent={notifications?.count ?? 0} color='error' >
-            <NotificationsIcon />
-          </Badge>
-        }
+        passHref
+      >
+        <BottomNavigationAction
+          label="Post"
+          icon={<Add />}
+          sx={{ color: pathname === '/newpost' && 'success.main' }}
+        />
+      </Link>
+      <Link
         href='/notifications'
-        sx={{ color: !profileData ? '#e0e0e0' : pathname === '/notifications' && 'success.main' }}
-      />
+        passHref
+      >
+        <BottomNavigationAction
+          disabled={!profileData}
+          label="Notifications"
+          icon={
+            <Badge badgeContent={notifications?.count ?? 0} color='error' >
+              <NotificationsIcon />
+            </Badge>
+          }
+          href='/notifications'
+          sx={{ color: !profileData ? '#e0e0e0' : pathname === '/notifications' && 'success.main' }}
+        />
+      </Link>
     </BottomNavigation>
   );
 };

@@ -9,17 +9,7 @@ import { ActivityLoadingMultiSize } from '../../../components/activityLoading';
 import { AddCircleOutline } from '@mui/icons-material';
 
 const GroupList: React.FC = () => {
-  const { auth0Id, isLoadingUser } = useUserContext();
-  
-  const { data: profileData, isFetching: isFetchingProfileData, isLoading: isLoadingProfileData, isError: isErrorProfileData } = useQuery<IProfile>({
-    queryKey: ['profile'],
-    queryFn: () => getData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/profile_auth0/${auth0Id}`),
-    staleTime: 1000 * 60 * 60,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
-    refetchOnMount: false,
-    enabled: !!auth0Id,
-  });
+  const { isLoadingProfile, profileData } = useUserContext();
 
   const { data: groupData, isFetching: isFetchingGroupData, isLoading: isLoadingGroupData, isError: isErrorGroupData } = useQuery<IGroupList>({
     queryKey: ['groups'],
@@ -28,10 +18,10 @@ const GroupList: React.FC = () => {
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
     refetchOnMount: false,
-    enabled: !isLoadingProfileData && !!profileData?.id,
+    enabled: !isLoadingProfile && !!profileData?.id,
   });
 
-  if (isLoadingUser || isLoadingProfileData || isLoadingGroupData) {
+  if (isLoadingProfile || isLoadingGroupData) {
     return <ActivityLoadingMultiSize />;
   }
 

@@ -7,13 +7,15 @@ import Typography from '@mui/material/Typography';
 import Menu from '@mui/material/Menu';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';import { Badge } from '@mui/material';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
+import { Badge } from '@mui/material';
+import { useQuery } from '@tanstack/react-query';
 import { getData } from '../../services/authenticatedApiCalls';
 import { useEffect, useState } from 'react';
-import { IProfile } from '../../types/types';
 import TeacherAvatar from '../post/avatar';
 import { useRouter, usePathname } from 'next/navigation';
+import { useUserContext } from '../../context/UserContext';
+import Link from 'next/link';
 
 const settings = [
   {
@@ -25,7 +27,7 @@ const settings = [
     link: '/api/auth/logout/'
   }];
 
-export default function Right({ auth0Id }: { auth0Id: string }) {
+export default function Right() {
   const router = useRouter();
   const pathname = usePathname();
   const [menuList, setMenuList] = useState(settings);
@@ -39,26 +41,13 @@ export default function Right({ auth0Id }: { auth0Id: string }) {
     setAnchorElUser(null);
   };
   
-  const queryClient = useQueryClient();
-  
-  const { data: profileData, isFetching: isFetchingProfileData, isLoading: isLoadingProfileData, isError: isErrorProfileData, error: errorProfileData } = useQuery<IProfile>({
-    queryKey: ['profile'],
-    queryFn: () => getData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/profile_auth0/${auth0Id}`),
-    staleTime: 1000 * 60 * 60,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
-    refetchOnMount: false,
-    enabled: !!auth0Id,
-    initialData: () => {
-      return queryClient.getQueryData(['profile']);
-    },
-  })
+  const { profileData, isLoadingProfile } = useUserContext();
 
   useEffect(() => {
-    if (!isLoadingProfileData && !isFetchingProfileData && !profileData && auth0Id) {
+    if (!profileData && !isLoadingProfile) {
       router.push('/signup');
     }
-  }, [isLoadingProfileData, isFetchingProfileData, profileData, auth0Id, router]);
+  }, [profileData, isLoadingProfile, router]);
 
   const { data: notifications, isFetching: isFetchingNotifications, isLoading: isLoadingNotifications, isError: isErrorNotifications } = useQuery({
     queryKey: ['unreadnotifications'],
@@ -88,22 +77,26 @@ export default function Right({ auth0Id }: { auth0Id: string }) {
     }
   }, [profileData])
 
-  useEffect(() => {
-    if(isErrorProfileData && errorProfileData) {
-      console.error(errorProfileData)
-    }
-  }, [isErrorProfileData, errorProfileData])
+  // useEffect(() => {
+  //   if(isErrorProfileData && errorProfileData) {
+  //     console.error(errorProfileData)
+  //   }
+  // }, [isErrorProfileData, errorProfileData])
   return (
     <Box sx={{ flexGrow: 0 }}>
       <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }} gap={2}>
-        <IconButton
+        <Link
           href='/notifications'
-          sx={{ display: { xs: 'none', md: 'flex' } }}
+          passHref
         >
-          <Badge badgeContent={notifications?.count ?? 0} color='error'>
-            <NotificationsNoneIcon color='action' />
-          </Badge>
-        </IconButton>
+          <IconButton
+            sx={{ display: { xs: 'none', md: 'flex' } }}
+          >
+            <Badge badgeContent={notifications?.count ?? 0} color='error'>
+              <NotificationsNoneIcon color='action' />
+            </Badge>
+          </IconButton>
+        </Link>
         {/* <Typography color='textPrimary' fontWeight='bold' sx={{  display: { xs: 'none', md: 'flex' } }}>{teacherName}</Typography> */}
         <Tooltip title="Open settings">
           <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
@@ -130,16 +123,17 @@ export default function Right({ auth0Id }: { auth0Id: string }) {
           onClose={handleCloseUserMenu}
         >
           {menuList.map((menuItem) => (
-            <a
+            <Link
               key={menuItem.title}
               href={menuItem.link}
+              passHref
             >
               <MenuItem
                 onClick={handleCloseUserMenu}
               >
                 <Typography textAlign="center">{menuItem.title}</Typography>
               </MenuItem>
-            </a>
+            </Link>
           ))}
         </Menu>
       </Box>

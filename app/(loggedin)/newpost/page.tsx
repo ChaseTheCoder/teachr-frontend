@@ -5,19 +5,18 @@ import { Box, Button, Chip, Grid, Skeleton, TextField, Typography } from '@mui/m
 import { useRouter } from 'next/navigation';
 import { getData, postOrPatchData } from '../../../services/authenticatedApiCalls';
 import Surface from "../../../components/surface/Surface";
-import { useUser } from "@auth0/nextjs-auth0/client";
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { LoadingButton } from '@mui/lab';
-import { IGrade, IProfile } from '../../../types/types';
+import { IGrade } from '../../../types/types';
 import { getDataNoToken } from '../../../services/unauthenticatedApiCalls';
 import { useSearchParams } from 'next/navigation';
 import Editor from '../../../components/editor';
 import { PostType } from './postType';
 import GroupAbout from '../groups/[groupId]/groupAbout';
+import { useUserContext } from '../../../context/UserContext';
 
 export default function NewPost() {
-  const { user, error, isLoading: isLoadingUser } = useUser();
-  const auth0Id = user?.sub;
+  const { profileData, isLoadingProfile, isLoadingUser } = useUserContext();
   const searchParams = useSearchParams();
   const groupId = searchParams.get('groupId');
   const [title, setTitle] = useState('');
@@ -29,19 +28,7 @@ export default function NewPost() {
   const router = useRouter();
   const tagInputRef = useRef<HTMLInputElement>(null);
   const queryClient = useQueryClient();
-  
-  const { data: profileData, isLoading: isLoadingProfile, isError } = useQuery<IProfile>({
-    queryKey: ['profile'],
-    queryFn: () => getDataNoToken(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/profile_auth0/${auth0Id}`),
-    staleTime: 1000 * 60 * 60,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
-    refetchOnMount: false,
-    enabled: !!auth0Id,
-    initialData: () => {
-      return queryClient.getQueryData(['profile']);
-    },
-  });
+
 
   const { data: groupData, isFetching: isFetchingGroupData, isLoading: isLoadingGroupData, isError: isErrorGroupData } = useQuery({
     queryKey: ['group', groupId],
@@ -50,7 +37,7 @@ export default function NewPost() {
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
     refetchOnMount: false,
-    enabled: !!user && !!profileData?.id && !!groupId,
+    enabled: !!profileData?.id && !!groupId,
   });
   
   const { data: gradesData, isLoading: isLoadingGrades, isError: isErrorGrades } = useQuery<IGrade[]>({
@@ -145,7 +132,7 @@ export default function NewPost() {
     </Grid>
   )
 
-  if(!auth0Id && !profileData) return (
+  if(!profileData) return (
     <Grid container spacing={1}>
       <Grid item xs={12} md={9}>
         <Surface>
@@ -168,7 +155,7 @@ export default function NewPost() {
       </Grid>
     </Grid>
   );
-  if(auth0Id && !profileData) return (
+  if(!profileData) return (
     <Grid container spacing={1}>
       <Grid item xs={12} md={9}>
         <Surface>

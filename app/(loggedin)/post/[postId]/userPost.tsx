@@ -3,7 +3,7 @@
 import { Box, Fade, IconButton, List, ListItemButton, Paper, Popper, PopperPlacementType, Skeleton, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import MoreVert from '@mui/icons-material/MoreVert';
-import { deleteData, getData } from '../../../../services/authenticatedApiCalls';
+import { deleteData } from '../../../../services/authenticatedApiCalls';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { DeleteOutline } from '@mui/icons-material';
 import Link from 'next/link';
@@ -13,7 +13,6 @@ import { getDataNoToken } from '../../../../services/unauthenticatedApiCalls';
 import TeacherAvatar from '../../../../components/post/avatar';
 import VoteButtons from '../../../../components/post/voteButtons';
 import { useUserContext } from '../../../../context/UserContext';
-import { IProfile } from '../../../../types/types';
 import CommentCount from '../../../../components/post/comment';
 import Tags from '../../../../components/tag';
 
@@ -26,32 +25,19 @@ export default function UserPost({ postId, currentUserId }: Props) {
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
   const [open, setOpen] = React.useState(false);
   const [placement, setPlacement] = React.useState<PopperPlacementType>();
-  const { user, auth0Id, isLoadingUser } = useUserContext();
+  const { isLoadingUser, profileData, isLoadingProfile } = useUserContext();
   const queryClient = useQueryClient();
   const [profileParam, setProfileParam] = useState<string>(null);
 
-  const { data: profileData, isFetching: isFetchingProfileData, isLoading: isLoadingProfileData, isError: isErrorProfileData } = useQuery<IProfile>({
-    queryKey: ['profile'],
-    queryFn: () => getData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/profile_auth0/${auth0Id}`),
-    staleTime: 1000 * 60 * 60,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
-    refetchOnMount: false,
-    enabled: !!auth0Id,
-    initialData: () => {
-      return queryClient.getQueryData(['profile']);
-    },
-  });
-
   useEffect(() => {
-    if(!isLoadingProfileData && !isFetchingProfileData && !isLoadingUser) {
+    if(!isLoadingProfile && !isLoadingUser) {
       if(profileData && profileData.id) {
         setProfileParam(`?user_id=${profileData.id}`);
       } else {
         setProfileParam('');
       }
     }
-  }, [profileData, isFetchingProfileData, isLoadingProfileData, isLoadingUser]);
+  }, [profileData, isLoadingUser]);
 
   const handleClickPopper =
     (newPlacement: PopperPlacementType) =>
@@ -68,7 +54,7 @@ export default function UserPost({ postId, currentUserId }: Props) {
     enabled: profileParam !== null,
   })
   
-  const { data: profile, isFetching: isFetchingProfile, isLoading: isLoadingProfile, isError: isErrorProfile } = useQuery({
+  const { data: profile, isFetching: isFetchingProfile, isLoading: isLoadingProfilePost, isError: isErrorProfile } = useQuery({
     queryKey: ['posterProfile', post?.user],
     queryFn: () => getDataNoToken(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/profile/${post.user}`),
     staleTime: 1000 * 60 * 60,
@@ -94,7 +80,7 @@ export default function UserPost({ postId, currentUserId }: Props) {
     mutationDelete.mutate();
   };
 
-  if (isLoading || isLoadingProfile || !profile) return (
+  if (isLoading || isLoadingProfilePost || !profile) return (
     <Box sx={{ display: 'flex', flexDirection: 'column' }} gap={1}>
       <Skeleton variant='rectangular' height={80} />
     </Box>
