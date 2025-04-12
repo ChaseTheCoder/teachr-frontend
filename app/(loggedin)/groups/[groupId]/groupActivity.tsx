@@ -8,10 +8,11 @@ import Post from "../../../../components/post/post";
 interface GroupActivityProps {
   isPublic: boolean;
   isMember: boolean;
+  isAdmin: boolean;
   groupId: string;
   profileId: string;
 }
-const GroupActivity: React.FC<GroupActivityProps> = ({isPublic, isMember, groupId, profileId}) => {
+const GroupActivity: React.FC<GroupActivityProps> = ({isPublic, isMember, isAdmin, groupId, profileId}) => {
   const { data: groupPosts, isLoading: isLoadingGroupPosts, isError: isErrorGroupPosts } = useQuery({
     queryKey: ['group', 'posts', groupId],
     queryFn: () => getData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/posts/group/${groupId}/?user_id=${profileId}`),
@@ -61,6 +62,7 @@ const GroupActivity: React.FC<GroupActivityProps> = ({isPublic, isMember, groupI
               key={post.id}
               post={post}
               profile={post.user}
+              adminId={isAdmin && profileId}
             />
           ))}
         </Box>

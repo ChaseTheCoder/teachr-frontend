@@ -1,26 +1,40 @@
-import { Box, Avatar, Typography } from "@mui/material";
+import { Box, Avatar, Typography, Popper, PopperPlacementType, IconButton, Fade, List, ListItemButton, Paper, CircularProgress } from "@mui/material";
 import { IProfileBatch } from "../../../../types/types";
-import { PersonAdd, PersonRemove } from "@mui/icons-material";
+import { DeleteOutline, MoreVert, PersonAdd, PersonRemove } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
 import TeacherAvatar from "../../../../components/post/avatar";
 import Link from "next/link";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { postOrPatchData } from "../../../../services/authenticatedApiCalls";
 import { useState } from "react";
+import { set } from "@auth0/nextjs-auth0/dist/session";
 
 interface IMemberCard {
   member: IProfileBatch;
   groupId: string;
   profileId: string;
   isPending?: boolean;
+  adminId?: string | null;
 }
 
-const MemberCard: React.FC<IMemberCard> = ({ member, groupId, profileId, isPending }) => {
+const MemberCard: React.FC<IMemberCard> = ({ member, groupId, profileId, isPending, adminId }) => {
   const [isLoadingAccept, setIsLoadingAccept] = useState(false);
   const [isLoadingReject, setIsLoadingReject] = useState(false);
   const [isDisabledAccept, setIsDisabledAccept] = useState(false);
   const [isDisabledReject, setIsDisabledReject] = useState(false);
+  const [isLoadingRemove, setIsLoadingRemove] = useState(false);
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+  const [open, setOpen] = useState(false);
+  const [placement, setPlacement] = useState<PopperPlacementType>();
   const queryClient = useQueryClient();
+
+  const handleClickPopper =
+    (newPlacement: PopperPlacementType) =>
+    (event: React.MouseEvent<HTMLButtonElement>) => {
+      setAnchorEl(event.currentTarget);
+      setOpen((prev) => placement !== newPlacement || !prev);
+      setPlacement(newPlacement);
+    };
   
   
   const adminAdmitOrReject = useMutation({
@@ -61,6 +75,37 @@ const MemberCard: React.FC<IMemberCard> = ({ member, groupId, profileId, isPendi
       setIsLoadingReject(false);
       setIsDisabledAccept(false);
       setIsDisabledReject(false);
+    }
+  });
+  
+  const adminRemoveMember = useMutation({
+    mutationFn: async () => {
+      setIsLoadingRemove(true);
+      try {
+        const body = {
+          remove_user_id: member.id
+        };
+        const response = await postOrPatchData(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/group/${groupId}/members/remove/?user=${profileId}`,
+          'PATCH',
+          body
+        );
+        return response;
+      } catch (error) {
+        if (error.message.includes('Unexpected end of JSON input')) {
+          return null;
+        }
+        throw error;
+      }
+    },
+    onSuccess: () => {
+      queryClient.refetchQueries({ queryKey: ['group', 'members', groupId] });
+    },
+    onError: (error) => {
+      console.error('Error leaving group:', error);
+    },
+    onSettled: () => {
+      setIsLoadingRemove(false);
     }
   });
 
@@ -172,6 +217,40 @@ const MemberCard: React.FC<IMemberCard> = ({ member, groupId, profileId, isPendi
             Reject
           </LoadingButton>
         </Box>
+      )}
+      { (!isPending && !!adminId) && (
+        <>
+          <IconButton onClick={handleClickPopper('bottom-start')}>
+            <MoreVert fontSize='small' />
+          </IconButton>
+          <Popper
+            sx={{ zIndex: 1200 }}
+            open={open}
+            anchorEl={anchorEl}
+            placement={placement}
+            transition
+          >
+            {({ TransitionProps }) => (
+              <Fade {...TransitionProps} timeout={350}>
+                <Paper>
+                  <List>
+                    <ListItemButton
+                      sx={{ padding: 1, gap: 3 }}
+                      onClick={() => adminRemoveMember.mutate()}
+                      disabled={isLoadingRemove}
+                    >
+                      {isLoadingRemove ? (
+                        <CircularProgress size={20} color="error" />
+                      ) : (
+                        <DeleteOutline fontSize='small'/>
+                      )}  <Typography fontSize='small'>{isLoadingRemove ? 'Removing...' : 'Remove User'}</Typography>
+                    </ListItemButton>
+                  </List>
+                </Paper>
+              </Fade>
+            )}
+          </Popper>
+        </>
       )}
     </Box>
   );
