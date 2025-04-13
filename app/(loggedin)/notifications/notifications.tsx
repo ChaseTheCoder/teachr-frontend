@@ -1,26 +1,41 @@
 'use client'
 
 import React, { useEffect, useState } from 'react';
-import { Avatar, Box, Button, Skeleton, Typography } from '@mui/material';
+import { Avatar, Box, Button, List, ListItemAvatar, ListItemButton, ListItemText, ListSubheader, Skeleton, Typography } from '@mui/material';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { getDataWithParams, patchData } from '../../../services/authenticatedApiCalls';
+import { getData, getDataWithParams, patchData } from '../../../services/authenticatedApiCalls';
 import Surface from '../../../components/surface/Surface';
 import { timeAgo } from '../../../utils/time';
+import { IProfile } from '../../../types/types';
 import { useUserContext } from '../../../context/UserContext';
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export default function Notifications() {
   const queryClient = useQueryClient();
-  const { auth0Id, profileData, isLoadingUser } = useUserContext();
+  const { auth0Id, isLoadingUser } = useUserContext();
   const [userIds, setUserIds] = useState<string[]>([]);
   const [page, setPage] = useState(1);
   const [currentProfiles, setCurrentProfiles] = useState([]);
   const [notificationsDisplayed, setNotificationsDisplayed] = useState([]); 
   const [disableSeeMore, setDisableSeeMore] = useState(false);
+  const router = useRouter();
 
   const handleSeeMore = () => {
     setPage((prevPage) => prevPage + 1);
   };
+  
+  const { data: profileData, isFetching: isFetchingProfileData, isLoading: isLoadingProfileData, isError: isErrorProfileData } = useQuery<IProfile>({
+    queryKey: ['profile'],
+    queryFn: () => getData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/profile_auth0/${auth0Id}`),
+    staleTime: 1000 * 60 * 60,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    refetchOnMount: false,
+    enabled: !!auth0Id,
+    initialData: () => {
+      return queryClient.getQueryData(['profile']);
+    },
+  });
 
   const { data: notificationData, isFetching: isFetchingNotificationData, isLoading: isLoadingNotificationData, isError: isErrorNotificationData } = useQuery({
     queryKey: ['notifications', page],
@@ -28,6 +43,8 @@ export default function Notifications() {
     staleTime: 1000 * 60 * 60,
     enabled: !!profileData,
   });
+  console.log('notificationData', notificationData);
+  console.log('error notifications', isErrorNotificationData);
 
   
   const { data: batchProfiles, isFetching: isFetchingBatchProfiles, isLoading: isLoadingBatchProfiles, isError: isErrorBatchProfiles } = useQuery({
@@ -74,14 +91,17 @@ export default function Notifications() {
     }
   }, [batchProfiles]);
 
-  const handleNotificationClick = (notificationUrl: string, notificationId: string, notificationRead: boolean) => {
-    notificationRead ?
-    window.location.href = notificationUrl :
+  const handleNotificationClick = async (notificationUrl: string, notificationId: string, notificationRead: boolean) => {
+    if (notificationRead) {
+      router.push(notificationUrl);
+    } else {
       mutationNotificationRead.mutate(notificationId, {
-        onSettled: () => { 
-          window.location.href = notificationUrl
-      }});
-  }
+        onSettled: () => {
+          router.push(notificationUrl);
+        }
+      });
+    }
+  };
 
   const createNotificationMessage = (notificationType: string) => {
     if(notificationType === 'comment') {
@@ -106,84 +126,67 @@ export default function Notifications() {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column' }} gap={.5}>
       <Surface>
-        {isLoadingUser || (isLoadingNotificationData && page === 1) || (isFetchingNotificationData && page === 1) || isFetchingBatchProfiles || isLoadingBatchProfiles ? (
-          <Box sx={{ display: 'flex', flexDirection: 'column' }} gap={1}>
-            <Skeleton variant='rounded' height={80} />
-            <Skeleton variant='rounded' height={80} />
-            <Skeleton variant='rounded' height={80} />
-          </Box>
-        ) : (
+      {isLoadingUser || isLoadingProfileData || isFetchingProfileData || (isLoadingNotificationData && page === 1) || (isFetchingNotificationData && page === 1) || isFetchingBatchProfiles || isLoadingBatchProfiles ? 
+        <Box sx={{ display: 'flex', flexDirection: 'column' }} gap={1}>
+          <Skeleton variant='rounded' height={80} />
+          <Skeleton variant='rounded' height={80} />
+          <Skeleton variant='rounded' height={80} />
+        </Box> :
           <>
-            <Typography
-              component="h2"
-              fontWeight="medium"
-              sx={{
-                padding: 2,
-                borderBottom: '1px solid',
-                borderColor: 'divider'
-              }}
-            >
-              Your Notifications
-            </Typography>
-            
-            <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+            <Box sx={{ width: '100%' }}>
+              <Typography 
+                component="div" 
+                id="nested-list-subheader" 
+                sx={{ 
+                  fontWeight: 'bold', 
+                  fontSize: '1rem', 
+                  marginBottom: 1, 
+                  color: 'text.secondary' 
+                }}
+              >
+                Your Notifications
+              </Typography>
               {notificationsDisplayed.map((notification) => {
                 const userProfile = currentProfiles?.find(batchProfile => batchProfile.id === notification.initiator);
                 const message = createNotificationMessage(notification.notification_type);
                 const notificationUrl = createNotificationUrl(notification.url_id, notification.notification_type);
                 
                 return (
-                  <Link
+                  <Box
                     key={notification.id}
-                    href={notificationUrl}
-                    passHref
-                    style={{ textDecoration: 'none' }}
+                    onClick={() => handleNotificationClick(notificationUrl, notification.id, notification.read)}
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      padding: 2,
+                      cursor: 'pointer',
+                      backgroundColor: notification.read ? 'transparent' : 'action.selected',
+                      '&:hover': {
+                        backgroundColor: 'action.hover',
+                      }
+                    }}
                   >
-                    <Box
-                      onClick={(e) => {
-                        e.preventDefault();
-                        handleNotificationClick(notificationUrl, notification.id, notification.read);
-                      }}
-                      sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        padding: 2,
-                        gap: 2,
-                        backgroundColor: notification.read ? 'transparent' : 'action.selected',
-                        '&:hover': {
-                          backgroundColor: 'action.hover',
-                          cursor: 'pointer'
-                        }
-                      }}
+                    <Avatar 
+                      alt={userProfile?.teacher_name || 'avatar'} 
+                      src={userProfile?.profile_pic_url}
+                      sx={{ marginRight: 2 }}
+                    />
+                    <Typography 
+                      color={notification.read ? 'text.secondary' : 'text.primary'}
                     >
-                      <Avatar 
-                        alt={userProfile?.teacher_name || 'avatar'} 
-                        src={userProfile?.profile_pic_url}
-                      />
-                      <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                        <Typography 
-                          color={notification.read ? 'text.secondary' : 'text.primary'}
-                        >
-                          {notification.notification_type === 'comment' && (
-                            <strong>{userProfile?.teacher_name ?? 'User not found'}</strong>
-                          )} {message} {timeAgo(notification.timestamp)}
-                        </Typography>
-                      </Box>
-                    </Box>
-                  </Link>
+                      {notification.notification_type === 'comment' && (
+                        <strong>{userProfile?.teacher_name ?? 'User not found'}</strong>
+                      )} {message} {timeAgo(notification.timestamp)}
+                    </Typography>
+                  </Box>
                 );
               })}
             </Box>
-            
-            <Button 
-              onClick={handleSeeMore} 
-              disabled={disableSeeMore || isFetchingNotificationData || isLoadingNotificationData}
-              sx={{ margin: 2 }}
-            >
+            <Button onClick={handleSeeMore} disabled={disableSeeMore || isFetchingNotificationData || isLoadingNotificationData}>
               See more notifications
             </Button>
           </>
-        )}
+        }
       </Surface>
     </Box>
   );
