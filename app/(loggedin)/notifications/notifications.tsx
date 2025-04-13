@@ -1,18 +1,17 @@
 'use client'
 
 import React, { useEffect, useState } from 'react';
-import { Avatar, Box, Button, List, ListItemAvatar, ListItemButton, ListItemText, ListSubheader, Skeleton, Typography } from '@mui/material';
+import { Avatar, Box, Button, Skeleton, Typography } from '@mui/material';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { getData, getDataWithParams, patchData } from '../../../services/authenticatedApiCalls';
+import { getDataWithParams, patchData } from '../../../services/authenticatedApiCalls';
 import Surface from '../../../components/surface/Surface';
 import { timeAgo } from '../../../utils/time';
-import { IProfile } from '../../../types/types';
 import { useUserContext } from '../../../context/UserContext';
 import { useRouter } from 'next/navigation';
 
 export default function Notifications() {
   const queryClient = useQueryClient();
-  const { auth0Id, isLoadingUser } = useUserContext();
+  const { profileData } = useUserContext();
   const [userIds, setUserIds] = useState<string[]>([]);
   const [page, setPage] = useState(1);
   const [currentProfiles, setCurrentProfiles] = useState([]);
@@ -23,19 +22,6 @@ export default function Notifications() {
   const handleSeeMore = () => {
     setPage((prevPage) => prevPage + 1);
   };
-  
-  const { data: profileData, isFetching: isFetchingProfileData, isLoading: isLoadingProfileData, isError: isErrorProfileData } = useQuery<IProfile>({
-    queryKey: ['profile'],
-    queryFn: () => getData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/profile_auth0/${auth0Id}`),
-    staleTime: 1000 * 60 * 60,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
-    refetchOnMount: false,
-    enabled: !!auth0Id,
-    initialData: () => {
-      return queryClient.getQueryData(['profile']);
-    },
-  });
 
   const { data: notificationData, isFetching: isFetchingNotificationData, isLoading: isLoadingNotificationData, isError: isErrorNotificationData } = useQuery({
     queryKey: ['notifications', page],
@@ -126,7 +112,7 @@ export default function Notifications() {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column' }} gap={.5}>
       <Surface>
-      {isLoadingUser || isLoadingProfileData || isFetchingProfileData || (isLoadingNotificationData && page === 1) || (isFetchingNotificationData && page === 1) || isFetchingBatchProfiles || isLoadingBatchProfiles ? 
+      { !profileData || (isLoadingNotificationData && page === 1) || (isFetchingNotificationData && page === 1) || isFetchingBatchProfiles || isLoadingBatchProfiles ? 
         <Box sx={{ display: 'flex', flexDirection: 'column' }} gap={1}>
           <Skeleton variant='rounded' height={80} />
           <Skeleton variant='rounded' height={80} />
