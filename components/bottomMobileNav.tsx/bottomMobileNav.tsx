@@ -115,7 +115,6 @@ const BottomMobileNav = () => {
               <NotificationsIcon />
             </Badge>
           }
-          href='/notifications'
           sx={{ color: !profileData ? '#e0e0e0' : pathname === '/notifications' && 'success.main' }}
         />
       </Link>

@@ -46,8 +46,8 @@ export default function SideNav() {
           </Button>
           </Link>
           {user && (
-              <Link
-              href={`/groups`}
+            <Link
+              href='/groups'
               passHref
             >
             <Button
