@@ -14,6 +14,7 @@ import { useEffect, useState } from 'react';
 import { IProfile } from '../../types/types';
 import TeacherAvatar from '../post/avatar';
 import { useRouter, usePathname } from 'next/navigation';
+import Link from 'next/link';
 
 const settings = [
   {
@@ -96,14 +97,18 @@ export default function Right({ auth0Id }: { auth0Id: string }) {
   return (
     <Box sx={{ flexGrow: 0 }}>
       <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }} gap={2}>
-        <IconButton
+        <Link
           href='/notifications'
-          sx={{ display: { xs: 'none', md: 'flex' } }}
+          passHref
         >
-          <Badge badgeContent={notifications?.count ?? 0} color='error'>
-            <NotificationsNoneIcon color='action' />
-          </Badge>
-        </IconButton>
+          <IconButton
+            sx={{ display: { xs: 'none', md: 'flex' } }}
+          >
+            <Badge badgeContent={notifications?.count ?? 0} color='error'>
+              <NotificationsNoneIcon color='action' />
+            </Badge>
+          </IconButton>
+        </Link>
         {/* <Typography color='textPrimary' fontWeight='bold' sx={{  display: { xs: 'none', md: 'flex' } }}>{teacherName}</Typography> */}
         <Tooltip title="Open settings">
           <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
@@ -130,7 +135,7 @@ export default function Right({ auth0Id }: { auth0Id: string }) {
           onClose={handleCloseUserMenu}
         >
           {menuList.map((menuItem) => (
-            <a
+            <Link
               key={menuItem.title}
               href={menuItem.link}
             >
@@ -139,7 +144,7 @@ export default function Right({ auth0Id }: { auth0Id: string }) {
               >
                 <Typography textAlign="center">{menuItem.title}</Typography>
               </MenuItem>
-            </a>
+            </Link>
           ))}
         </Menu>
       </Box>

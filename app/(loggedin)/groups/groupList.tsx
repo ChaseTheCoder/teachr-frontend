@@ -7,6 +7,7 @@ import { Box, Button, Typography } from '@mui/material';
 import GroupCard from './groupCard';
 import { ActivityLoadingMultiSize } from '../../../components/activityLoading';
 import { AddCircleOutline } from '@mui/icons-material';
+import Link from 'next/link';
 
 const GroupList: React.FC = () => {
   const { auth0Id, isLoadingUser } = useUserContext();
@@ -58,18 +59,22 @@ const GroupList: React.FC = () => {
         >
           Groups
         </Typography>
-        <Button
-          startIcon={<AddCircleOutline />}
-          color='success'
-          size='small'
-          sx={{
-            width: 'fit-content',
-            minWidth: 'auto'
-          }}
+        <Link
           href='/groups/newgroup'
+          passHref
         >
-          Create Group
-        </Button>
+          <Button
+            startIcon={<AddCircleOutline />}
+            color='success'
+            size='small'
+            sx={{
+              width: 'fit-content',
+              minWidth: 'auto'
+            }}
+          >
+            Create Group
+          </Button>
+        </Link>
       </Box>
       <Box sx={{ display: 'flex', flexDirection: 'column' }} gap={1}>
         { groupData && groupData.length > 0 &&

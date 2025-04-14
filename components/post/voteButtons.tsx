@@ -77,7 +77,11 @@ const VoteButtons: React.FC<VoteButtonsProps> = ({ type, upvotes, downvotes, has
   }, [profileData]);
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }} gap={.25}>
+    <Box
+      sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}
+      gap={0.25}
+      onClick={(e) => e.stopPropagation()}
+    >
       <IconButton
         size='small'
         sx={{ padding: '2px' }}

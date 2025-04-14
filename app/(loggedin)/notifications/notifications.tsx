@@ -1,17 +1,19 @@
 'use client'
 
 import React, { useEffect, useState } from 'react';
-import { Avatar, Box, Button, List, ListItemAvatar, ListItemButton, ListItemText, ListSubheader, Skeleton, Typography } from '@mui/material';
+import { Avatar, Box, Button, Skeleton, Typography } from '@mui/material';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getData, getDataWithParams, patchData } from '../../../services/authenticatedApiCalls';
-import { useUser } from '@auth0/nextjs-auth0/client';
 import Surface from '../../../components/surface/Surface';
 import { timeAgo } from '../../../utils/time';
 import { IProfile } from '../../../types/types';
 import { useUserContext } from '../../../context/UserContext';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 export default function Notifications() {
   const queryClient = useQueryClient();
+  const router = useRouter();
   const { auth0Id, isLoadingUser } = useUserContext();
   const [userIds, setUserIds] = useState<string[]>([]);
   const [page, setPage] = useState(1);
@@ -88,13 +90,11 @@ export default function Notifications() {
     }
   }, [batchProfiles]);
 
-  const handleNotificationClick = (notificationUrl: string, notificationId: string, notificationRead: boolean) => {
-    notificationRead ?
-    window.location.href = notificationUrl :
-      mutationNotificationRead.mutate(notificationId, {
-        onSettled: () => { 
-          window.location.href = notificationUrl
-      }});
+  const handleNotificationClick = (notificationId: string, notificationRead: boolean, notificationUrl: string) => {
+    if(!notificationRead) {
+      mutationNotificationRead.mutate(notificationId);
+    }
+    router.push(notificationUrl);
   }
 
   const createNotificationMessage = (notificationType: string) => {
@@ -120,52 +120,72 @@ export default function Notifications() {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column' }} gap={.5}>
       <Surface>
-      {isLoadingUser || isLoadingProfileData || isFetchingProfileData || (isLoadingNotificationData && page === 1) || (isFetchingNotificationData && page === 1) || isFetchingBatchProfiles || isLoadingBatchProfiles ? 
-        <Box sx={{ display: 'flex', flexDirection: 'column' }} gap={1}>
-          <Skeleton variant='rounded' height={80} />
-          <Skeleton variant='rounded' height={80} />
-          <Skeleton variant='rounded' height={80} />
-        </Box> :
+        {isLoadingUser || isLoadingProfileData || isFetchingProfileData || (isLoadingNotificationData && page === 1) || (isFetchingNotificationData && page === 1) || isFetchingBatchProfiles || isLoadingBatchProfiles ? 
+          <Box sx={{ display: 'flex', flexDirection: 'column' }} gap={1}>
+            <Skeleton variant='rounded' height={80} />
+            <Skeleton variant='rounded' height={80} />
+            <Skeleton variant='rounded' height={80} />
+          </Box> :
           <>
-            <List
-              sx={{ width: '100%' }}
-              aria-labelledby="nested-list-subheader"
-              subheader={
-                <ListSubheader component="div" id="nested-list-subheader">
-                  Your Notifications
-                </ListSubheader>
-              }
+            <Typography
+              component="h2"
+              fontWeight="medium"
+              sx={{
+                padding: 2,
+                borderBottom: '1px solid',
+                borderColor: 'divider'
+              }}
             >
+              Your Notifications
+            </Typography>
+            
+            <Box sx={{ display: 'flex', flexDirection: 'column' }}>
               {notificationsDisplayed.map((notification) => {
                 const userProfile = currentProfiles?.find(batchProfile => batchProfile.id === notification.initiator);
                 const message = createNotificationMessage(notification.notification_type);
                 const notificationUrl = createNotificationUrl(notification.url_id, notification.notification_type);
+                
                 return (
-                  <ListItemButton
-                    alignItems="center"
+                  <Box
                     key={notification.id}
-                    selected={!notification.read}
                     onClick={(e) => {
                       e.preventDefault();
-                      handleNotificationClick(notificationUrl, notification.id, notification.read);
+                      handleNotificationClick(notification.id, notification.read, notificationUrl);
                     }}
-                    href={notificationUrl}
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      padding: 2,
+                      gap: 2,
+                      cursor: 'pointer',
+                      backgroundColor: !notification.read ? 'action.selected' : 'transparent',
+                      '&:hover': {
+                        backgroundColor: 'action.hover',
+                      }
+                    }}
                   >
-                    <ListItemAvatar>
-                    <Avatar alt="avatar" />
-                    </ListItemAvatar>
-                    <ListItemText
-                    primary={
-                      <Typography variant="body1" color={notification.read ? 'textSecondary' : 'textPrimary'}>
-                        {notification.notification_type === 'comment' && <strong>{userProfile?.teacher_name ?? 'User not found'}</strong> } {message} {timeAgo(notification.timestamp)}
-                      </Typography>
-                    }
+                    <Avatar 
+                      alt={userProfile?.teacher_name || 'avatar'} 
+                      src={userProfile?.profile_pic_url}
                     />
-                  </ListItemButton>
-                )
+                    <Typography 
+                      color={notification.read ? 'text.secondary' : 'text.primary'}
+                      sx={{ flex: 1 }}
+                    >
+                      {notification.notification_type === 'comment' && (
+                        <strong>{userProfile?.teacher_name ?? 'User not found'}</strong>
+                      )} {message} {timeAgo(notification.timestamp)}
+                    </Typography>
+                  </Box>
+                );
               })}
-            </List>
-            <Button onClick={handleSeeMore} disabled={disableSeeMore || isFetchingNotificationData || isLoadingNotificationData}>
+            </Box>
+            
+            <Button 
+              onClick={handleSeeMore} 
+              disabled={disableSeeMore || isFetchingNotificationData || isLoadingNotificationData}
+              sx={{ margin: 2 }}
+            >
               See more notifications
             </Button>
           </>
