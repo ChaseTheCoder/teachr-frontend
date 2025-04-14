@@ -90,12 +90,18 @@ export default function Notifications() {
     }
   }, [batchProfiles]);
 
-  const handleNotificationClick = (notificationId: string, notificationRead: boolean, notificationUrl: string) => {
-    if(!notificationRead) {
-      mutationNotificationRead.mutate(notificationId);
+  const handleNotificationClick = async (notificationId: string, notificationRead: boolean, notificationUrl: string) => {
+    if (!notificationRead) {
+      try {
+        await mutationNotificationRead.mutateAsync(notificationId);
+        await queryClient.invalidateQueries({ queryKey: ['unreadnotifications'] });
+      } catch (error) {
+        console.error('Error marking notification as read:', error);
+        return; // Prevent navigation if mutation fails
+      }
     }
     router.push(notificationUrl);
-  }
+  };
 
   const createNotificationMessage = (notificationType: string) => {
     if(notificationType === 'comment') {
