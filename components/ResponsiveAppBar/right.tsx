@@ -20,7 +20,7 @@ const settings = [
   {
     title: 'Profile',
     link: '/profile'
-  },];
+  }];
 
 export default function Right({ auth0Id }: { auth0Id: string }) {
   const router = useRouter();
@@ -139,10 +139,10 @@ export default function Right({ auth0Id }: { auth0Id: string }) {
               </MenuItem>
             </Link>
           ))}
-            {/* do not undo this, it will cause users to be automatically logged out */}
+            {/* do not undo this, it will cause users to be automatically logged out. /api/auth/logout must be <a> tag */}
             <a
               key='logout'
-              href={'/api/auth/logout/'}
+              href='/api/auth/logout/'
             >
               <MenuItem
                 onClick={handleCloseUserMenu}
