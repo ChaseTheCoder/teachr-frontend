@@ -23,7 +23,6 @@ export async function getData(apiUrl) {
   } catch (error) {
     if (error.name === 'AccessTokenError') {
       console.error('AccessTokenError:', error);
-      redirect('/api/auth/logout/');
     } else {
       console.error('Error fetching data:', error);
       throw error;
