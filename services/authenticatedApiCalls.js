@@ -10,19 +10,25 @@ export async function getData(apiUrl) {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${accessToken}`
+        'Authorization': `Bearer ${accessToken}`,
+        'Accept': 'application/json'
       },
     });
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
+  if (!response.ok) {
+    if (response.status === 401) {
+      // Handle auth errors without immediate redirect
+      return null;
     }
+    throw new Error(`HTTP error! Status: ${response.status}`);
+  }
 
-    const result = await response.json();
-    return result;
+  const result = await response.json();
+  return result;
   } catch (error) {
     if (error.name === 'AccessTokenError') {
       console.error('AccessTokenError:', error);
+      return null;
     } else {
       console.error('Error fetching data:', error);
       throw error;
@@ -40,7 +46,8 @@ export async function getDataWithParams(apiUrl, key, params) {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${accessToken.accessToken}`
+      'Authorization': `Bearer ${accessToken.accessToken}`,
+      'Accept': 'application/json'
     },
   });
   if (!response.ok) {
@@ -57,7 +64,8 @@ export async function getDataNoUserId(apiUrl) {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${accessToken.accessToken}`
+      'Authorization': `Bearer ${accessToken.accessToken}`,
+      'Accept': 'application/json'
     },
   });
   if (!response.ok) {
@@ -76,6 +84,7 @@ export async function postOrPatchData(apiUrl, method, body) {
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${accessToken.accessToken}`,
+      'Accept': 'application/json'
     },
     body: stringifiedBody,
   });
@@ -136,7 +145,8 @@ export async function postSchedule(body) {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${accessToken.accessToken}`
+      'Authorization': `Bearer ${accessToken.accessToken}`,
+      'Accept': 'application/json'
     },
     body: JSON.stringify(body),
   });
@@ -154,7 +164,8 @@ export const handleVerify = async (email, profileId) => {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${accessToken.accessToken}`
+      'Authorization': `Bearer ${accessToken.accessToken}`,
+      'Accept': 'application/json'
     },
     body: JSON.stringify({ email: email, user_id: profileId }),
   });
