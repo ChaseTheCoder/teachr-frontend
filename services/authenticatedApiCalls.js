@@ -13,26 +13,24 @@ export async function getData(apiUrl) {
         'Authorization': `Bearer ${accessToken}`,
         'Accept': 'application/json'
       },
+      credentials: 'include'
     });
 
-  if (!response.ok) {
-    if (response.status === 401) {
-      // Handle auth errors without immediate redirect
-      return null;
+    if (!response.ok) {
+      if (response.status === 401) {
+        return null;
+      }
+      throw new Error(`HTTP error! Status: ${response.status}`);
     }
-    throw new Error(`HTTP error! Status: ${response.status}`);
-  }
 
-  const result = await response.json();
-  return result;
+    return await response.json();
   } catch (error) {
     if (error.name === 'AccessTokenError') {
       console.error('AccessTokenError:', error);
       return null;
-    } else {
-      console.error('Error fetching data:', error);
-      throw error;
     }
+    console.error('Error fetching data:', error);
+    throw error;
   }
 }
 
@@ -49,6 +47,7 @@ export async function getDataWithParams(apiUrl, key, params) {
       'Authorization': `Bearer ${accessToken.accessToken}`,
       'Accept': 'application/json'
     },
+    credentials: 'include'
   });
   if (!response.ok) {
     throw new Error(`HTTP error! Status: ${response.status}`);
@@ -67,6 +66,7 @@ export async function getDataNoUserId(apiUrl) {
       'Authorization': `Bearer ${accessToken.accessToken}`,
       'Accept': 'application/json'
     },
+    credentials: 'include'
   });
   if (!response.ok) {
     throw new Error(`HTTP error! Status: ${response.status}`);
@@ -86,6 +86,7 @@ export async function postOrPatchData(apiUrl, method, body) {
       'Authorization': `Bearer ${accessToken.accessToken}`,
       'Accept': 'application/json'
     },
+    credentials: 'include',
     body: stringifiedBody,
   });
 
@@ -104,7 +105,9 @@ export async function patchData(apiUrl) {
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${accessToken.accessToken}`,
-    }
+      'Accept': 'application/json',
+    },
+    credentials: 'include'
   });
   if (!response.ok) {
     throw new Error(`HTTP error! Status: ${response.status}`);
@@ -148,6 +151,7 @@ export async function postSchedule(body) {
       'Authorization': `Bearer ${accessToken.accessToken}`,
       'Accept': 'application/json'
     },
+    credentials: 'include',
     body: JSON.stringify(body),
   });
   if (!response.ok) {
@@ -167,6 +171,7 @@ export const handleVerify = async (email, profileId) => {
       'Authorization': `Bearer ${accessToken.accessToken}`,
       'Accept': 'application/json'
     },
+    credentials: 'include',
     body: JSON.stringify({ email: email, user_id: profileId }),
   });
 

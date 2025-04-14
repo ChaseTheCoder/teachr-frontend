@@ -107,7 +107,7 @@ function ResponsiveAppBar() {
                           color='success'
                           sx={{ marginRight: 2 }}
                         >
-                          <a href='/api/auth/login'>
+                          <a href={'/api/auth/login'}>
                           Log In
                           </a>
                         </Button>
@@ -126,7 +126,7 @@ function ResponsiveAppBar() {
                     auth0Id ? 
                     <Right auth0Id={auth0Id} /> 
                     :
-                    <Link href='/api/auth/login'>
+                    <a href='/api/auth/login'>
                       <Button
                       color='success'
                       size='small'
@@ -134,7 +134,7 @@ function ResponsiveAppBar() {
                       >
                       Log In
                       </Button>
-                    </Link>
+                    </a>
                   )
                 )}
             </Box>

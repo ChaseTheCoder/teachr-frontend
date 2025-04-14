@@ -73,10 +73,6 @@ export default function Right({ auth0Id }: { auth0Id: string }) {
         {
           title: 'Profile',
           link: `/profile/${profileData.id}`
-        },
-        {
-          title: 'Logout',
-          link: '/api/auth/logout/'
         }
       ])
     }
@@ -146,7 +142,7 @@ export default function Right({ auth0Id }: { auth0Id: string }) {
             {/* do not undo this, it will cause users to be automatically logged out */}
             <a
               key='logout'
-              href='/api/auth/logout/'
+              href={'/api/auth/logout/'}
             >
               <MenuItem
                 onClick={handleCloseUserMenu}
