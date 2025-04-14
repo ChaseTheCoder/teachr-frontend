@@ -143,6 +143,7 @@ export default function Right({ auth0Id }: { auth0Id: string }) {
               </MenuItem>
             </Link>
           ))}
+            {/* do not undo this, it will cause users to be automatically logged out */}
             <a
               key='logout'
               href='/api/auth/logout/'
