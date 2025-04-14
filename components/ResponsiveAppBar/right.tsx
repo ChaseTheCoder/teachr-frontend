@@ -20,7 +20,7 @@ const settings = [
   {
     title: 'Profile',
     link: '/profile'
-  },];
+  }];
 
 export default function Right({ auth0Id }: { auth0Id: string }) {
   const router = useRouter();
@@ -101,7 +101,7 @@ export default function Right({ auth0Id }: { auth0Id: string }) {
             </Badge>
           </IconButton>
         </Link>
-        {/* <Typography color='textPrimary' fontWeight='bold' sx={{  display: { xs: 'none', md: 'flex' } }}>{teacherName}</Typography> */}
+        <Typography color='textPrimary' fontWeight='bold' sx={{  display: { xs: 'none', md: 'flex' } }}>{teacherName}</Typography>
         <Tooltip title="Open settings">
           <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
             <TeacherAvatar
@@ -139,10 +139,10 @@ export default function Right({ auth0Id }: { auth0Id: string }) {
               </MenuItem>
             </Link>
           ))}
-            {/* do not undo this, it will cause users to be automatically logged out */}
+            {/* do not undo this, it will cause users to be automatically logged out. /api/auth/logout must be <a> tag */}
             <a
               key='logout'
-              href={'/api/auth/logout/'}
+              href='/api/auth/logout/'
             >
               <MenuItem
                 onClick={handleCloseUserMenu}
