@@ -20,11 +20,7 @@ const settings = [
   {
     title: 'Profile',
     link: '/profile'
-  },
-  {
-    title: 'Logout',
-    link: '/api/auth/logout/'
-  }];
+  },];
 
 export default function Right({ auth0Id }: { auth0Id: string }) {
   const router = useRouter();
@@ -138,6 +134,7 @@ export default function Right({ auth0Id }: { auth0Id: string }) {
             <Link
               key={menuItem.title}
               href={menuItem.link}
+              passHref
             >
               <MenuItem
                 onClick={handleCloseUserMenu}
@@ -146,6 +143,16 @@ export default function Right({ auth0Id }: { auth0Id: string }) {
               </MenuItem>
             </Link>
           ))}
+            <a
+              key='logout'
+              href='/api/auth/logout/'
+            >
+              <MenuItem
+                onClick={handleCloseUserMenu}
+              >
+                <Typography textAlign="center">Logout</Typography>
+              </MenuItem>
+            </a>
         </Menu>
       </Box>
     </Box>

@@ -97,7 +97,6 @@ export default function Notifications() {
         await queryClient.invalidateQueries({ queryKey: ['unreadnotifications'] });
       } catch (error) {
         console.error('Error marking notification as read:', error);
-        return; // Prevent navigation if mutation fails
       }
     }
     router.push(notificationUrl);
