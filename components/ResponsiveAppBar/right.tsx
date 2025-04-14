@@ -101,7 +101,7 @@ export default function Right({ auth0Id }: { auth0Id: string }) {
             </Badge>
           </IconButton>
         </Link>
-        {/* <Typography color='textPrimary' fontWeight='bold' sx={{  display: { xs: 'none', md: 'flex' } }}>{teacherName}</Typography> */}
+        <Typography color='textPrimary' fontWeight='bold' sx={{  display: { xs: 'none', md: 'flex' } }}>{teacherName}</Typography>
         <Tooltip title="Open settings">
           <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
             <TeacherAvatar
