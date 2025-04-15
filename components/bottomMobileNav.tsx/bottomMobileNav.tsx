@@ -59,7 +59,6 @@ const BottomMobileNav = () => {
 
   return (
     <BottomNavigation
-      showLabels
       sx={{
         position: 'fixed',
         bottom: visible ? 0 : '-56px', // Adjust based on the height of the BottomNavigation

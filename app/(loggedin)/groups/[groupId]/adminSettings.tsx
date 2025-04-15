@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteData, postOrPatchData } from '../../../../services/authenticatedApiCalls';
 import Editor from "../../../../components/editor";
+import UploadProfilePicGroups from "./adminSettingsPic";
 
 interface AdminSettingsProps {
   title: string;
@@ -57,7 +58,10 @@ const AdminSettings: React.FC<AdminSettingsProps> = ({
       }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['group', groupId] });
+      queryClient.invalidateQueries({
+        queryKey: ['group', groupId],
+        exact: true
+      });
     },
     onError: (error) => {
       console.error('Error updating group:', error);
@@ -117,6 +121,19 @@ const AdminSettings: React.FC<AdminSettingsProps> = ({
           fontSize={{ xs: 12, md: 14 }}
           fontWeight='bold'
           paddingBottom={2}
+        >
+          Update Group Profile Pic
+        </Typography>
+        <UploadProfilePicGroups
+          groupId={groupId}
+          profileId={profileId}
+        />
+
+        <Typography
+          fontSize={{ xs: 12, md: 14 }}
+          fontWeight='bold'
+          paddingBottom={2}
+          paddingTop={6}
         >
           Update Group Information
         </Typography>
