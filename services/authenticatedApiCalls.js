@@ -97,6 +97,43 @@ export async function postOrPatchData(apiUrl, method, body) {
   return result;
 }
 
+export async function postProfilePic(apiUrl, body) {
+  try {
+    const { accessToken } = await getAccessToken();
+    console.log('Uploading to:', apiUrl);  // Debug log
+
+    const response = await fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+      },
+      credentials: 'include',
+      body: body,
+    });
+
+    console.log('Response status:', response.status);  // Debug log
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('Error response:', errorText);  // Debug log
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    
+    try {
+      const result = await response.json();
+      return result;
+    } catch (error) {
+      if (error instanceof SyntaxError) {
+        return null;
+      }
+      throw error;
+    }
+  } catch (error) {
+    console.error('Upload error:', error);  // Debug log
+    throw error;
+  }
+}
+
 export async function patchData(apiUrl) {
   const accessToken = await getAccessToken();
 
