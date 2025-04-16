@@ -19,10 +19,7 @@ export const GET = handleAuth({
     returnTo: logoutUrl
   }),
   onError: (error, req, res) => {
-    console.error('Auth0 error:', error);
-    res.writeHead(302, {
-      Location: '/api/auth/logout/',
-    });
-    res.end();
+    console.error('Authentication error:', error);
+    return NextResponse.redirect('/auth/error');
   },
 });

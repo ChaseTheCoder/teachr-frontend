@@ -52,8 +52,15 @@ export default function Right({ auth0Id }: { auth0Id: string }) {
   })
 
   useEffect(() => {
-    if (!isLoadingProfileData && !isFetchingProfileData && !profileData && auth0Id) {
-      router.push('/signup');
+    // Only redirect if we're not loading and have all the information we need
+    if (!isLoadingProfileData && !isFetchingProfileData) {
+      if (!auth0Id) {
+        // No auth0Id means not logged in
+        router.push('/api/auth/login');
+      } else if (!profileData) {
+        // Has auth0Id but no profile means needs to sign up
+        router.push('/signup');
+      }
     }
   }, [isLoadingProfileData, isFetchingProfileData, profileData, auth0Id, router]);
 
