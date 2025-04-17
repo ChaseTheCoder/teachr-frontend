@@ -18,23 +18,29 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [persistedAuth0Id, setPersistedAuth0Id] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!isLoading) {
-      if (error) {
-        // Handle auth error by redirecting to login
-        router.push('/api/auth/login');
-        return;
-      }
-      
-      if (user) {
-        setPersistedUser(user);
-        setPersistedAuth0Id(user.sub);
-      } else {
-        // Clear persisted state when user is null
-        setPersistedUser(null);
-        setPersistedAuth0Id(null);
-      }
-      setPersistedLoading(false);
+    if (isLoading) {
+      setPersistedLoading(true);
+      return;
     }
+
+    if (error || !user) {
+      // Handle auth error by redirecting to login
+      setPersistedUser(null);
+      setPersistedAuth0Id(null);
+      router.push('/api/auth/login');
+      return;
+    }
+
+    if (user) {
+      setPersistedUser(user);
+      setPersistedAuth0Id(user.sub);
+    } else {
+      // Clear persisted state when user is null
+      setPersistedUser(null);
+      setPersistedAuth0Id(null);
+    }
+
+    setPersistedLoading(false);
   }, [user, isLoading, error, router]);
 
   return (
