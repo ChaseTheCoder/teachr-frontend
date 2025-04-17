@@ -63,10 +63,10 @@ export default function Right({ auth0Id }: { auth0Id: string }) {
 
       // Only redirect to signup if we have auth0Id but no profile
       // and we're not currently loading the profile
-      if (!profileData && !isErrorProfileData) {
-        router.replace('/signup');
-        return;
-      }
+      // if (!profileData && !isErrorProfileData) {
+      //   router.replace('/signup');
+      //   return;
+      // }
 
       // Handle profile fetch errors (like expired tokens)
       if (isErrorProfileData) {
