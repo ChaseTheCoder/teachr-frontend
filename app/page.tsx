@@ -25,11 +25,11 @@ export default function HomePage() {
             </Grid>
             <Grid item xs={12} md={7}>
               <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'center', textAlign: 'center', alignItems: 'center' }} gap={{xs: 1, md: 2}}>
-                <Typography variant='h1' fontWeight='bold' fontSize={{ xs: 26, sm: 32, md: 44 }} align='center'>
-                  Connect with Teachers Nationwide
+                <Typography variant='h1' fontWeight='bold' fontSize={{ xs: 28, sm: 32, md: 44 }} sx={{ width: '100%' }} align='center'>
+                  Q&A Platform Just for Teachers
                 </Typography>
-                <Typography variant='h2' fontSize={{ xs: 18, sm: 20, md: 22 }} color='textSecondary' sx={{ width: '70%' }}>
-                  Where real teachers swap sanity-saving strategies without the social media circus.
+                <Typography variant='h2' fontSize={{ xs: 18, sm: 20, md: 22 }} color='textSecondary' sx={{ width: { xs: '90%', sm: '70%' } }}>
+                  Separate social media from your professional life and get answers from verified teachers
                 </Typography>
                 <Box display="flex" justifyContent="center" sx={{ marginTop: '2rem' }}>
                   <Button
@@ -45,7 +45,63 @@ export default function HomePage() {
             </Grid>
         </Grid>
       </Surface>
-      <Grid container spacing={2} sx={{ paddingX: { xs: 1, md: 4 } }}>
+      <Grid container spacing={2} sx={{ paddingX: { xs: 1, md: 4 }, my: 4 }}>
+        <Grid item xs={12} md={6}>
+          <Box 
+            sx={{
+              padding: 2,
+              borderRadius: 4,
+              bgcolor: '#ffffff',
+              height: '100%',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center'
+            }}
+          >
+            <Image
+              src="/Problem.png"
+              alt="Apple character smiling and pondering."
+              width={0}
+              height={0}
+              sizes="50vw"
+              style={{ width: '80%', height: 'auto' }}
+            />
+            <Typography variant='h2' fontWeight='bold' fontSize={{ xs: 24, sm: 28, md: 34 }}>Problem</Typography>
+            <Typography fontSize={{ xs: 16, sm: 18 }} sx={{ width: '80%' }} color='textSecondary' align='center'>
+              Teachers discussion is siloed across multiple apps.
+            </Typography>
+          </Box>
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <Box
+            sx={{
+              padding: 2,
+              borderRadius: 4,
+              bgcolor: '#ffffff',
+              height: '100%',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center'
+            }}
+          >
+            <Image
+              src="/Solution.png"
+              alt="Apple character smiling and pondering."
+              width={0}
+              height={0}
+              sizes="50vw"
+              style={{ width: '80%', height: 'auto' }}
+            />
+            <Typography variant='h2' fontWeight='bold' fontSize={{ xs: 24, sm: 28, md: 34 }} mt={{ xs: 0, md: 4 }}>Solution</Typography>
+            <Typography fontSize={{ xs: 16, sm: 18 }} sx={{ width: '80%' }} color='textSecondary' align='center'>
+              All teacher discussion and answers in one app! Allows teachers to separate work from social media.
+            </Typography>
+          </Box>
+        </Grid>
+      </Grid>
+      <Grid container spacing={2} sx={{ paddingX: { xs: 1, md: 4 }, marginY: 12 }}>
         <Grid item xs={12} md={6}>
           <Box sx={{ display: 'flex', flexDirection: 'column', paddingX: { xs: 1, md: 4 }, paddingTop: { xs: 3, md: 0 }, textAlign: { xs: 'center', md: 'left' } }} gap={{ xs: 2, md:3 }}>
             <Typography variant='h2' fontWeight='bold' fontSize={{ xs: 24, sm: 28, md: 34 }}>See a Feed of Teacher Posts</Typography>
@@ -74,7 +130,7 @@ export default function HomePage() {
           <HomePosts />
         </Grid>
       </Grid>
-      <Grid container spacing={2} sx={{ paddingX: { xs: 1, md: 4 }, marginTop: 4 }}>
+      <Grid container spacing={2} sx={{ paddingX: { xs: 1, md: 4 }, marginY: 12 }}>
         <Grid item xs={12} md={6}>
             <Box sx={{ padding: 2, borderRadius: 4, bgcolor: '#ffffff', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }} >
             <Image
