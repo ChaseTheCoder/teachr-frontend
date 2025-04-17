@@ -45,7 +45,7 @@ export default function RootLayout({
               <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
                 <main>
                   <ResponsiveAppBar/>
-                  <Box sx={{ display: 'flex', flexDirection: 'column', width: '100vw', alignItems: 'center' }}>
+                  <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%', alignItems: 'center' }}>
                     <Box sx={{ maxWidth: '1550px', width: '100%' }} >
                     {children}
                     </Box>

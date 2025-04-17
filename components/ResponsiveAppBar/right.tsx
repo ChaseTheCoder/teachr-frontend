@@ -55,14 +55,26 @@ export default function Right({ auth0Id }: { auth0Id: string }) {
     // Only redirect if we're not loading and have all the information we need
     if (!isLoadingProfileData && !isFetchingProfileData) {
       if (!auth0Id) {
-        // No auth0Id means not logged in
-        router.push('/api/auth/login');
-      } else if (!profileData) {
-        // Has auth0Id but no profile means needs to sign up
-        router.push('/signup');
+        // Clear any stale data when auth0Id is missing
+        queryClient.clear();
+        router.replace('/api/auth/login');
+        return;
+      }
+
+      // Only redirect to signup if we have auth0Id but no profile
+      // and we're not currently loading the profile
+      if (!profileData && !isErrorProfileData) {
+        router.replace('/signup');
+        return;
+      }
+
+      // Handle profile fetch errors (like expired tokens)
+      if (isErrorProfileData) {
+        queryClient.clear();
+        router.replace('/api/auth/login');
       }
     }
-  }, [isLoadingProfileData, isFetchingProfileData, profileData, auth0Id, router]);
+  }, [isLoadingProfileData, isFetchingProfileData, profileData, auth0Id, router, isErrorProfileData, queryClient]);
 
   const { data: notifications, isFetching: isFetchingNotifications, isLoading: isLoadingNotifications, isError: isErrorNotifications } = useQuery({
     queryKey: ['unreadnotifications'],
