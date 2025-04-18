@@ -48,12 +48,12 @@ export default function GroupLayout({
 
   const { data: groupData, isFetching: isFetchingGroupData, isLoading: isLoadingGroupData, isError: isErrorGroupData } = useQuery({
     queryKey: ['group', groupId],
-    queryFn: () => getData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/group/${groupId}/?user=${profileData?.id}`),
+    queryFn: () => getData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/group/${groupId}/?user=${profileData.id}`),
     staleTime: 1000 * 60 * 60,
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
     refetchOnMount: false,
-    enabled: !!user && !!profileData?.id,
+    enabled: !!profileData,
   });
 
   if(isLoadingUser || isLoadingProfileData || isLoadingGroupData) return (<Skeleton variant='text' sx={{ height: '150px' }} />);

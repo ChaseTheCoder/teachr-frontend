@@ -26,7 +26,7 @@ const GroupInformation: React.FC<GroupInformationProps> = ({groupData, profileId
         <Avatar
           alt="Profile Image"
           sx={{ width: { xs: 75, md: 100 }, height: { xs: 75, md: 100 }, marginRight: '.5rem' }}
-          src={groupData?.profile_pic_url ?? undefined}
+          src={groupData.profile_pic_url}
         />
       </Box>
       <Box

@@ -55,29 +55,37 @@ export default function UploadProfilePicGroups({ groupId, profileId }: ProfilePi
       formData.append('profile_pic', selectedFile);
       
       try {
-        const result = await postProfilePic(
+        await postProfilePic(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/group/${groupId}/image/?user_id=${profileId}`,
           formData
         );
-        return result;
       } catch (error) {
         console.error('Mutation error:', error);
         throw error;
       }
     },
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ['group', groupId] });
-      await queryClient.invalidateQueries({ queryKey: ['groups'] });
+      setPreviewUrl(null);
+      setSelectedFile(null);
       if (previewUrl) {
         URL.revokeObjectURL(previewUrl);
-        setPreviewUrl(null);
+        console.log("previewUrl: " + previewUrl)
       }
+      queryClient.invalidateQueries({
+        queryKey: ['group', groupId],
+        exact: true
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['groups'],
+        exact: true
+      });
+      queryClient.refetchQueries({ queryKey: ['group', groupId]});
     },
     onError: (error) => {
       console.error('Error uploading group image:', error);
     },
     onSettled: () => {
-      setSelectedFile(null);
+      
     }
   });
 
