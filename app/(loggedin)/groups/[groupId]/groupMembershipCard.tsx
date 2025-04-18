@@ -15,9 +15,10 @@ interface IMemberCard {
   profileId: string;
   isPending?: boolean;
   adminId?: string | null;
+  isAdmin?: boolean;
 }
 
-const MemberCard: React.FC<IMemberCard> = ({ member, groupId, profileId, isPending, adminId }) => {
+const MemberCard: React.FC<IMemberCard> = ({ member, groupId, profileId, isPending, isAdmin }) => {
   const [isLoadingAccept, setIsLoadingAccept] = useState(false);
   const [isLoadingReject, setIsLoadingReject] = useState(false);
   const [isDisabledAccept, setIsDisabledAccept] = useState(false);
@@ -127,10 +128,10 @@ const MemberCard: React.FC<IMemberCard> = ({ member, groupId, profileId, isPendi
           paddingY: 1,
           borderRadius: 4,
           bgcolor: '#ffffff',
-          width: 'min(100%, 50%)',
+          width: '100%',
           '&:hover': {
-        cursor: 'pointer',
-        bgcolor: '#fafafa'
+            cursor: 'pointer',
+            bgcolor: '#fafafa'
           }
         }}
       >
@@ -218,7 +219,7 @@ const MemberCard: React.FC<IMemberCard> = ({ member, groupId, profileId, isPendi
           </LoadingButton>
         </Box>
       )}
-      { (!isPending && !!adminId) && (
+      { (!isPending && isAdmin) && (
         <>
           <IconButton onClick={handleClickPopper('bottom-start')}>
             <MoreVert fontSize='small' />

@@ -50,7 +50,7 @@ export default function NewPost() {
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
     refetchOnMount: false,
-    enabled: !!user && !!profileData?.id && !!groupId,
+    enabled: !!user && !!profileData && !!groupId,
   });
   
   const { data: gradesData, isLoading: isLoadingGrades, isError: isErrorGrades } = useQuery<IGrade[]>({
