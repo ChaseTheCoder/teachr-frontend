@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Avatar, Button, Stack } from '@mui/material';
 import { postProfilePic } from '../../../../services/authenticatedApiCalls';
+import { LoadingButton } from '@mui/lab';
 
 interface ProfilePicProps {
   groupId: string;
@@ -12,6 +13,7 @@ interface ProfilePicProps {
 export default function UploadProfilePicGroups({ groupId, profileId }: ProfilePicProps) {
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [isUpdating, setIsUpdating] = useState(false);
   const queryClient = useQueryClient();
 
   useEffect(() => {
@@ -47,6 +49,7 @@ export default function UploadProfilePicGroups({ groupId, profileId }: ProfilePi
 
   const mutationPatch = useMutation({
     mutationFn: async () => {
+      setIsUpdating(true);
       if (!selectedFile) {
         throw new Error('No file selected');
       }
@@ -66,26 +69,24 @@ export default function UploadProfilePicGroups({ groupId, profileId }: ProfilePi
     },
     onSuccess: async () => {
       setPreviewUrl(null);
-      setSelectedFile(null);
       if (previewUrl) {
-        URL.revokeObjectURL(previewUrl);
-        console.log("previewUrl: " + previewUrl)
+        await URL.revokeObjectURL(previewUrl);
       }
-      queryClient.invalidateQueries({
-        queryKey: ['group', groupId],
-        exact: true
-      });
-      queryClient.invalidateQueries({
-        queryKey: ['groups'],
-        exact: true
-      });
-      queryClient.refetchQueries({ queryKey: ['group', groupId]});
     },
     onError: (error) => {
       console.error('Error uploading group image:', error);
     },
-    onSettled: () => {
-      
+    onSettled: async () => {
+      setIsUpdating(false);
+      setSelectedFile(null);
+      await queryClient.refetchQueries({
+        queryKey: ['group', groupId],
+        exact: true
+      });
+      await queryClient.refetchQueries({
+        queryKey: ['groups'],
+        exact: true
+      });
     }
   });
 
@@ -96,16 +97,17 @@ export default function UploadProfilePicGroups({ groupId, profileId }: ProfilePi
         sx={{ width: 100, height: 100 }} // Optional: make avatar bigger for better preview
       />
       <input type="file" onChange={handleFileChange} />
-      <Button 
+      <LoadingButton 
         onClick={() => mutationPatch.mutate()} 
         disabled={!selectedFile} 
         color="success" 
         size="small"
         variant="contained"
+        loading={isUpdating}
         sx={{ width: 'fit-content' }}
       >
         Upload Pic
-      </Button>
+      </LoadingButton>
     </Stack>
   );
 }

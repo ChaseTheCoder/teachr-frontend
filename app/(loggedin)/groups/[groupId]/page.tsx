@@ -49,8 +49,8 @@ export default function GroupLayout({
   const { data: groupData, isFetching: isFetchingGroupData, isLoading: isLoadingGroupData, isError: isErrorGroupData } = useQuery({
     queryKey: ['group', groupId],
     queryFn: () => getData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/group/${groupId}/?user=${profileData.id}`),
-    staleTime: 1000 * 60 * 60,
-    refetchOnWindowFocus: false,
+    staleTime: 0,
+    refetchOnWindowFocus: true,
     refetchOnReconnect: false,
     refetchOnMount: false,
     enabled: !!profileData,
