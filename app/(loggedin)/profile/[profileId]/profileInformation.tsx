@@ -20,6 +20,10 @@ interface IProps {
 export default function ProfileInformation(
   { isLoadingUser, isLoadingProfile, profileData, error }: IProps) {
   const size = 64;
+  const imageUrl = profileData.profile_pic_url ? 
+  `${profileData.profile_pic_url}?t=${new Date().getTime()}` : 
+  undefined;
+  
   return (
     <Surface>
       <Box sx={{ display: 'flex', flexDirection: 'row' }}>
@@ -62,7 +66,7 @@ export default function ProfileInformation(
           <Avatar
             alt="Profile Image"
             sx={{ width: { xs: 75, md: 100 }, height: { xs: 75, md: 100 }, marginRight: '.5rem' }}
-            src={profileData.profile_pic_url}
+            src={imageUrl}
           />
         </Box>
       </Box>
