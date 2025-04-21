@@ -20,6 +20,10 @@ interface IProps {
 export default function ProfileInformation(
   { isLoadingUser, isLoadingProfile, profileData, error }: IProps) {
   const size = 64;
+  const imageUrl = profileData.profile_pic_url ? 
+  `${profileData.profile_pic_url}?t=${new Date().getTime()}` : 
+  undefined;
+  
   return (
     <Surface>
       <Box sx={{ display: 'flex', flexDirection: 'row' }}>
