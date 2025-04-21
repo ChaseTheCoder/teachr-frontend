@@ -66,7 +66,7 @@ export default function ProfileInformation(
           <Avatar
             alt="Profile Image"
             sx={{ width: { xs: 75, md: 100 }, height: { xs: 75, md: 100 }, marginRight: '.5rem' }}
-            src={profileData.profile_pic_url}
+            src={imageUrl}
           />
         </Box>
       </Box>
