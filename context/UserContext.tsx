@@ -23,7 +23,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return;
     }
 
-    if (error || !user) {
+    if (error) {
       // Handle auth error by redirecting to login
       setPersistedUser(null);
       setPersistedAuth0Id(null);
