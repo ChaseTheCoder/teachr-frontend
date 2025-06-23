@@ -8,10 +8,6 @@ interface GroupInformationProps {
 }
 
 const GroupInformation: React.FC<GroupInformationProps> = ({groupData, profileId}) => {
-  // Add timestamp to image URL to force reload
-  const imageUrl = groupData.profile_pic_url ? 
-    `${groupData.profile_pic_url}?t=${new Date().getTime()}` : 
-    undefined;
 
   return (
     <Box
@@ -30,7 +26,7 @@ const GroupInformation: React.FC<GroupInformationProps> = ({groupData, profileId
         <Avatar
           alt="Profile Image"
           sx={{ width: { xs: 75, md: 100 }, height: { xs: 75, md: 100 }, marginRight: '.5rem' }}
-          src={imageUrl}
+          src={groupData.profile_pic_url}
         />
       </Box>
       <Box

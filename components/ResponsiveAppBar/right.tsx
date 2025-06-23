@@ -7,13 +7,13 @@ import Typography from '@mui/material/Typography';
 import Menu from '@mui/material/Menu';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';import { Badge } from '@mui/material';
+import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
+import { Badge } from '@mui/material';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { getData } from '../../services/authenticatedApiCalls';
 import { useEffect, useState } from 'react';
 import { IProfile } from '../../types/types';
 import TeacherAvatar from '../post/avatar';
-import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 
 const settings = [
@@ -23,11 +23,9 @@ const settings = [
   }];
 
 export default function Right({ auth0Id }: { auth0Id: string }) {
-  const router = useRouter();
-  const pathname = usePathname();
   const [menuList, setMenuList] = useState(settings);
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
-  const [teacherName, setTeacherName] = useState('')
+  const [teacherName, setTeacherName] = useState('');
 
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
@@ -46,9 +44,6 @@ export default function Right({ auth0Id }: { auth0Id: string }) {
     refetchOnReconnect: false,
     refetchOnMount: false,
     enabled: !!auth0Id,
-    initialData: () => {
-      return queryClient.getQueryData(['profile']);
-    },
   })
 
   useEffect(() => {
@@ -87,7 +82,8 @@ export default function Right({ auth0Id }: { auth0Id: string }) {
     if(isErrorProfileData && errorProfileData) {
       console.error(errorProfileData)
     }
-  }, [isErrorProfileData, errorProfileData])
+  }, [isErrorProfileData, errorProfileData, isLoadingProfileData, isFetchingProfileData])
+
   return (
     <Box sx={{ flexGrow: 0 }}>
       <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }} gap={2}>

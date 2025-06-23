@@ -25,6 +25,9 @@ export default function Post({ post, profile, adminId }: Props) {
   const [open, setOpen] = useState(false);
   const [placement, setPlacement] = useState<PopperPlacementType>();
   const [isLoadingDelete, setIsLoadingDelete] = useState(false);
+  const imageUrl = profile.profile_pic_url ? 
+  `${profile.profile_pic_url}?t=${new Date().getTime()}` : 
+  undefined;
 
   const handleClickPopper = 
     (newPlacement: PopperPlacementType) => 
@@ -110,7 +113,7 @@ export default function Post({ post, profile, adminId }: Props) {
             >
               <TeacherAvatar
                 verified={profile?.verified}
-                profilePicUrl={profile?.profile_pic_url}
+                profilePicUrl={imageUrl}
               />
               <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                 <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
