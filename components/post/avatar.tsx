@@ -4,9 +4,10 @@ import { Avatar, Box } from '@mui/material';
 interface TeacherAvatarProps {
   verified: boolean;
   profilePicUrl?: string | null | undefined;
+  version?: number;
 }
 
-const TeacherAvatar: React.FC<TeacherAvatarProps> = ({ verified, profilePicUrl }) => {
+const TeacherAvatar: React.FC<TeacherAvatarProps> = ({ verified, profilePicUrl, version = 0 }) => {
   const size = 64;
   return (
     <Box display='inline-flex'>

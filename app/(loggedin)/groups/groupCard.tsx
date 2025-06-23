@@ -4,6 +4,9 @@ import Link from "next/link";
 import { AdminPanelSettings, Group } from "@mui/icons-material";
 
 export default function GroupCard({ group }: { group: IGroup }) {
+  const imageUrl = group.profile_pic_url ? 
+  `${group.profile_pic_url}?t=${new Date().getTime()}` : 
+  undefined;
 
   function membershipStatusText(isMember: boolean, isPending: boolean, isAdmin: boolean) {
     if (isAdmin) {
@@ -49,7 +52,7 @@ export default function GroupCard({ group }: { group: IGroup }) {
         >
           <Avatar
             sx={{ width: { xs: 30, md: 35 }, height: { xs: 30, md: 35 }, marginRight: '.5rem' }}
-            src={group.profile_pic_url}
+            src={imageUrl}
           />
           <Typography sx={{ fontSize: { xs: 16, sm: 18 } }} fontWeight='bold'>{group.title}</Typography>
         </Box>

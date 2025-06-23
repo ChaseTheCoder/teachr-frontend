@@ -1,5 +1,4 @@
-import { Group } from "@mui/icons-material";
-import { Avatar, Box, Stack, Typography } from "@mui/material";
+import { Box, Stack, Typography } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
