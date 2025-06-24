@@ -1,10 +1,10 @@
 'use client'
 
 import React, { useEffect, useState, useRef, useCallback } from 'react';
-import { Box, Skeleton } from '@mui/material';
+import { Box } from '@mui/material';
 import { useInfiniteQuery, useQuery, useQueryClient } from '@tanstack/react-query';
 import Post from '../../../components/post/post';
-import { getDataNoToken, getDataWithParamsNoToken } from '../../../services/unauthenticatedApiCalls';
+import { getDataNoToken } from '../../../services/unauthenticatedApiCalls';
 import FeedAd from '../../../components/googleAdsense/feed-ad';
 import { ActivityLoading, ActivityLoadingMultiSize } from '../../../components/activityLoading';
 import { IProfile } from '../../../types/types';
@@ -17,10 +17,8 @@ interface InfiniteFeedProps {
 }
 
 export default function InfiniteFeed({ selectedGrades, selectedTags }: InfiniteFeedProps) {
-  const [userIds, setUserIds] = useState<string[]>([]);
-  const [batchProfiles, setBatchProfiles] = useState([]);
   const observer = useRef<IntersectionObserver>();
-  const { user, auth0Id, isLoadingUser } = useUserContext();
+  const { auth0Id, isLoadingUser } = useUserContext();
   const queryClient = useQueryClient();
   const [isProfileParamReady, setIsProfileParamReady] = useState(false);
   const [profileParam, setProfileParam] = useState<string>('');
@@ -39,13 +37,6 @@ export default function InfiniteFeed({ selectedGrades, selectedTags }: InfiniteF
     initialData: () => {
       return queryClient.getQueryData(['profile']);
     },
-  });
-
-  const { data: batchProfileData, isFetching: isFetchingBatchProfiles, isLoading: isLoadingBatchProfiles, isError: isErrorBatchProfiles } = useQuery({
-    queryKey: ['batchProfilesFeed', userIds],
-    queryFn: () => userIds.length > 0 ? getDataWithParamsNoToken(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/profile_batch/`, 'user_id', userIds) : Promise.resolve([]),
-    staleTime: 1000 * 60 * 60,
-    enabled: !!userIds,
   });
 
   useEffect(() => {
@@ -103,26 +94,6 @@ export default function InfiniteFeed({ selectedGrades, selectedTags }: InfiniteF
     enabled: isProfileParamReady && !!feedUrl
   })
 
-  useEffect(() => {
-    if (feedPosts) {
-      const ids: string[] = [];
-      feedPosts.pages.forEach(page => {
-        page.forEach(post => {
-          if (!ids.includes(post.user)) {
-            ids.push(post.user);
-          }
-        });
-      });
-      setUserIds(ids);
-    }
-  }, [feedPosts, isFetching, isLoading]);
-
-  useEffect(() => {
-    if (batchProfileData) {
-      setBatchProfiles(prevProfiles => [...prevProfiles, ...batchProfileData]);
-    }
-  }, [batchProfileData]);
-
   const lastPostElementRef = useCallback(node => {
     if (isLoading || isFetchingNextPage) return;
     if (observer.current) observer.current.disconnect();
@@ -132,7 +103,7 @@ export default function InfiniteFeed({ selectedGrades, selectedTags }: InfiniteF
       }
     });
     if (node) observer.current.observe(node);
-  }, [isLoading, isFetchingNextPage, hasNextPage]);
+  }, [isLoading, isFetchingNextPage, hasNextPage, fetchNextPage]);
 
   if(status === 'error') { return <div>Error</div> }
 
@@ -142,20 +113,16 @@ export default function InfiniteFeed({ selectedGrades, selectedTags }: InfiniteF
     <Box sx={{ display: 'flex', flexDirection: 'column' }} gap={1}>
       {feedPosts?.pages.map((page, pageIndex) => (
       <React.Fragment key={`page-${pageIndex}`}>
-        {page?.map((post, index) => {
-        const userProfile = batchProfiles?.find(profile => profile.id === post.user);
-        if (!userProfile) {
-          return <Skeleton key={`feed-loading-${post.id}`} variant="rectangular" width="100%" height={118} />;
-        }
+        {page?.map((post) => {
         if (feedPosts.pages.length === pageIndex + 1) {
           return (
           <div ref={lastPostElementRef} key={post.id}>
-            <Post post={post} profile={userProfile} />
+            <Post post={post} profile={post.user} />
           </div>
           );
         } else {
           return (
-          <Post key={`feed-${post.id}`} post={post} profile={userProfile} />
+          <Post key={`feed-${post.id}`} post={post} profile={post.user} />
           );
         }
         })}
