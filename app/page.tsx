@@ -67,9 +67,9 @@ export default function HomePage() {
               sizes="50vw"
               style={{ width: '80%', height: 'auto' }}
             />
-            <Typography variant='h2' fontWeight='bold' fontSize={{ xs: 24, sm: 28, md: 34 }}>Problem</Typography>
+            <Typography variant='h2' fontWeight='bold' fontSize={{ xs: 24, sm: 28, md: 34 }} mt={{ xs: 0, md: 3 }}>Problem</Typography>
             <Typography fontSize={{ xs: 16, sm: 18 }} sx={{ width: '80%' }} color='textSecondary' align='center'>
-              Teachers discussion is siloed across multiple apps.
+              Teacher discussion is siloed across multiple groups within multiple social media apps.
             </Typography>
           </Box>
         </Grid>
@@ -94,7 +94,7 @@ export default function HomePage() {
               sizes="50vw"
               style={{ width: '80%', height: 'auto' }}
             />
-            <Typography variant='h2' fontWeight='bold' fontSize={{ xs: 24, sm: 28, md: 34 }} mt={{ xs: 0, md: 4 }}>Solution</Typography>
+            <Typography variant='h2' fontWeight='bold' fontSize={{ xs: 24, sm: 28, md: 34 }} mt={{ xs: 0, md: 3 }}>Solution</Typography>
             <Typography fontSize={{ xs: 16, sm: 18 }} sx={{ width: '80%' }} color='textSecondary' align='center'>
               All teacher discussion and answers in one app! Allows teachers to separate work from social media.
             </Typography>
@@ -159,7 +159,7 @@ export default function HomePage() {
             </Box>
             <Box>
               <Typography fontSize={14} color='textSecondary'>
-                &quot;I&apos;m a 13th year teacher and I started a new curriculum. I use a FaceBook groups with other teachers, but would really love to seperate that from my social media.&quot;
+                &quot;I&apos;m a 13th year teacher and I started a new curriculum. I use FaceBook groups with other teachers, but would really love to separate that from my social media.&quot;
               </Typography>
               <Typography fontSize={14} color='textSecondary'>
                 -Special Education Teacher

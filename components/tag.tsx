@@ -1,6 +1,7 @@
 import { Box, Chip } from '@mui/material';
 import React from 'react';
 import { IGrade, IGroupList, IGroupPost, ITag } from '../types/types';
+import { Group } from "@mui/icons-material";
 import Link from 'next/link';
 
 const gradeToNumber = (grade: string): number => {
@@ -87,9 +88,19 @@ const Tags: React.FC<TagsProps> = ({group, tags, grades}) => {
           key={group.id}
         >
           <Chip 
-            label={group.title} 
+            label={group.title}
+            icon={<Group />}
             color='success'
             size='small'
+            sx={{
+              transition: 'background 0.2s',
+              '&:hover': {
+          backgroundColor: (theme) =>
+            theme.palette.success.dark,
+          color: (theme) =>
+            theme.palette.success.contrastText,
+              },
+            }}
           />
         </Link>
       )}

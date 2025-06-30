@@ -1,5 +1,6 @@
 import React from 'react';
-import { Box, Typography } from '@mui/material';
+import { Box, Typography, Stack } from '@mui/material';
+import Link from 'next/link';
 
 const Footer: React.FC = () => {
   return (
@@ -7,7 +8,7 @@ const Footer: React.FC = () => {
       <Box
         sx={{
           bgcolor: '#fff',
-          padding: .5,
+          padding: 3,
           borderRadius: 4,
           position: 'relative',
           marginTop: 3
@@ -16,11 +17,28 @@ const Footer: React.FC = () => {
         flexDirection="column"
         alignItems="center"
       >
-        <Box display="flex" justifyContent="center" alignItems="center" flexDirection="row">
-          <Typography variant='subtitle2' component='p' color='success'>
-            <a href="/about">© 2025 Teacher Lounge</a>
-          </Typography>
-        </Box>
+        <Stack 
+          direction="row" 
+          spacing={2} 
+          alignItems="center"
+          divider={<Typography color="text.secondary">•</Typography>}
+        >
+          <Link href="/about" style={{ textDecoration: 'none' }}>
+            <Typography variant='subtitle2' color='success.main'>
+              © 2025 Teacher Lounge
+            </Typography>
+          </Link>
+          <Link href="/policies/privacy-policy" style={{ textDecoration: 'none' }}>
+            <Typography variant='subtitle2' color='success.main'>
+              Privacy Policy
+            </Typography>
+          </Link>
+          <Link href="/policies/terms-of-service" style={{ textDecoration: 'none' }}>
+            <Typography variant='subtitle2' color='success.main'>
+              Terms of Service
+            </Typography>
+          </Link>
+        </Stack>
       </Box>
     </footer>
   );
