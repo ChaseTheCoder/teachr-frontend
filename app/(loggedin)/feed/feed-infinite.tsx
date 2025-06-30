@@ -91,8 +91,24 @@ export default function InfiniteFeed({ selectedGrades, selectedTags }: InfiniteF
     getNextPageParam: (lastPage, allPages) => {
       return allPages.length + 1;
     },
-    enabled: isProfileParamReady && !!feedUrl
-  })
+    staleTime: 1000 * 60 * 5, // Add stale time to preserve cache
+    enabled: isProfileParamReady && !!feedUrl,
+    structuralSharing: true, // Enable structural sharing
+  });
+
+  // Pre-load images for next page
+  useEffect(() => {
+    if (feedPosts?.pages) {
+      feedPosts.pages.forEach(page => {
+        page?.forEach(post => {
+          if (post.user.profile_pic_url) {
+            const img = new Image();
+            img.src = post.user.profile_pic_url;
+          }
+        });
+      });
+    }
+  }, [feedPosts?.pages]);
 
   const lastPostElementRef = useCallback(node => {
     if (isLoading || isFetchingNextPage) return;
