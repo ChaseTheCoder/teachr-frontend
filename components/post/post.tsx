@@ -1,6 +1,6 @@
 import { Box, Typography, Popper, IconButton, Fade, List, ListItemButton, Paper, PopperPlacementType, CircularProgress } from '@mui/material';
 import { DeleteOutline, MoreVert } from '@mui/icons-material';
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { IPost, IProfileBatch } from '../../types/types';
 import Link from 'next/link';
 import { timeAgo } from '../../utils/time';
@@ -65,6 +65,11 @@ export default function Post({ post, profile, adminId }: Props) {
     }
   });
 
+  // Create a stable cache key for the profile image
+  const cacheKey = useMemo(() => {
+    return `${profile.id}-${profile.profile_pic_url?.split('?')[0]}`;
+  }, [profile.id, profile.profile_pic_url]);
+
   return (
     <Box
       sx={{ 
@@ -113,7 +118,8 @@ export default function Post({ post, profile, adminId }: Props) {
             >
               <TeacherAvatar
                 verified={profile?.verified}
-                profilePicUrl={imageUrl}
+                profilePicUrl={profile.profile_pic_url}
+                cacheKey={cacheKey}
               />
               <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                 <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>

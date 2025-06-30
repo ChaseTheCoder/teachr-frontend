@@ -1,13 +1,21 @@
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 import { Avatar, Box } from '@mui/material';
 
 interface TeacherAvatarProps {
   verified: boolean;
   profilePicUrl?: string | null | undefined;
-  version?: number;
+  cacheKey?: string; // Add cache key prop
 }
 
-const TeacherAvatar: React.FC<TeacherAvatarProps> = ({ verified, profilePicUrl, version = 0 }) => {
+const TeacherAvatar: React.FC<TeacherAvatarProps> = ({ verified, profilePicUrl, cacheKey }) => {
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  // Generate stable URL for caching
+  const imageUrl = useMemo(() => {
+    if (!profilePicUrl) return undefined;
+    return `${profilePicUrl}?cache=${cacheKey || 'default'}`;
+  }, [profilePicUrl, cacheKey]);
+
   const size = 64;
   return (
     <Box display='inline-flex'>
@@ -49,7 +57,8 @@ const TeacherAvatar: React.FC<TeacherAvatarProps> = ({ verified, profilePicUrl, 
         <Avatar
           alt="Profile Image"
           sx={{ width: { xs: 30, md: 35 }, height: { xs: 30, md: 35 }, marginRight: '.5rem' }}
-          src={profilePicUrl || undefined}
+          src={imageUrl}
+          onLoad={() => setIsLoaded(true)}
         />
       </Box>
     </Box>
