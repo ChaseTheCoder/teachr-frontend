@@ -9,6 +9,7 @@ import { IProfile } from "../../../../types/types";
 import { useUserContext } from "../../../../context/UserContext";
 import GroupInformation from "./groupInformation";
 import { useState } from "react";
+import MustBeLoggedIn from "../../../../components/mustBeLoggedIn";
 import GroupActivity from "./groupActivity";
 import GroupAbout from "./groupAbout";
 import AdminSettings from "./adminSettings";
@@ -57,6 +58,10 @@ export default function GroupLayout({
   });
 
   if(isLoadingUser || isLoadingProfileData || isLoadingGroupData) return (<Skeleton variant='text' sx={{ height: '150px' }} />);
+
+  if(!auth0Id) return (
+    <MustBeLoggedIn />
+  );
   
   return (
     <Grid container spacing={1}>
