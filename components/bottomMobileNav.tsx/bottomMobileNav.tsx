@@ -61,7 +61,7 @@ const BottomMobileNav = () => {
     <BottomNavigation
       sx={{
         position: 'fixed',
-        bottom: visible ? 0 : '-56px', // Adjust based on the height of the BottomNavigation
+        bottom: visible ? 0 : '-56px',
         width: '100%',
         transition: 'bottom 0.3s',
         zIndex: 1000,
@@ -69,52 +69,59 @@ const BottomMobileNav = () => {
         justifyContent: 'space-around',
       }}
     >
-      <Link
-        href='/feed'
-        passHref
-      >
+      <Link href='/feed' passHref>
         <BottomNavigationAction 
           label='Home'
           icon={<Home />}
           sx={{ color: pathname === '/feed' && 'success.main' }}
         />
       </Link>
-      <Link
-        href='/groups'
-        passHref
-      >
+
+      {profileData ? (
+        <Link href='/groups' passHref>
+          <BottomNavigationAction 
+            label='Groups'
+            icon={<Group />}
+            sx={{ color: pathname.startsWith('/groups') && 'success.main' }}
+          />
+        </Link>
+      ) : (
         <BottomNavigationAction 
           label='Groups'
-          disabled={!profileData}
+          disabled
           icon={<Group />}
-          sx={{ color: pathname.startsWith('/groups') && 'success.main' }}
+          sx={{ color: '#e0e0e0' }}
         />
-      </Link>
-      <Link
-        href='/newpost'
-        passHref
-      >
+      )}
+
+      <Link href='/newpost' passHref>
         <BottomNavigationAction
           label="Post"
           icon={<Add />}
           sx={{ color: pathname === '/newpost' && 'success.main' }}
         />
       </Link>
-      <Link
-        href='/notifications'
-        passHref
-      >
+
+      {profileData ? (
+        <Link href='/notifications' passHref>
+          <BottomNavigationAction
+            label="Notifications"
+            icon={
+              <Badge badgeContent={notifications?.count ?? 0} color='error'>
+                <NotificationsIcon />
+              </Badge>
+            }
+            sx={{ color: pathname === '/notifications' && 'success.main' }}
+          />
+        </Link>
+      ) : (
         <BottomNavigationAction
-          disabled={!profileData}
           label="Notifications"
-          icon={
-            <Badge badgeContent={notifications?.count ?? 0} color='error' >
-              <NotificationsIcon />
-            </Badge>
-          }
-          sx={{ color: !profileData ? '#e0e0e0' : pathname === '/notifications' && 'success.main' }}
+          disabled
+          icon={<NotificationsIcon />}
+          sx={{ color: '#e0e0e0' }}
         />
-      </Link>
+      )}
     </BottomNavigation>
   );
 };

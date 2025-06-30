@@ -6,6 +6,7 @@ import { IGroupList, IProfile } from '../../../types/types';
 import { Box, Button, Typography } from '@mui/material';
 import GroupCard from './groupCard';
 import { ActivityLoadingMultiSize } from '../../../components/activityLoading';
+import MustBeLoggedIn from '../../../components/mustBeLoggedIn';
 import { AddCircleOutline } from '@mui/icons-material';
 import Link from 'next/link';
 
@@ -34,6 +35,10 @@ const GroupList: React.FC = () => {
 
   if (isLoadingUser || isLoadingProfileData || isLoadingGroupData) {
     return <ActivityLoadingMultiSize />;
+  }
+
+  if (!auth0Id) {
+    return <MustBeLoggedIn />
   }
 
   return (
