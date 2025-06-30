@@ -84,6 +84,12 @@ export default function Right({ auth0Id }: { auth0Id: string }) {
     }
   }, [isErrorProfileData, errorProfileData, isLoadingProfileData, isFetchingProfileData])
 
+  const handleLogout = () => {
+    handleCloseUserMenu();
+    // Invalidate profile data before logging out
+    queryClient.removeQueries({ queryKey: ['profile'] });
+  };
+
   return (
     <Box sx={{ flexGrow: 0 }}>
       <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }} gap={2}>
@@ -137,17 +143,16 @@ export default function Right({ auth0Id }: { auth0Id: string }) {
               </MenuItem>
             </Link>
           ))}
-            {/* do not undo this, it will cause users to be automatically logged out. /api/auth/logout must be <a> tag */}
-            <a
-              key='logout'
-              href='/api/auth/logout/'
+          <a
+            key='logout'
+            href='/api/auth/logout/'
+          >
+            <MenuItem
+              onClick={handleLogout}
             >
-              <MenuItem
-                onClick={handleCloseUserMenu}
-              >
-                <Typography textAlign="center">Logout</Typography>
-              </MenuItem>
-            </a>
+              <Typography textAlign="center">Logout</Typography>
+            </MenuItem>
+          </a>
         </Menu>
       </Box>
     </Box>

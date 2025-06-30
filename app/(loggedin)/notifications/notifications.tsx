@@ -2,6 +2,8 @@
 
 import React, { useEffect, useState } from 'react';
 import { Avatar, Box, Button, Skeleton, Typography } from '@mui/material';
+import MustBeLoggedIn from '../../../components/mustBeLoggedIn';
+import { ActivityLoadingMultiSize } from '../../../components/activityLoading';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getData, getDataWithParams, patchData } from '../../../services/authenticatedApiCalls';
 import Surface from '../../../components/surface/Surface';
@@ -9,7 +11,6 @@ import { timeAgo } from '../../../utils/time';
 import { IProfile } from '../../../types/types';
 import { useUserContext } from '../../../context/UserContext';
 import { useRouter } from 'next/navigation';
-import Link from 'next/link';
 
 export default function Notifications() {
   const queryClient = useQueryClient();
@@ -121,6 +122,13 @@ export default function Notifications() {
     return `/post/${urlId}`;
   }
 
+  if (isLoadingUser || isLoadingProfileData || isLoadingNotificationData) {
+    return <ActivityLoadingMultiSize />;
+  }
+
+  if (!auth0Id) {
+    return <MustBeLoggedIn />
+  }
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column' }} gap={.5}>
