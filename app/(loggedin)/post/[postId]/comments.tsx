@@ -56,26 +56,6 @@ export default function Comments({ postId, currentUserId }: Props) {
     staleTime: 1000 * 60 * 60,
     enabled: profileParam !== null,
   })
-  
-  const [userIds, setUserIds] = useState<string[]>([]);
-  useEffect(() => {
-    if (comments) {
-      const ids: string[] = [];
-      comments.forEach(comment => {
-        if (!ids.includes(comment.user)) {
-          ids.push(comment.user);
-        }
-      });
-      setUserIds(ids);
-    }
-  }, [comments]);
-
-  const { data: batchProfiles, isFetching: isFetchingBatchProfiles, isLoading: isLoadingBatchProfiles, isError: isErrorBatchProfiles } = useQuery({
-    queryKey: ['batchProfilesPost', postId],
-    queryFn: () => userIds.length > 0 ? getDataWithParamsNoToken(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/profile_batch/`, 'user_id', userIds) : Promise.resolve([]),
-    staleTime: 1000 * 60 * 60,
-    enabled: userIds.length > 0,
-  })
 
   const mutationDelete = useMutation({
     mutationFn: () => {
@@ -96,7 +76,7 @@ export default function Comments({ postId, currentUserId }: Props) {
     mutationDelete.mutate();
   };
 
-  if (isLoadingBatchProfiles || isFetchingBatchProfiles || isLoadingComments || isFetchingComments) return (
+  if (isLoadingComments || isFetchingComments) return (
     <Box sx={{ display: 'flex', flexDirection: 'column' }} gap={1}>
       <Skeleton variant='rounded' height={80} />
       <Skeleton variant='rounded' height={80} />
@@ -108,12 +88,6 @@ export default function Comments({ postId, currentUserId }: Props) {
     <>
       <PostComment postId={postId} />
       {(comments && comments.length > 0) ? comments.map((comment) => {
-        const userProfile = batchProfiles?.find(profile => profile.id === comment.user);
-        const teacherName = userProfile?.teacher_name ?? 'Unknown Teacher';
-        const title = userProfile?.title ?? 'Unknown User';
-        const userId = userProfile?.id ?? '';
-        const verified = userProfile?.verified ?? false;
-
         return (
         <Box
           id={`comment-${comment.id}`}
@@ -131,7 +105,7 @@ export default function Comments({ postId, currentUserId }: Props) {
         >
         <Box sx={{ display: 'flex', flexDirection: 'column' }} gap={.5}>
           <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-            <Link href={`/profile/${userId}`} passHref>
+            <Link href={`/profile/${comment.user.id}`} passHref>
               <Box
                 sx={{
                   display: 'flex',
@@ -146,11 +120,11 @@ export default function Comments({ postId, currentUserId }: Props) {
                 }}
               >
                 <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                  <TeacherAvatar verified={verified} profilePicUrl={userProfile?.profile_pic_url } />
+                  <TeacherAvatar verified={comment.user.verified} profilePicUrl={comment.user.profile_pic_url} />
                   <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                     <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                      <Typography sx={{ fontSize: { xs: 12, sm: 14 } }} fontWeight='bold'>{teacherName ?? 'User not found'}</Typography>
-                      <Typography sx={{ fontSize: { xs: 12, sm: 14 }, paddingLeft: 1 }} color='textSecondary'>{title ?? ''}</Typography>
+                      <Typography sx={{ fontSize: { xs: 12, sm: 14 } }} fontWeight='bold'>{comment.user.teacher_name ?? 'User not found'}</Typography>
+                      <Typography sx={{ fontSize: { xs: 12, sm: 14 }, paddingLeft: 1 }} color='textSecondary'>{comment.user.title ?? ''}</Typography>
                     </Box>
                     <Typography sx={{ fontSize: { xs: 10, sm: 12 } }} color='textSecondary'>{timeAgo(comment.timestamp)}</Typography>
                   </Box>
