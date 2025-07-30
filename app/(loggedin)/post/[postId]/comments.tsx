@@ -131,7 +131,7 @@ export default function Comments({ postId, currentUserId }: Props) {
                 </Box>
               </Box>
             </Link>
-            {(currentUserId !== undefined && currentUserId === comment.user) &&
+            {(currentUserId !== undefined && currentUserId === comment.user.id) &&
               <IconButton onClick={(event) => handleClickPopper(event, comment.id)}>
                 <MoreVert fontSize='small' />
               </IconButton>
