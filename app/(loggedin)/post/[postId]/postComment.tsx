@@ -48,13 +48,13 @@ export default function PostComment({ postId }: Props) {
     
     setLoading(true);
 
-    const newPost = {
-      user_id: profileData.id,
+    const newComment = {
+      user: profileData.id,
       body: body
     };
 
     try {
-      await postOrPatchData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/post/${postId}/comments/`, 'POST', newPost);
+      await postOrPatchData(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/post/${postId}/comments/`, 'POST', newComment);
       queryClient.invalidateQueries({ queryKey: ['comments', postId] });
       setBody('');
     } catch (error) {
