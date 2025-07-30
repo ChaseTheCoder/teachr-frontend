@@ -33,12 +33,23 @@ export default function PostComment({ postId }: Props) {
     },
   });
 
+  console.log('Profile Data:', profileData);
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    console.log('Submitting comment:', body);
+    console.log('Current User ID:', profileData?.id);
+    
+    // Add validation to ensure profileData exists
+    if (!profileData?.id) {
+      console.error('Profile data not available');
+      return;
+    }
+    
     setLoading(true);
 
     const newPost = {
-      user: profileData?.id,
+      user_id: profileData.id,
       body: body
     };
 
@@ -86,35 +97,35 @@ export default function PostComment({ postId }: Props) {
       gap={1}
     >
       <form onSubmit={handleSubmit}>
-      <Box mb={2}>
-        <Editor
-          onChange={(data) => {
-            setBody(data);
-          }}
-          value={body}
-          placeholder='Respond to Post'
-          setIsTextFieldFocused={setTextFieldFocused}
-        />
-      </Box>
-      {isTextFieldFocused && (
-        <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'flex-end', paddingBottom: 1 }}>
-          <Button
-            onClick={() => setTextFieldFocused(false)}
-            color='error'
-          >
-            Cancel
-          </Button>
-          <LoadingButton
-            type='submit'
-            variant='contained'
-            color='success'
-            disabled={body === '' || isLoadingProfileData || !profileData}
-            loading={isLoading}
-          >
-            Post
-          </LoadingButton>
+        <Box mb={2}>
+          <Editor
+            onChange={(data) => {
+              setBody(data);
+            }}
+            value={body}
+            placeholder='Respond to Post'
+            setIsTextFieldFocused={setTextFieldFocused}
+          />
         </Box>
-      )}
+        {isTextFieldFocused && (
+          <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'flex-end', paddingBottom: 1 }}>
+            <Button
+              onClick={() => setTextFieldFocused(false)}
+              color='error'
+            >
+              Cancel
+            </Button>
+            <LoadingButton
+              type='submit'
+              variant='contained'
+              color='success'
+              disabled={body === '' || isLoadingProfileData || !profileData?.id} // Check for profileData.id specifically
+              loading={isLoading}
+            >
+              Post
+            </LoadingButton>
+          </Box>
+        )}
       </form>
     </Box>
   );
